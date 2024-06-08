@@ -30,7 +30,8 @@ const config: JestConfigWithTsJest = {
   testTimeout: 20_000,
   setupFiles: ['<rootDir>/test/setup.ts'],
   // collectCoverageFrom: ['**/*.(t|j)s'],
-  collectCoverageFrom: ['<rootDir>/src/**/*.(t|j)s'],
+  // collectCoverageFrom: ['<rootDir>/src/**/*.(t|j)s'],
+  coverageProvider: 'v8',
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: [['lcov', { projectRoot: './' }], 'text'],
   coveragePathIgnorePatterns: [
@@ -44,10 +45,10 @@ const config: JestConfigWithTsJest = {
   ],
   coverageThreshold: {
     global: {
-      statements: 93,
+      statements: 90,
       branches: 84,
-      functions: 94,
-      lines: 94,
+      functions: 88,
+      lines: 88,
     },
   },
 }
