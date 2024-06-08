@@ -11,6 +11,9 @@ on:
         type: string
         required: true
 
+env:
+  NODE_VERSION: 20
+
 jobs:
   pack:
     name: Package - ${{ matrix.target }}
@@ -36,14 +39,11 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{env.NODE_VERSION}}
           cache: 'npm'
 
-      - name: NPM Install (cli)
+      - name: NPM Install
         run: npm ci
-
-      - name: NPM Install (client)
-        run: npm ci --prefix ./client
 
       - run: npm run pack:${{ matrix.target }}
 
@@ -66,14 +66,11 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{env.NODE_VERSION}}
           cache: 'npm'
 
-      - name: NPM Install (cli)
+      - name: NPM Install
         run: npm ci
-
-      - name: NPM Install (client)
-        run: npm ci --prefix ./client
 
       - run: npm run pack:macos
 

@@ -14,7 +14,7 @@
     "test": "jest --coverage",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "npm run lint",
-    "prepack": "oclif manifest && oclif readme",
+    "prepack": "oclif manifest && oclif readme --multi",
     "pack:macos": "oclif pack macos",
     "pack:win": "oclif pack win",
     "pack:deb": "oclif pack deb",
