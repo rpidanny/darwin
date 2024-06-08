@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/rpidanny/darwin/compare/v1.0.0...v1.1.0) (2024-06-08)
+
+### Features
+
+* handle captcha ([#6](https://github.com/rpidanny/darwin/issues/6)) ([3ebc9e2](https://github.com/rpidanny/darwin/commit/3ebc9e249a20a2410cbcf486fb35acfb0e834c37))
+
 ## 1.0.0 (2024-06-08)
 
 ### Features
