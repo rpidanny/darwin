@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/rpidanny/darwin/compare/v1.1.0...v1.2.0) (2024-06-08)
+
+### Features
+
+* add search papers command ([#7](https://github.com/rpidanny/darwin/issues/7)) ([7d03c53](https://github.com/rpidanny/darwin/commit/7d03c5317581fac12f8d886ea92332141bdf7dc9))
+
 ## [1.1.0](https://github.com/rpidanny/darwin/compare/v1.0.0...v1.1.0) (2024-06-08)
 
 ### Features
