@@ -31,4 +31,4 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  --log-level debug
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v0.0.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.0.0/src/commands/search/accession.ts)_
