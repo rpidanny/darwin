@@ -1,0 +1,121 @@
+{
+  "name": "@rpidanny/darwin",
+  "description": "A cli tool to download research papers / datasets from various sources",
+  "version": "0.0.0",
+  "author": "Abhishek <abhishek.rpidanny@gmail.com>",
+  "bin": {
+    "darwin": "./bin/run.js"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
+    "test": "jest --coverage",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "pack:macos": "oclif pack macos",
+    "pack:win": "oclif pack win",
+    "pack:deb": "oclif pack deb",
+    "pack:tarballs": "oclif pack tarballs",
+    "version": "oclif readme --multi && git add README.md",
+    "prepare": "husky install",
+    "start": "node ./bin/run.js",
+    "prerelease": "npm run version",
+    "release": "semantic-release"
+  },
+  "bugs": "https://github.com/rpidanny/darwin/issues",
+  "dependencies": {
+    "@oclif/core": "^3",
+    "@oclif/plugin-help": "^6",
+    "@oclif/plugin-not-found": "^3.2.1",
+    "@rpidanny/google-scholar": "^1.0.1",
+    "@rpidanny/odysseus": "^1.1.1",
+    "@rpidanny/quill": "^1.5.0",
+    "bottleneck": "^2.19.5",
+    "cheerio": "^1.0.0-rc.12",
+    "csvtojson": "^2.0.10",
+    "figlet": "^1.7.0",
+    "fs-extra": "^11.2.0",
+    "json-2-csv": "^5.5.1",
+    "p-retry": "^6.2.0",
+    "playwright": "^1.44.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4",
+    "@rpidanny/eslint-config-typescript": "^1.4.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.0.5",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.0",
+    "@types/figlet": "^1.5.8",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18",
+    "@types/request": "^2.48.12",
+    "@types/tmp": "^0.2.6",
+    "commitlint": "^19.3.0",
+    "eslint": "^8",
+    "eslint-config-oclif": "^5",
+    "eslint-config-oclif-typescript": "^3",
+    "eslint-config-prettier": "^9",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.7",
+    "lint-staged": "^15.2.5",
+    "nock": "^13.5.4",
+    "oclif": "^4",
+    "semantic-release": "^24.0.0",
+    "shx": "^0.3.3",
+    "tmp": "^0.2.3",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/rpidanny/darwin",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "type": "module",
+  "oclif": {
+    "bin": "darwin",
+    "dirname": "darwin",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "search": {
+        "description": "Search content (papers / accession numbers / etc)",
+        "hidden": false
+      }
+    },
+    "hooks": {
+      "init": [
+        "./dist/hooks/init/banner"
+      ]
+    },
+    "macos": {
+      "identifier": "com.rpidanny.darwin"
+    }
+  },
+  "repository": "rpidanny/darwin"
+}
