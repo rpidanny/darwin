@@ -62,6 +62,7 @@
     "@types/request": "^2.48.12",
     "@types/tmp": "^0.2.6",
     "commitlint": "^19.3.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^8",
     "eslint-config-oclif": "^5",
     "eslint-config-oclif-typescript": "^3",
