@@ -55,9 +55,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
     const { headless } = this.flags
 
-    console.log('Initializing Accession Command')
-
-    this.webClient = new Odysseus({ headless }, this.logger)
+    this.webClient = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
     this.scholar = new GoogleScholar(this.webClient, this.logger)
     this.ioService = new IoService()
 
@@ -67,8 +65,6 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   public async run(): Promise<AccessionEntity[]> {
     const { maxResults, output } = this.flags
     const { keywords } = this.args
-
-    console.log('Keywords', keywords)
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
     const result = await this.service.search(keywords, maxResults)
