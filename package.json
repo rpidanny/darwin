@@ -34,7 +34,7 @@
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-not-found": "^3.2.1",
     "@rpidanny/google-scholar": "^1.0.1",
-    "@rpidanny/odysseus": "^1.1.1",
+    "@rpidanny/odysseus": "^1.2.0",
     "@rpidanny/quill": "^1.5.0",
     "bottleneck": "^2.19.5",
     "cheerio": "^1.0.0-rc.12",
