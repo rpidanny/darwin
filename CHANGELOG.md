@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/rpidanny/darwin/compare/v1.2.1...v1.3.0) (2024-06-09)
+
+### Features
+
+* save logs to file system ([#9](https://github.com/rpidanny/darwin/issues/9)) ([cd7855b](https://github.com/rpidanny/darwin/commit/cd7855b60e4c9f0dec31ccb9157dc9587d478450))
+
 ## [1.2.1](https://github.com/rpidanny/darwin/compare/v1.2.0...v1.2.1) (2024-06-09)
 
 ### Bug Fixes
