@@ -44,8 +44,7 @@
     "fs-extra": "^11.2.0",
     "json-2-csv": "^5.5.1",
     "p-retry": "^6.2.0",
-    "playwright": "^1.44.1",
-    "request": "^2.88.2"
+    "playwright": "^1.44.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
