@@ -1,5 +1,7 @@
 import { Command, Flags, Interfaces } from '@oclif/core'
 import { LogLevel, LogOutputFormat, Quill } from '@rpidanny/quill'
+import { log2fs } from '@rpidanny/quill-hooks'
+import { ensureFile } from 'fs-extra'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof BaseCommand)['baseFlags'] & T['flags']
@@ -24,6 +26,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected args!: Args<T>
   protected logger!: Quill
 
+  protected logFile = `${this.config.dataDir}/logs/app.log`
+
   public async init(): Promise<void> {
     await super.init()
     const { args, flags } = await this.parse({
@@ -37,9 +41,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
 
+    await ensureFile(this.logFile)
+
     this.logger = new Quill({
       logOutputFormat: LogOutputFormat.TEXT,
       level: this.flags['log-level'] as LogLevel,
+      hooks: [log2fs(this.logFile)],
     })
   }
 
