@@ -1,39 +1,50 @@
-# Darwin 🧬
+![alt text](darwin.png 'Darwin')
 
-A cli tool to download research papers / datasets from various sources.
+# Darwin
+
+`Darwin` is an elegant and powerful command-line interface (CLI) utility designed to streamline your research efforts. While it shines brightest in the field of [biotechnology](https://en.wikipedia.org/wiki/Biotechnology), its versatile tools can support research across various domains, albeit with some limitations.
 
 [![Version](https://img.shields.io/npm/v/@rpidanny/darwin.svg)](https://npmjs.org/package/@rpidanny/darwin)
 [![Downloads/week](https://img.shields.io/npm/dw/@rpidanny/darwin.svg)](https://npmjs.org/package/@rpidanny/darwin)
 
 <!-- toc -->
-* [Darwin 🧬](#darwin-)
-* [Usage](#usage)
-* [Commands](#commands)
-* [Command Topics](#command-topics)
+
+- [Darwin](#darwin)
+- [Usage](#usage)
+- [Command Topics](#command-topics)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.3.0 linux-x64 node-v20.14.0
+@rpidanny/darwin/1.3.0 darwin-arm64 node-v18.18.2
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
-# Commands
-
 <!-- commands -->
+
 # Command Topics
 
-* [`darwin help`](docs/help.md) - Display help for darwin.
-* [`darwin search`](docs/search.md) - Search content (papers / accession numbers / etc)
+- [`darwin help`](docs/help.md) - Display help for darwin.
+- [`darwin search`](docs/search.md) - Search content (papers / accession numbers / etc)
 
 <!-- commandsstop -->
+
+# Contribution
+
+We welcome contributions to `Darwin`! To contribute, fork the repository, create a new branch for your feature, make your changes, and submit a pull request. For more details, see our [CONTRIBUTING](CONTRIBUTING.md) guidelines.
+
+# License
+
+`Darwin` is released under the MIT License. See the [LICENSE](LICENSE) file for more details.
