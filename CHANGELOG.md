@@ -1,3 +1,9 @@
+## [1.3.2](https://github.com/rpidanny/darwin/compare/v1.3.1...v1.3.2) (2024-06-09)
+
+### Bug Fixes
+
+* npm audit ([#12](https://github.com/rpidanny/darwin/issues/12)) ([f5b9163](https://github.com/rpidanny/darwin/commit/f5b916394de8d0f8b1c8fbb2f48d4bc81f96947d))
+
 ## [1.3.1](https://github.com/rpidanny/darwin/compare/v1.3.0...v1.3.1) (2024-06-09)
 
 ## [1.3.0](https://github.com/rpidanny/darwin/compare/v1.2.1...v1.3.0) (2024-06-09)
