@@ -43,6 +43,7 @@
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
     "json-2-csv": "^5.5.1",
+    "mixpanel": "^0.18.0",
     "p-retry": "^6.2.0",
     "playwright": "^1.44.1"
   },
@@ -114,6 +115,7 @@
     },
     "hooks": {
       "init": [
+        "./dist/hooks/init/analytics",
         "./dist/hooks/init/banner"
       ]
     },
