@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/rpidanny/darwin/compare/v1.2.0...v1.2.1) (2024-06-09)
+
+### Bug Fixes
+
+* log date time as local time ([#8](https://github.com/rpidanny/darwin/issues/8)) ([1cbba32](https://github.com/rpidanny/darwin/commit/1cbba32bf6ee8e9fa680b37fa8b08fa4f0cac8c3))
+
 ## [1.2.0](https://github.com/rpidanny/darwin/compare/v1.1.0...v1.2.0) (2024-06-08)
 
 ### Features
