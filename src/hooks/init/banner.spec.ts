@@ -1,26 +1,19 @@
 import { jest } from '@jest/globals'
+import { Hook } from '@oclif/core'
 
 import { getMockConfig } from '../../../test/fixtures/config.js'
+import { getMockHooksContext } from '../../../test/fixtures/hooks.js'
 import uiOutput from '../../utils/ui/output'
 import bannerHook from './banner.js'
 
 describe('Hooks - init:banner', () => {
   const mockConfig = getMockConfig()
-  const context = {
-    debug: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    log: jest.fn(),
-    exit: jest.fn(),
-  }
 
-  let oclifContext: any
+  let hookContext: Hook.Context
 
   beforeEach(() => {
-    oclifContext = {
-      config: { version: '1.2.3' },
-      ...context,
-    }
+    hookContext = getMockHooksContext({ config: mockConfig })
+
     jest.spyOn(uiOutput, 'printBanner').mockImplementation(() => {})
   })
 
@@ -30,15 +23,15 @@ describe('Hooks - init:banner', () => {
   })
 
   it('should call uiOutput.printBanner', async () => {
-    await bannerHook.call(oclifContext, {
+    await bannerHook.call(hookContext, {
       id: 'some-command',
       argv: [],
       config: mockConfig,
-      context,
+      context: hookContext,
     })
 
     expect(uiOutput.printBanner).toHaveBeenCalledTimes(1)
-    expect(uiOutput.printBanner).toHaveBeenCalledWith('1.2.3', context.log)
+    expect(uiOutput.printBanner).toHaveBeenCalledWith('1.2.3', hookContext.log)
   })
 
   it.each`
@@ -46,11 +39,11 @@ describe('Hooks - init:banner', () => {
     ${'autocomplete:script'}
     ${'readme'}
   `('should not call uiOutput.printBanner if command is $command', async ({ command }) => {
-    await bannerHook.call(oclifContext, {
+    await bannerHook.call(hookContext, {
       id: command,
       argv: [],
       config: mockConfig,
-      context,
+      context: hookContext,
     })
 
     expect(uiOutput.printBanner).not.toHaveBeenCalled()
