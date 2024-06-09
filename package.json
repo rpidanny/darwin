@@ -1,7 +1,7 @@
 {
   "name": "@rpidanny/darwin",
   "description": "A cli tool to download research papers / datasets from various sources",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "author": "Abhishek <abhishek.rpidanny@gmail.com>",
   "bin": {
     "darwin": "./bin/run.js"
