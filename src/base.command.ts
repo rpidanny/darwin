@@ -39,7 +39,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
 
-    const logFile = `${this.config.dataDir}/logs/${new Date().toLocaleDateString()}.log`
+    const logFile = `${this.config.dataDir}/logs/app.log`
     await ensureFile(logFile)
 
     this.logger = new Quill({
