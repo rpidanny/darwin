@@ -8,36 +8,34 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@rpidanny/darwin.svg)](https://npmjs.org/package/@rpidanny/darwin)
 
 <!-- toc -->
-
-- [Darwin](#darwin)
-- [Usage](#usage)
-- [Command Topics](#command-topics)
+* [Darwin](#darwin)
+* [Usage](#usage)
+* [Command Topics](#command-topics)
+* [Contribution](#contribution)
+* [License](#license)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.3.0 darwin-arm64 node-v18.18.2
+@rpidanny/darwin/1.3.1 linux-x64 node-v20.14.0
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 <!-- commands -->
-
 # Command Topics
 
-- [`darwin help`](docs/help.md) - Display help for darwin.
-- [`darwin search`](docs/search.md) - Search content (papers / accession numbers / etc)
+* [`darwin help`](docs/help.md) - Display help for darwin.
+* [`darwin search`](docs/search.md) - Search content (papers / accession numbers / etc)
 
 <!-- commandsstop -->
 
