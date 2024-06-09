@@ -26,6 +26,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected args!: Args<T>
   protected logger!: Quill
 
+  protected logFile = `${this.config.dataDir}/logs/app.log`
+
   public async init(): Promise<void> {
     await super.init()
     const { args, flags } = await this.parse({
@@ -39,13 +41,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
 
-    const logFile = `${this.config.dataDir}/logs/app.log`
-    await ensureFile(logFile)
+    await ensureFile(this.logFile)
 
     this.logger = new Quill({
       logOutputFormat: LogOutputFormat.TEXT,
       level: this.flags['log-level'] as LogLevel,
-      hooks: [log2fs(logFile)],
+      hooks: [log2fs(this.logFile)],
     })
   }
 
