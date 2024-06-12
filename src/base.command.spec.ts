@@ -2,6 +2,8 @@ import { join } from 'node:path'
 
 import { runCommand } from '@oclif/test'
 
+import mockConfig from '../test/fixtures/app/config/test/config.json'
+
 describe('Command - Base', () => {
   const root = join(__dirname, '../test/fixtures/app')
 
@@ -23,6 +25,7 @@ describe('Command - Base', () => {
         args: {
           arg1: 'some-argument',
         },
+        config: expect.any(Object),
       })
     })
 
@@ -46,6 +49,7 @@ describe('Command - Base', () => {
           verbose: true,
         },
         args: expect.any(Object),
+        config: expect.any(Object),
       })
     })
 
@@ -57,6 +61,7 @@ describe('Command - Base', () => {
           'log-level': 'INFO',
         },
         args: expect.any(Object),
+        config: expect.any(Object),
       })
     })
 
@@ -67,6 +72,42 @@ describe('Command - Base', () => {
 
       expect(error).toBeDefined()
       expect(error?.message).toContain('Nonexistent flag: -x')
+    })
+  })
+
+  describe('config', () => {
+    beforeEach(() => {
+      process.env.XDG_CONFIG_HOME = join(root, 'config')
+    })
+
+    afterEach(() => {
+      delete process.env.XDG_CONFIG_HOME
+    })
+
+    it('should load local config', async () => {
+      const { result } = await runCommand(['test', 'some-argument'], {
+        root,
+      })
+
+      expect(result).toEqual({
+        flags: expect.any(Object),
+        args: expect.any(Object),
+        config: mockConfig,
+      })
+    })
+
+    it('should return empty object if config does not exist', async () => {
+      delete process.env.XDG_CONFIG_HOME
+
+      const { result } = await runCommand(['test', 'some-argument'], {
+        root,
+      })
+
+      expect(result).toEqual({
+        flags: expect.any(Object),
+        args: expect.any(Object),
+        config: {},
+      })
     })
   })
 })

@@ -7,3 +7,7 @@ export interface PaperEntity {
   citationUrl: string
   authors: string[]
 }
+
+export interface PaperWithAccessionEntity extends PaperEntity {
+  accessionNumbers: string[]
+}

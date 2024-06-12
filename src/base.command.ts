@@ -1,7 +1,12 @@
 import { Command, Flags, Interfaces } from '@oclif/core'
 import { LogLevel, LogOutputFormat, Quill } from '@rpidanny/quill'
 import { log2fs } from '@rpidanny/quill-hooks'
-import { ensureFile } from 'fs-extra'
+import { readFile } from 'fs/promises'
+import { ensureFile, pathExists } from 'fs-extra'
+import path from 'path'
+
+import { CONFIG_FILE_NAME } from './config/constants.js'
+import { TConfig } from './config/schema.js'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof BaseCommand)['baseFlags'] & T['flags']
@@ -22,11 +27,13 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     })(),
   }
 
+  private logFilePath = `${this.config.dataDir}/logs/app.log`
+  private configFilePath = path.join(this.config.configDir, CONFIG_FILE_NAME)
+
   protected flags!: Flags<T>
   protected args!: Args<T>
   protected logger!: Quill
-
-  protected logFile = `${this.config.dataDir}/logs/app.log`
+  protected localConfig!: TConfig
 
   public async init(): Promise<void> {
     await super.init()
@@ -41,13 +48,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
 
-    await ensureFile(this.logFile)
-
-    this.logger = new Quill({
-      logOutputFormat: LogOutputFormat.TEXT,
-      level: this.flags['log-level'] as LogLevel,
-      hooks: [log2fs(this.logFile)],
-    })
+    this.localConfig = await this.getLocalConfig()
+    this.logger = await this.getLogger()
   }
 
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {
@@ -59,5 +61,23 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected async finally(_: Error | undefined): Promise<any> {
     // called after run and catch regardless of whether or not the command errored
     return super.finally(_)
+  }
+
+  private async getLocalConfig(): Promise<TConfig> {
+    if (await pathExists(this.configFilePath)) {
+      return JSON.parse(await readFile(this.configFilePath, 'utf-8'))
+    }
+
+    return {}
+  }
+
+  private async getLogger(): Promise<Quill> {
+    await ensureFile(this.logFilePath)
+
+    return new Quill({
+      logOutputFormat: LogOutputFormat.TEXT,
+      level: this.flags['log-level'] as LogLevel,
+      hooks: [log2fs(this.logFilePath)],
+    })
   }
 }

@@ -23,7 +23,7 @@ $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.4.0 linux-x64 node-v20.14.0
+@rpidanny/darwin/1.4.0 darwin-arm64 node-v20.8.1
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
@@ -34,6 +34,8 @@ USAGE
 <!-- commands -->
 # Command Topics
 
+* [`darwin chat`](docs/chat.md) - Chat with Darwin. Can be used to instruct Darwin to do things in natural language.
+* [`darwin config`](docs/config.md) - Manage the app config
 * [`darwin help`](docs/help.md) - Display help for darwin.
 * [`darwin search`](docs/search.md) - Search content (papers / accession numbers / etc)
 

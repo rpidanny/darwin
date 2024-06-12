@@ -3,18 +3,16 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { AccessionService } from '../../services/accession/accession.js'
-import { AccessionEntity } from '../../services/accession/interfaces.js'
 import { IoService } from '../../services/io/io.js'
+import { SearchService } from '../../services/search/search.service.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private webClient!: Odysseus
   private scholar!: GoogleScholar
-  private service!: AccessionService
+  private searchService!: SearchService
   private ioService!: IoService
 
-  static summary =
-    'Get the accession number of a research paper that matches the keywords provided.'
+  static summary = 'Search for papers that contain accession numbers given a list of keywords.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -33,7 +31,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     maxResults: oclif.Flags.integer({
       char: 'm',
       name: 'max-results',
-      summary: 'Maximum number of results to return',
+      summary: 'The maximum number of papers with accession numbers to search for',
       required: false,
       default: 10,
     }),
@@ -59,18 +57,26 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     this.scholar = new GoogleScholar(this.webClient, this.logger)
     this.ioService = new IoService()
 
-    this.service = new AccessionService(this.scholar, this.webClient, this.logger)
+    this.searchService = new SearchService(
+      this.scholar,
+      this.webClient,
+      this.ioService,
+      this.logger,
+    )
   }
 
-  public async run(): Promise<AccessionEntity[]> {
+  public async run(): Promise<string> {
     const { maxResults, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
-    const result = await this.service.search(keywords, maxResults)
+    const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
+      keywords,
+      output,
+      maxResults,
+    )
 
-    this.logger.info(`Writing results to ${output}`)
-    await this.ioService.writeCsv(output, result)
-    return result
+    this.logger.info(`Papers exported to to ${outputPath}`)
+    return `Papers exported to to ${outputPath}`
   }
 }
