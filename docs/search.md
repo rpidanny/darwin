@@ -8,7 +8,7 @@ Search content (papers / accession numbers / etc)
 
 ## `darwin search accession KEYWORDS`
 
-Get the accession number of a research paper that matches the keywords provided.
+Search for papers that contain accession numbers given a list of keywords.
 
 ```
 USAGE
@@ -19,7 +19,7 @@ ARGUMENTS
 
 FLAGS
   -h, --headless            Run in headless mode
-  -m, --maxResults=<value>  [default: 10] Maximum number of results to return
+  -m, --maxResults=<value>  [default: 10] The maximum number of papers with accession numbers to search for
   -o, --output=<value>      (required) Output CSV file name/path
 
 GLOBAL FLAGS
@@ -36,7 +36,7 @@ _See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin
 
 ## `darwin search papers KEYWORDS`
 
-Search research papers that matches the keywords provided.
+Search research papers given a list of keywords.
 
 ```
 USAGE

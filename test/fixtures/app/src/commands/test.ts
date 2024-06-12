@@ -25,6 +25,7 @@ export class TestCommand extends BaseCommand<typeof TestCommand> {
     return {
       flags: this.flags,
       args: this.args,
+      config: this.localConfig,
     }
   }
 }

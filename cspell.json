@@ -8,11 +8,16 @@
     "camelcase",
     "commitlint",
     "crispr",
+    "langchain",
     "mocrobiome",
     "oclif",
+    "Ollama",
+    "openai",
     "postpack",
     "posttest",
-    "rpidanny"
+    "rpidanny",
+    "vectorstore",
+    "vectorstores"
   ],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.

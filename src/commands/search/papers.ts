@@ -4,16 +4,15 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { PaperEntity } from '../../services/papers/interfaces.js'
-import { PapersService } from '../../services/papers/papers.js'
+import { SearchService } from '../../services/search/search.service.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   private webClient!: Odysseus
   private scholar!: GoogleScholar
-  private service!: PapersService
+  private searchService!: SearchService
   private ioService!: IoService
 
-  static summary = 'Search research papers that matches the keywords provided.'
+  static summary = 'Search research papers given a list of keywords.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -58,18 +57,22 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     this.scholar = new GoogleScholar(this.webClient, this.logger)
     this.ioService = new IoService()
 
-    this.service = new PapersService(this.scholar, this.webClient, this.logger)
+    this.searchService = new SearchService(
+      this.scholar,
+      this.webClient,
+      this.ioService,
+      this.logger,
+    )
   }
 
-  public async run(): Promise<PaperEntity[]> {
+  public async run(): Promise<string> {
     const { maxResults, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
-    const result = await this.service.search(keywords, maxResults)
+    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, maxResults)
 
-    this.logger.info(`Writing to ${output}`)
-    await this.ioService.writeCsv(output, result)
-    return result
+    this.logger.info(`Papers exported to to ${outputFile}`)
+    return `Papers exported to to ${outputFile}`
   }
 }

@@ -1,0 +1,6 @@
+{
+  "openai": {
+    "apiKey": "sk-...",
+    "model": "gpt-4-turbo"
+  }
+}

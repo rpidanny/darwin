@@ -1,6 +1,8 @@
 import { Config } from '@oclif/core'
 import path from 'path'
 
+import { TConfig } from '../../src/config/schema.js'
+
 export function getMockConfig(): Config {
   const mockConfig = new Config({
     root: process.cwd(),
@@ -14,4 +16,14 @@ export function getMockConfig(): Config {
   mockConfig.version = '1.2.3'
 
   return mockConfig
+}
+
+export function getMockLocalConfig(overrides?: Partial<TConfig>): TConfig {
+  return {
+    openai: {
+      apiKey: 'mock-api-key',
+      model: 'gpt-4-turbo',
+    },
+    ...overrides,
+  }
 }
