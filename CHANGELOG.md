@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/rpidanny/darwin/compare/v1.4.0...v1.5.0) (2024-06-12)
+
+### Features
+
+* add chat command ([#15](https://github.com/rpidanny/darwin/issues/15)) ([217a5b7](https://github.com/rpidanny/darwin/commit/217a5b778e9c3a84a9736a44a3a411d365a8dd88))
+
 ## [1.4.0](https://github.com/rpidanny/darwin/compare/v1.3.2...v1.4.0) (2024-06-09)
 
 ### Features
