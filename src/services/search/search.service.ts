@@ -6,6 +6,8 @@ import { IoService } from '../io/io'
 import { PaperEntity, PaperWithAccessionEntity } from './interfaces'
 
 export class SearchService {
+  private bioProjectAccessionRegex = /PRJNA\d+/g
+
   constructor(
     private readonly googleScholar: GoogleScholar,
     private readonly odysseus: Odysseus,
@@ -27,13 +29,14 @@ export class SearchService {
 
   public async searchPapersWithAccessionNumbers(
     keywords: string,
+    regex: RegExp,
     maxItems: number = 20,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.fetchPapers<PaperWithAccessionEntity>(keywords, maxItems, async result => {
       if (!result || result.url == null) return null
 
-      const accessionNumbers = await this.extractAccessionNumbers(result)
-      if (!accessionNumbers) return null
+      const accessionNumbers = await this.extractAccessionNumbers(result, regex)
+      if (!accessionNumbers.length) return null
 
       this.logger?.info(`Found accession numbers: ${accessionNumbers}`)
 
@@ -50,6 +53,13 @@ export class SearchService {
     })
   }
 
+  public async searchPapersWithBioProjectAccessionNumbers(
+    keywords: string,
+    maxItems = 10,
+  ): Promise<PaperWithAccessionEntity[]> {
+    return this.searchPapersWithAccessionNumbers(keywords, this.bioProjectAccessionRegex, maxItems)
+  }
+
   public async exportPapersToCSV(
     keywords: string,
     filePath: string,
@@ -62,12 +72,26 @@ export class SearchService {
 
   public async exportPapersWithAccessionNumbersToCSV(
     keywords: string,
+    regex: RegExp,
     filePath: string,
     maxItems: number = 20,
   ): Promise<string> {
-    const papers = await this.searchPapersWithAccessionNumbers(keywords, maxItems)
+    const papers = await this.searchPapersWithAccessionNumbers(keywords, regex, maxItems)
     this.ioService.writeCsv(filePath, papers)
     return filePath
+  }
+
+  public async exportPapersWithBioProjectAccessionNumbersToCSV(
+    keywords: string,
+    filePath: string,
+    maxItems: number = 20,
+  ): Promise<string> {
+    return this.exportPapersWithAccessionNumbersToCSV(
+      keywords,
+      this.bioProjectAccessionRegex,
+      filePath,
+      maxItems,
+    )
   }
 
   private async fetchPapers<T>(
@@ -94,8 +118,12 @@ export class SearchService {
     return entities
   }
 
-  private async extractAccessionNumbers(result: IGoogleScholarResult): Promise<string[] | null> {
+  private async extractAccessionNumbers(
+    result: IGoogleScholarResult,
+    regex: RegExp,
+  ): Promise<string[]> {
     const content = await this.odysseus.getContent(result.url)
-    return content.match(/PRJ[A-Z]{2}[0-9]{6}/g) ?? null
+    const matches = content.match(regex)
+    return [...new Set(matches)]
   }
 }

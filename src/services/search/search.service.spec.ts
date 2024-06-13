@@ -84,6 +84,8 @@ describe('SearchService', () => {
   })
 
   describe('searchPapersWithAccessionNumbers', () => {
+    const regex = new RegExp('PRJNA\\d+', 'g')
+
     it('should search for papers with accession numbers', async () => {
       const mainResp = getSearchResponse()
 
@@ -97,7 +99,39 @@ describe('SearchService', () => {
       odysseusMock.getContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
 
-      const entities = await service.searchPapersWithAccessionNumbers('some keywords')
+      const entities = await service.searchPapersWithAccessionNumbers('some keywords', regex)
+
+      expect(entities).toHaveLength(3)
+      expect(entities).toEqual(
+        resp.results.map(result => ({
+          title: result.title,
+          authors: result.authors.map(author => author.name),
+          url: result.url,
+          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
+          citationCount: result.citation.count,
+          citationUrl: result.citation.url ?? '',
+          description: result.description,
+          paperUrl: result.paperUrl,
+        })),
+      )
+    })
+  })
+
+  describe('searchPapersWithBioProjectAccessionNumbers', () => {
+    it('should search for papers with accession numbers', async () => {
+      const mainResp = getSearchResponse()
+
+      const resp: ISearchResponse = {
+        ...mainResp,
+        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
+      }
+
+      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
+
+      odysseusMock.getContent.mockResolvedValue(content)
+      googleScholarMock.search.mockResolvedValue(resp)
+
+      const entities = await service.searchPapersWithBioProjectAccessionNumbers('some keywords')
 
       expect(entities).toHaveLength(3)
       expect(entities).toEqual(
@@ -146,6 +180,8 @@ describe('SearchService', () => {
   })
 
   describe('exportPapersWithAccessionNumbersToCSV', () => {
+    const regex = /PRJNA[0-9]{6}/g
+
     it('should export papers with accession numbers to CSV', async () => {
       const mainResp = getSearchResponse()
 
@@ -158,6 +194,41 @@ describe('SearchService', () => {
       ioService.writeCsv.mockResolvedValue()
 
       const filePath = await service.exportPapersWithAccessionNumbersToCSV(
+        'some keywords',
+        regex,
+        'file.csv',
+      )
+
+      expect(filePath).toBe('file.csv')
+      expect(ioService.writeCsv).toHaveBeenCalledWith(
+        'file.csv',
+        resp.results.map(result => ({
+          title: result.title,
+          authors: result.authors.map(author => author.name),
+          url: result.url,
+          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
+          citationCount: result.citation.count,
+          citationUrl: result.citation.url ?? '',
+          description: result.description,
+          paperUrl: result.paperUrl,
+        })),
+      )
+    })
+  })
+
+  describe('exportPapersWithBioProjectAccessionNumbersToCSV', () => {
+    it('should export papers with accession numbers to CSV', async () => {
+      const mainResp = getSearchResponse()
+
+      const resp: ISearchResponse = {
+        ...mainResp,
+        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
+      }
+
+      googleScholarMock.search.mockResolvedValue(resp)
+      ioService.writeCsv.mockResolvedValue()
+
+      const filePath = await service.exportPapersWithBioProjectAccessionNumbersToCSV(
         'some keywords',
         'file.csv',
       )
