@@ -48,7 +48,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     }),
     'accession-number-regex': oclif.Flags.string({
       char: 'a',
-      summary: 'Regex to match accession numbers',
+      summary: 'Regex to match accession numbers. Defaults to BioProject accession numbers.',
       required: false,
       default: 'PRJNA\\d+',
     }),
