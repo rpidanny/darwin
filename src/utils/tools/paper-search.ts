@@ -13,18 +13,18 @@ export class PapersSearchTool extends DynamicStructuredTool {
         keywords: z
           .string()
           .describe('The keywords to search for. Separate multiple keywords with spaces.'),
-        maxItems: z
+        count: z
           .number()
-          .describe('The maximum number of papers to search for. Default is 5.')
+          .describe('The minimum number of papers to search for. Default is 5.')
           .default(5),
       }),
-      func: async ({ keywords, maxItems }): Promise<string> => {
+      func: async ({ keywords, count }): Promise<string> => {
         const cwd = process.cwd()
 
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
         const filePath = `${cwd}/${fileName}`
 
-        const outputFile = await this.searchService.exportPapersToCSV(keywords, filePath, maxItems)
+        const outputFile = await this.searchService.exportPapersToCSV(keywords, filePath, count)
         return `Papers has been exported to ${outputFile}. Return the local file path to the user as plain text without markdown. DON'T USE MARKDOWN.`
       },
     })

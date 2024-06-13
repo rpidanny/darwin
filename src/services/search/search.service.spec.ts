@@ -48,7 +48,7 @@ describe('SearchService', () => {
       )
     })
 
-    it('should stop searching when maxItems is reached', async () => {
+    it('should stop searching when minItemCount is reached', async () => {
       const mainResp = getSearchResponse()
 
       const resp: ISearchResponse = {
@@ -61,10 +61,10 @@ describe('SearchService', () => {
 
       const entities = await service.searchPapers('some keywords', 1)
 
-      expect(entities).toHaveLength(1)
+      expect(entities.length).toBeGreaterThan(1)
     })
 
-    it('should continue searching when maxItems is not reached', async () => {
+    it('should continue searching when minItemCount is not reached', async () => {
       const mainResp = getSearchResponse()
       const results = [...mainResp.results, ...mainResp.results, ...mainResp.results]
 
@@ -78,9 +78,9 @@ describe('SearchService', () => {
         next: jest.fn().mockResolvedValue(resp),
       })
 
-      const entities = await service.searchPapers('some keywords', 5)
+      const entities = await service.searchPapers('some keywords', 10)
 
-      expect(entities).toHaveLength(5)
+      expect(entities).toHaveLength(6)
     })
   })
 
