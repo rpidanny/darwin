@@ -138,8 +138,13 @@ export class SearchService {
     regex: RegExp,
     waitOnCaptcha: boolean,
   ): Promise<string[]> {
-    const content = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
-    const matches = content.match(regex)
-    return [...new Set(matches)]
+    try {
+      const content = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
+      const matches = content.match(regex)
+      return [...new Set(matches)]
+    } catch (error) {
+      this.logger?.error(`Error extracting accession numbers: ${(error as Error).message}`)
+      return []
+    }
   }
 }
