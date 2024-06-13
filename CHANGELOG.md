@@ -1,3 +1,9 @@
+## [1.8.0](https://github.com/rpidanny/darwin/compare/v1.7.0...v1.8.0) (2024-06-13)
+
+### Features
+
+* parallelize page search ([#24](https://github.com/rpidanny/darwin/issues/24)) ([ba36b53](https://github.com/rpidanny/darwin/commit/ba36b53a56d9b1cdd5f2d5634da66f37fa4ecda5))
+
 ## [1.7.0](https://github.com/rpidanny/darwin/compare/v1.6.0...v1.7.0) (2024-06-13)
 
 ### Features
