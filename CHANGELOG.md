@@ -1,3 +1,9 @@
+## [1.10.0](https://github.com/rpidanny/darwin/compare/v1.9.1...v1.10.0) (2024-06-13)
+
+### Features
+
+* add ignore captcha flag ([#27](https://github.com/rpidanny/darwin/issues/27)) ([fd12cfe](https://github.com/rpidanny/darwin/commit/fd12cfe19eb8b2d3f6da49735d719eba47bc224b))
+
 ## [1.9.1](https://github.com/rpidanny/darwin/compare/v1.9.0...v1.9.1) (2024-06-13)
 
 ### Bug Fixes
