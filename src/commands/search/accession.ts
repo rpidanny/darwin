@@ -7,7 +7,7 @@ import { IoService } from '../../services/io/io.js'
 import { SearchService } from '../../services/search/search.service.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
-  private webClient!: Odysseus
+  private odysseus!: Odysseus
   private scholar!: GoogleScholar
   private searchService!: SearchService
   private ioService!: IoService
@@ -28,10 +28,9 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   static flags = {
-    maxResults: oclif.Flags.integer({
-      char: 'm',
-      name: 'max-results',
-      summary: 'The maximum number of papers with accession numbers to search for',
+    count: oclif.Flags.integer({
+      char: 'c',
+      summary: 'The minimum number of papers with accession numbers to search for',
       required: false,
       default: 10,
     }),
@@ -60,20 +59,21 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
     const { headless } = this.flags
 
-    this.webClient = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
-    this.scholar = new GoogleScholar(this.webClient, this.logger)
+    this.odysseus = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
+    await this.odysseus.init()
+    this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(
-      this.scholar,
-      this.webClient,
-      this.ioService,
-      this.logger,
-    )
+    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+  }
+
+  protected async finally(error: Error | undefined): Promise<void> {
+    await super.finally(error)
+    await this.odysseus.close()
   }
 
   public async run(): Promise<string> {
-    const { maxResults, output, accessionNumberRegex } = this.flags
+    const { count, output, accessionNumberRegex } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
@@ -81,7 +81,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       keywords,
       new RegExp(accessionNumberRegex, 'g'),
       output,
-      maxResults,
+      count,
     )
 
     this.logger.info(`Papers exported to to ${outputPath}`)

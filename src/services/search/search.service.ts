@@ -15,8 +15,8 @@ export class SearchService {
     private readonly logger?: Quill,
   ) {}
 
-  public async searchPapers(keywords: string, maxItems: number = 20): Promise<PaperEntity[]> {
-    return this.fetchPapers<PaperEntity>(keywords, maxItems, async result => ({
+  public async searchPapers(keywords: string, minItemCount: number = 20): Promise<PaperEntity[]> {
+    return this.fetchPapers<PaperEntity>(keywords, minItemCount, async result => ({
       title: result.title,
       authors: result.authors.map(author => author.name),
       url: result.url,
@@ -31,9 +31,9 @@ export class SearchService {
   public async searchPapersWithAccessionNumbers(
     keywords: string,
     regex: RegExp,
-    maxItems: number = 20,
+    minItemCount: number = 20,
   ): Promise<PaperWithAccessionEntity[]> {
-    return this.fetchPapers<PaperWithAccessionEntity>(keywords, maxItems, async result => {
+    return this.fetchPapers<PaperWithAccessionEntity>(keywords, minItemCount, async result => {
       if (!result || result.url == null) return null
 
       const accessionNumbers = await this.extractAccessionNumbers(result, regex)
@@ -57,17 +57,21 @@ export class SearchService {
 
   public async searchPapersWithBioProjectAccessionNumbers(
     keywords: string,
-    maxItems = 10,
+    minItemCount = 10,
   ): Promise<PaperWithAccessionEntity[]> {
-    return this.searchPapersWithAccessionNumbers(keywords, this.bioProjectAccessionRegex, maxItems)
+    return this.searchPapersWithAccessionNumbers(
+      keywords,
+      this.bioProjectAccessionRegex,
+      minItemCount,
+    )
   }
 
   public async exportPapersToCSV(
     keywords: string,
     filePath: string,
-    maxItems: number = 20,
+    minItemCount: number = 20,
   ): Promise<string> {
-    const papers = await this.searchPapers(keywords, maxItems)
+    const papers = await this.searchPapers(keywords, minItemCount)
     this.ioService.writeCsv(filePath, papers)
     return filePath
   }
@@ -76,9 +80,9 @@ export class SearchService {
     keywords: string,
     regex: RegExp,
     filePath: string,
-    maxItems: number = 20,
+    minItemCount: number = 20,
   ): Promise<string> {
-    const papers = await this.searchPapersWithAccessionNumbers(keywords, regex, maxItems)
+    const papers = await this.searchPapersWithAccessionNumbers(keywords, regex, minItemCount)
     this.ioService.writeCsv(filePath, papers)
     return filePath
   }
@@ -86,37 +90,37 @@ export class SearchService {
   public async exportPapersWithBioProjectAccessionNumbersToCSV(
     keywords: string,
     filePath: string,
-    maxItems: number = 20,
+    minItemCount: number = 20,
   ): Promise<string> {
     return this.exportPapersWithAccessionNumbersToCSV(
       keywords,
       this.bioProjectAccessionRegex,
       filePath,
-      maxItems,
+      minItemCount,
     )
   }
 
   private async fetchPapers<T>(
     keywords: string,
-    maxItems: number,
+    minItemCount: number,
     mapResult: (result: IGoogleScholarResult) => Promise<T | null>,
   ): Promise<T[]> {
-    this.logger?.info(`Searching papers for: ${keywords}. Max items: ${maxItems}`)
+    this.logger?.info(`Searching papers for: ${keywords}. Max items: ${minItemCount}`)
 
     const entities: T[] = []
     let response = await this.googleScholar.search(keywords)
 
-    while (response && (!maxItems || entities.length < maxItems)) {
-      for (const result of response.results) {
-        const entity = await mapResult(result)
-        if (entity) entities.push(entity)
-        if (maxItems && entities.length >= maxItems) break
-      }
+    while (response && (!minItemCount || entities.length < minItemCount)) {
+      await Promise.all(
+        response.results.map(async (result): Promise<void> => {
+          const entity = await mapResult(result)
+          if (entity) entities.push(entity)
+        }),
+      )
       if (!response.next) break
       response = await response.next()
     }
 
-    await this.odysseus.close()
     return entities
   }
 

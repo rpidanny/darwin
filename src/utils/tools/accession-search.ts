@@ -14,14 +14,14 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
         keywords: z
           .string()
           .describe('The keywords to search for. Separate multiple keywords with spaces.'),
-        maxItems: z
+        count: z
           .number()
           .describe(
-            'The maximum number of papers with accession numbers to search for. Default is 5.',
+            'The minimum number of papers with accession numbers to search for. Default is 5.',
           )
           .default(5),
       }),
-      func: async ({ keywords, maxItems }): Promise<string> => {
+      func: async ({ keywords, count }): Promise<string> => {
         const cwd = process.cwd()
 
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
@@ -30,7 +30,7 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
         const outputFile = await this.searchService.exportPapersWithBioProjectAccessionNumbersToCSV(
           keywords,
           filePath,
-          maxItems,
+          count,
         )
         return `Papers has been exported to ${outputFile}. Return the local file path to the user as plain text. DON'T USE MARKDOWN.`
       },

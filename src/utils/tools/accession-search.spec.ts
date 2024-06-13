@@ -15,19 +15,19 @@ describe('PapersWithAccessionNumbersSearchTool', () => {
   it('should call searchService.exportPapersWithBioProjectAccessionNumbersToCSV', async () => {
     const tool = new PapersWithAccessionNumbersSearchTool(searchService)
     const keywords = 'keywords'
-    const maxItems = 5
+    const count = 5
 
     searchService.exportPapersWithBioProjectAccessionNumbersToCSV.mockResolvedValue(
       'outputFile.csv',
     )
 
-    const resp = await tool.func({ keywords, maxItems })
+    const resp = await tool.func({ keywords, count })
 
     expect(resp).toContain(`Papers has been exported to outputFile.csv`)
     expect(searchService.exportPapersWithBioProjectAccessionNumbersToCSV).toHaveBeenCalledWith(
       keywords,
       expect.stringContaining('papers-keywords-'),
-      maxItems,
+      count,
     )
   })
 })

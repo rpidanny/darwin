@@ -7,7 +7,7 @@ import { IoService } from '../../services/io/io.js'
 import { SearchService } from '../../services/search/search.service.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
-  private webClient!: Odysseus
+  private odysseus!: Odysseus
   private scholar!: GoogleScholar
   private searchService!: SearchService
   private ioService!: IoService
@@ -28,10 +28,9 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   static flags = {
-    maxResults: oclif.Flags.integer({
-      char: 'm',
-      name: 'max-results',
-      summary: 'Maximum number of results to return',
+    count: oclif.Flags.integer({
+      char: 'c',
+      summary: 'Minimum number of results to return',
       required: false,
       default: 10,
     }),
@@ -53,24 +52,25 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
 
     const { headless } = this.flags
 
-    this.webClient = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
-    this.scholar = new GoogleScholar(this.webClient, this.logger)
+    this.odysseus = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
+    await this.odysseus.init()
+    this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(
-      this.scholar,
-      this.webClient,
-      this.ioService,
-      this.logger,
-    )
+    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+  }
+
+  protected async finally(error: Error | undefined): Promise<void> {
+    await super.finally(error)
+    await this.odysseus.close()
   }
 
   public async run(): Promise<string> {
-    const { maxResults, output } = this.flags
+    const { count, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
-    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, maxResults)
+    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, count)
 
     this.logger.info(`Papers exported to to ${outputFile}`)
     return `Papers exported to to ${outputFile}`

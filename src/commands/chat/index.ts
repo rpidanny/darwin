@@ -11,6 +11,7 @@ import { SearchService } from '../../services/search/search.service.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
   service!: ChatService
+  odysseus!: Odysseus
 
   static summary =
     'Chat with Darwin. Can be used to instruct Darwin to do things in natural language.'
@@ -41,10 +42,11 @@ export default class Chat extends BaseCommand<typeof Chat> {
 
     const logger = includeAppLogs ? this.logger : undefined
 
-    const webClient = new Odysseus({ headless: false, waitOnCaptcha: true }, logger)
-    const scholar = new GoogleScholar(webClient, logger)
+    this.odysseus = new Odysseus({ headless: false, waitOnCaptcha: true }, logger)
+    await this.odysseus.init()
+    const scholar = new GoogleScholar(this.odysseus, logger)
     const ioService = new IoService()
-    const searchService = new SearchService(scholar, webClient, ioService, logger)
+    const searchService = new SearchService(scholar, this.odysseus, ioService, logger)
 
     const llm = new ChatOpenAI({
       apiKey: this.localConfig.openai.apiKey,
@@ -54,6 +56,11 @@ export default class Chat extends BaseCommand<typeof Chat> {
     const agent = new AutonomousAgent(llm, searchService)
 
     this.service = new ChatService(agent)
+  }
+
+  protected async finally(error: Error | undefined): Promise<void> {
+    await super.finally(error)
+    await this.odysseus.close()
   }
 
   public async run(): Promise<void> {
