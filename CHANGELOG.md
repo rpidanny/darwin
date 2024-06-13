@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/rpidanny/darwin/compare/v1.6.0...v1.7.0) (2024-06-13)
+
+### Features
+
+* sanitize text and add paperType ([#21](https://github.com/rpidanny/darwin/issues/21)) ([c5a36bc](https://github.com/rpidanny/darwin/commit/c5a36bc73fde03cf3a6f8b49daea561cfd864b94))
+
 ## [1.6.0](https://github.com/rpidanny/darwin/compare/v1.5.0...v1.6.0) (2024-06-13)
 
 ### Features
