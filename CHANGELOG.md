@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/rpidanny/darwin/compare/v1.8.0...v1.9.0) (2024-06-13)
+
+### Features
+
+* add init page content ([#25](https://github.com/rpidanny/darwin/issues/25)) ([bacc8d1](https://github.com/rpidanny/darwin/commit/bacc8d1a2eda1093b0bd2e45abd92ba517eee1aa))
+
 ## [1.8.0](https://github.com/rpidanny/darwin/compare/v1.7.0...v1.8.0) (2024-06-13)
 
 ### Features
