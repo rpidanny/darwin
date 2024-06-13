@@ -8,6 +8,7 @@ import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.js'
 import { IoService } from '../../services/io/io.js'
 import { SearchService } from '../../services/search/search.service.js'
+import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
   service!: ChatService
@@ -42,7 +43,10 @@ export default class Chat extends BaseCommand<typeof Chat> {
 
     const logger = includeAppLogs ? this.logger : undefined
 
-    this.odysseus = new Odysseus({ headless: false, waitOnCaptcha: true }, logger)
+    this.odysseus = new Odysseus(
+      { headless: false, waitOnCaptcha: true, initHtml: getInitPageContent() },
+      logger,
+    )
     await this.odysseus.init()
     const scholar = new GoogleScholar(this.odysseus, logger)
     const ioService = new IoService()
