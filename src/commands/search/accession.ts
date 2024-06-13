@@ -5,6 +5,7 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
 import { SearchService } from '../../services/search/search.service.js'
+import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
@@ -59,7 +60,10 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
     const { headless } = this.flags
 
-    this.odysseus = new Odysseus({ headless, waitOnCaptcha: true }, this.logger)
+    this.odysseus = new Odysseus(
+      { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
+      this.logger,
+    )
     await this.odysseus.init()
     this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
