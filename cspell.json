@@ -15,6 +15,7 @@
     "openai",
     "postpack",
     "posttest",
+    "PRJNA",
     "rpidanny",
     "vectorstore",
     "vectorstores"

@@ -8,7 +8,8 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
   constructor(private readonly searchService: SearchService) {
     super({
       name: 'papers-with-accession-numbers-search',
-      description: 'Search for papers that contain accession numbers given a list of keywords.',
+      description:
+        'Search for papers that contain BioProject accession numbers given a list of keywords.',
       schema: z.object({
         keywords: z
           .string()
@@ -26,7 +27,7 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
         const filePath = `${cwd}/${fileName}`
 
-        const outputFile = await this.searchService.exportPapersWithAccessionNumbersToCSV(
+        const outputFile = await this.searchService.exportPapersWithBioProjectAccessionNumbersToCSV(
           keywords,
           filePath,
           maxItems,

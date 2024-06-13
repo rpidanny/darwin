@@ -12,7 +12,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   private searchService!: SearchService
   private ioService!: IoService
 
-  static summary = 'Search for papers that contain accession numbers given a list of keywords.'
+  static summary = 'Search for papers that contain accession numbers.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -46,6 +46,13 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       required: false,
       default: false,
     }),
+    accessionNumberRegex: oclif.Flags.string({
+      char: 'r',
+      name: 'accession-number-regex',
+      summary: 'Regex to match accession numbers',
+      required: false,
+      default: 'PRJNA\\d+',
+    }),
   }
 
   async init(): Promise<void> {
@@ -66,12 +73,13 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<string> {
-    const { maxResults, output } = this.flags
+    const { maxResults, output, accessionNumberRegex } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
     const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
       keywords,
+      new RegExp(accessionNumberRegex, 'g'),
       output,
       maxResults,
     )

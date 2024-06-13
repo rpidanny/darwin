@@ -12,17 +12,19 @@ describe('PapersWithAccessionNumbersSearchTool', () => {
     expect(tool).toBeInstanceOf(DynamicStructuredTool)
   })
 
-  it('should call searchService.exportPapersWithAccessionNumbersToCSV', async () => {
+  it('should call searchService.exportPapersWithBioProjectAccessionNumbersToCSV', async () => {
     const tool = new PapersWithAccessionNumbersSearchTool(searchService)
     const keywords = 'keywords'
     const maxItems = 5
 
-    searchService.exportPapersWithAccessionNumbersToCSV.mockResolvedValue('outputFile.csv')
+    searchService.exportPapersWithBioProjectAccessionNumbersToCSV.mockResolvedValue(
+      'outputFile.csv',
+    )
 
     const resp = await tool.func({ keywords, maxItems })
 
     expect(resp).toContain(`Papers has been exported to outputFile.csv`)
-    expect(searchService.exportPapersWithAccessionNumbersToCSV).toHaveBeenCalledWith(
+    expect(searchService.exportPapersWithBioProjectAccessionNumbersToCSV).toHaveBeenCalledWith(
       keywords,
       expect.stringContaining('papers-keywords-'),
       maxItems,
