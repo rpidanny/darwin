@@ -46,12 +46,17 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       required: false,
       default: false,
     }),
-    accessionNumberRegex: oclif.Flags.string({
-      char: 'r',
-      name: 'accession-number-regex',
+    'accession-number-regex': oclif.Flags.string({
+      char: 'a',
       summary: 'Regex to match accession numbers',
       required: false,
       default: 'PRJNA\\d+',
+    }),
+    'skip-captcha': oclif.Flags.boolean({
+      char: 's',
+      summary: 'Weather to skip captcha or wait for the user to solve the captcha',
+      required: false,
+      default: false,
     }),
   }
 
@@ -73,19 +78,20 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
   protected async finally(error: Error | undefined): Promise<void> {
     await super.finally(error)
-    await this.odysseus.close()
+    await this.odysseus?.close()
   }
 
   public async run(): Promise<string> {
-    const { count, output, accessionNumberRegex } = this.flags
+    const { count, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
     const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
       keywords,
-      new RegExp(accessionNumberRegex, 'g'),
+      new RegExp(this.flags['accession-number-regex'], 'g'),
       output,
       count,
+      !this.flags['skip-captcha'],
     )
 
     this.logger.info(`Papers exported to to ${outputPath}`)
