@@ -36,7 +36,7 @@
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-not-found": "^3.2.1",
     "@rpidanny/google-scholar": "^1.2.0",
-    "@rpidanny/odysseus": "^2.1.1",
+    "@rpidanny/odysseus": "^2.1.2",
     "@rpidanny/quill": "^1.5.1",
     "@rpidanny/quill-hooks": "^1.0.1",
     "bottleneck": "^2.19.5",
