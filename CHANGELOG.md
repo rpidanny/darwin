@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/rpidanny/darwin/compare/v1.5.0...v1.6.0) (2024-06-13)
+
+### Features
+
+* add accession number regex flag ([#20](https://github.com/rpidanny/darwin/issues/20)) ([894c94e](https://github.com/rpidanny/darwin/commit/894c94eb17b9133ce48f88678defd5321f16c052))
+
 ## [1.5.0](https://github.com/rpidanny/darwin/compare/v1.4.0...v1.5.0) (2024-06-12)
 
 ### Features
