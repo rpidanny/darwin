@@ -1,4 +1,4 @@
-import { ISearchResponse } from '@rpidanny/google-scholar'
+import { ISearchResponse, PaperUrlType } from '@rpidanny/google-scholar'
 
 export function getSearchResponse(overrides?: Partial<ISearchResponse>): ISearchResponse {
   return {
@@ -7,8 +7,11 @@ export function getSearchResponse(overrides?: Partial<ISearchResponse>): ISearch
         title: 'CRISPR–Cas9 structures and mechanisms',
         url: 'https://www.annualreviews.org/doi/abs/10.1146/annurev-biophys-062215-010822',
         description:
-          '… and Cas9 orthologs have contributed greatly to our understanding of\n                    CRISPR–Cas9 \n                    mechanisms. In this review, we briefly explain the biology underlying\n                    CRISPR–Cas9 technology …',
-        paperUrl: 'https://www.annualreviews.org/doi/pdf/10.1146/annurev-biophys-062215-010822',
+          '… and Cas9 orthologs have contributed greatly to our understanding of CRISPR–Cas9 mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology …',
+        paper: {
+          type: PaperUrlType.PDF,
+          url: 'https://www.annualreviews.org/doi/pdf/10.1146/annurev-biophys-062215-010822',
+        },
         authors: [
           {
             name: 'F Jiang',

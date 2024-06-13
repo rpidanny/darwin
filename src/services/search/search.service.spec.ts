@@ -42,7 +42,8 @@ describe('SearchService', () => {
           url: result.url,
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
@@ -111,7 +112,8 @@ describe('SearchService', () => {
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
           description: result.description,
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
@@ -143,7 +145,8 @@ describe('SearchService', () => {
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
           description: result.description,
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
@@ -173,7 +176,8 @@ describe('SearchService', () => {
           url: result.url,
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
@@ -210,7 +214,8 @@ describe('SearchService', () => {
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
           description: result.description,
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
@@ -244,7 +249,8 @@ describe('SearchService', () => {
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
           description: result.description,
-          paperUrl: result.paperUrl,
+          paperUrl: result.paper.url,
+          paperType: result.paper.type,
         })),
       )
     })
