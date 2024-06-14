@@ -1,3 +1,9 @@
+## [1.12.1](https://github.com/rpidanny/darwin/compare/v1.12.0...v1.12.1) (2024-06-14)
+
+### Bug Fixes
+
+* **deps:** bump @oclif/core from 3.26.6 to 3.27.0 ([#4](https://github.com/rpidanny/darwin/issues/4)) ([38dfbf7](https://github.com/rpidanny/darwin/commit/38dfbf7ef0c72f9329b17552b24c0c6f3038863f))
+
 ## [1.12.0](https://github.com/rpidanny/darwin/compare/v1.11.0...v1.12.0) (2024-06-14)
 
 ### Features

@@ -23,4 +23,4 @@ DESCRIPTION
   Display help for darwin.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.1.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.2/src/commands/help.ts)_
