@@ -4,6 +4,7 @@ import { Quill } from '@rpidanny/quill'
 import { mock } from 'jest-mock-extended'
 
 import { getSearchResponse } from '../../../test/fixtures/google-scholar'
+import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
 import { SearchService } from './search.service'
 
@@ -11,12 +12,19 @@ describe('SearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const odysseusMock = mock<Odysseus>()
   const logger = mock<Quill>()
-  const ioService = mock<IoService>()
+  const mockCsvWriter = mock<CsvStreamWriter>()
+  const ioService = mock<IoService>({
+    getCsvStreamWriter: jest.fn().mockResolvedValue(mockCsvWriter),
+  })
 
   let service: SearchService
 
   beforeEach(() => {
     service = new SearchService(googleScholarMock, odysseusMock, ioService, logger)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   describe('searchPapers', () => {
@@ -181,24 +189,24 @@ describe('SearchService', () => {
       }
 
       googleScholarMock.search.mockResolvedValue(resp)
-      ioService.writeCsv.mockResolvedValue()
 
       const filePath = await service.exportPapersToCSV('some keywords', 'file.csv')
 
       expect(filePath).toBe('file.csv')
-      expect(ioService.writeCsv).toHaveBeenCalledWith(
-        'file.csv',
-        resp.results.map(result => ({
+      expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
+      resp.results.forEach((result, idx) => {
+        expect(mockCsvWriter.write).toHaveBeenNthCalledWith(idx + 1, {
           title: result.title,
           authors: result.authors.map(author => author.name),
-          description: result.description,
           url: result.url,
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
+          description: result.description,
           paperUrl: result.paper.url,
           paperType: result.paper.type,
-        })),
-      )
+        })
+      })
+      expect(mockCsvWriter.end).toHaveBeenCalled()
     })
   })
 
@@ -213,8 +221,10 @@ describe('SearchService', () => {
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
       }
 
+      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
+
+      odysseusMock.getContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
-      ioService.writeCsv.mockResolvedValue()
 
       const filePath = await service.exportPapersWithAccessionNumbersToCSV(
         'some keywords',
@@ -223,9 +233,10 @@ describe('SearchService', () => {
       )
 
       expect(filePath).toBe('file.csv')
-      expect(ioService.writeCsv).toHaveBeenCalledWith(
-        'file.csv',
-        resp.results.map(result => ({
+      expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
+      expect(mockCsvWriter.write).toHaveBeenCalledTimes(resp.results.length)
+      resp.results.map((result, idx) => {
+        expect(mockCsvWriter.write).toHaveBeenNthCalledWith(idx + 1, {
           title: result.title,
           authors: result.authors.map(author => author.name),
           url: result.url,
@@ -235,8 +246,8 @@ describe('SearchService', () => {
           description: result.description,
           paperUrl: result.paper.url,
           paperType: result.paper.type,
-        })),
-      )
+        })
+      })
     })
   })
 
@@ -249,8 +260,10 @@ describe('SearchService', () => {
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
       }
 
+      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
+
+      odysseusMock.getContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
-      ioService.writeCsv.mockResolvedValue()
 
       const filePath = await service.exportPapersWithBioProjectAccessionNumbersToCSV(
         'some keywords',
@@ -258,9 +271,10 @@ describe('SearchService', () => {
       )
 
       expect(filePath).toBe('file.csv')
-      expect(ioService.writeCsv).toHaveBeenCalledWith(
-        'file.csv',
-        resp.results.map(result => ({
+      expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
+      expect(mockCsvWriter.write).toHaveBeenCalledTimes(resp.results.length)
+      resp.results.map((result, idx) => {
+        expect(mockCsvWriter.write).toHaveBeenNthCalledWith(idx + 1, {
           title: result.title,
           authors: result.authors.map(author => author.name),
           url: result.url,
@@ -270,8 +284,8 @@ describe('SearchService', () => {
           description: result.description,
           paperUrl: result.paper.url,
           paperType: result.paper.type,
-        })),
-      )
+        })
+      })
     })
   })
 })
