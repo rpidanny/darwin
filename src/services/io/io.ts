@@ -4,6 +4,8 @@ import fsExtra from 'fs-extra'
 import { json2csv } from 'json-2-csv'
 import path from 'path'
 
+import { CsvStreamWriter } from './csv-stream-writer.js'
+
 export class IoService {
   async writeFile(filePath: string, content: string | Buffer): Promise<void> {
     const dir = path.dirname(filePath)
@@ -53,5 +55,9 @@ export class IoService {
     const sizeInBytes = statsArray.reduce((total, size) => total + size, 0)
 
     return sizeInBytes
+  }
+
+  async getCsvStreamWriter(filePath: string): Promise<CsvStreamWriter> {
+    return new CsvStreamWriter(filePath)
   }
 }

@@ -1,3 +1,9 @@
+## [1.11.0](https://github.com/rpidanny/darwin/compare/v1.10.0...v1.11.0) (2024-06-14)
+
+### Features
+
+* use file steam to export data ([#29](https://github.com/rpidanny/darwin/issues/29)) ([ef9d249](https://github.com/rpidanny/darwin/commit/ef9d2496982e68ba44a327213ce25d193d6ea727))
+
 ## [1.10.0](https://github.com/rpidanny/darwin/compare/v1.9.1...v1.10.0) (2024-06-13)
 
 ### Features
