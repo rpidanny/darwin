@@ -12,17 +12,19 @@ Search for papers that contain accession numbers.
 
 ```
 USAGE
-  $ darwin search accession KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-h] [-r
-    <value>]
+  $ darwin search accession KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-h] [-a
+    <value>] [-s]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -c, --count=<value>                 [default: 10] The minimum number of papers with accession numbers to search for
-  -h, --headless                      Run in headless mode
-  -o, --output=<value>                (required) Output CSV file name/path
-  -r, --accessionNumberRegex=<value>  [default: PRJNA\d+] Regex to match accession numbers
+  -a, --accession-number-regex=<value>  [default: PRJNA\d+] Regex to match accession numbers. Defaults to BioProject
+                                        accession numbers.
+  -c, --count=<value>                   [default: 10] The minimum number of papers with accession numbers to search for
+  -h, --headless                        Run in headless mode
+  -o, --output=<value>                  (required) Output CSV file name/path
+  -s, --skip-captcha                    Weather to skip captcha or wait for the user to solve the captcha
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -34,7 +36,7 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  --log-level debug
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.9.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.10.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -62,4 +64,4 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv  --log-level debug
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.9.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.10.0/src/commands/search/papers.ts)_

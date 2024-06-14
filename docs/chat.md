@@ -24,4 +24,4 @@ EXAMPLES
   $ darwin chat
 ```
 
-_See code: [src/commands/chat/index.ts](https://github.com/rpidanny/darwin/blob/v1.9.1/src/commands/chat/index.ts)_
+_See code: [src/commands/chat/index.ts](https://github.com/rpidanny/darwin/blob/v1.10.0/src/commands/chat/index.ts)_

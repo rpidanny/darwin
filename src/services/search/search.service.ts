@@ -32,11 +32,12 @@ export class SearchService {
     keywords: string,
     regex: RegExp,
     minItemCount: number = 20,
+    waitOnCaptcha: boolean = true,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.fetchPapers<PaperWithAccessionEntity>(keywords, minItemCount, async result => {
       if (!result || result.url == null) return null
 
-      const accessionNumbers = await this.extractAccessionNumbers(result, regex)
+      const accessionNumbers = await this.extractAccessionNumbers(result, regex, waitOnCaptcha)
       if (!accessionNumbers.length) return null
 
       this.logger?.info(`Found accession numbers: ${accessionNumbers}`)
@@ -81,8 +82,14 @@ export class SearchService {
     regex: RegExp,
     filePath: string,
     minItemCount: number = 20,
+    waitOnCaptcha: boolean = true,
   ): Promise<string> {
-    const papers = await this.searchPapersWithAccessionNumbers(keywords, regex, minItemCount)
+    const papers = await this.searchPapersWithAccessionNumbers(
+      keywords,
+      regex,
+      minItemCount,
+      waitOnCaptcha,
+    )
     this.ioService.writeCsv(filePath, papers)
     return filePath
   }
@@ -91,12 +98,14 @@ export class SearchService {
     keywords: string,
     filePath: string,
     minItemCount: number = 20,
+    waitOnCaptcha: boolean = true,
   ): Promise<string> {
     return this.exportPapersWithAccessionNumbersToCSV(
       keywords,
       this.bioProjectAccessionRegex,
       filePath,
       minItemCount,
+      waitOnCaptcha,
     )
   }
 
@@ -127,9 +136,15 @@ export class SearchService {
   private async extractAccessionNumbers(
     result: IGoogleScholarResult,
     regex: RegExp,
+    waitOnCaptcha: boolean,
   ): Promise<string[]> {
-    const content = await this.odysseus.getContent(result.url)
-    const matches = content.match(regex)
-    return [...new Set(matches)]
+    try {
+      const content = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
+      const matches = content.match(regex)
+      return [...new Set(matches)]
+    } catch (error) {
+      this.logger?.error(`Error extracting accession numbers: ${(error as Error).message}`)
+      return []
+    }
   }
 }

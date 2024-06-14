@@ -117,6 +117,25 @@ describe('SearchService', () => {
         })),
       )
     })
+
+    it('should not throw error when failed to get accession number', async () => {
+      const mainResp = getSearchResponse()
+
+      const resp: ISearchResponse = {
+        ...mainResp,
+        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
+      }
+
+      odysseusMock.getContent.mockRejectedValue(new Error('Failed to get content'))
+      googleScholarMock.search.mockResolvedValue(resp)
+
+      await expect(
+        service.searchPapersWithAccessionNumbers('some keywords', regex),
+      ).resolves.toEqual([])
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error extracting accession numbers: Failed to get content',
+      )
+    })
   })
 
   describe('searchPapersWithBioProjectAccessionNumbers', () => {
