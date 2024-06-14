@@ -2,20 +2,23 @@ import fs from 'fs/promises'
 import path from 'path'
 import tmp from 'tmp'
 
+import { CsvStreamWriter } from './csv-stream-writer.js'
 import { IoService } from './io.js'
+
+tmp.setGracefulCleanup()
 
 describe('IoService', () => {
   let ioService: IoService
   let tempDir: tmp.DirResult
 
   beforeEach(() => {
-    ioService = new IoService()
     tempDir = tmp.dirSync({ unsafeCleanup: true })
+
+    ioService = new IoService()
   })
 
   afterEach(() => {
     jest.clearAllMocks()
-    tempDir.removeCallback()
   })
 
   it('should write a file', async () => {
@@ -107,5 +110,16 @@ describe('IoService', () => {
     const result = await ioService.doesFileExist(filePath)
 
     expect(result).toBe(false)
+  })
+
+  it('should return a CsvStreamWriter instance with file initialized', async () => {
+    const filePath = `${tempDir.name}/test.csv`
+
+    expect.assertions(2)
+
+    const result = await ioService.getCsvStreamWriter(filePath)
+
+    expect(result).toBeInstanceOf(CsvStreamWriter)
+    expect(result.filePath).toBe(filePath)
   })
 })
