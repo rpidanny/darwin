@@ -1,3 +1,13 @@
+## [1.12.0](https://github.com/rpidanny/darwin/compare/v1.11.0...v1.12.0) (2024-06-14)
+
+### Features
+
+* update quill ([32881a0](https://github.com/rpidanny/darwin/commit/32881a0a0695f3e77d623413f06c634072bc31e9))
+
+### Bug Fixes
+
+* quill ([be5d051](https://github.com/rpidanny/darwin/commit/be5d05186d26550671ab831134300585a4f928c0))
+
 ## [1.11.0](https://github.com/rpidanny/darwin/compare/v1.10.0...v1.11.0) (2024-06-14)
 
 ### Features
