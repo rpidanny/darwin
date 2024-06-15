@@ -30,7 +30,7 @@
   },
   "bugs": "https://github.com/rpidanny/darwin/issues",
   "dependencies": {
-    "@langchain/community": "^0.2.9",
+    "@langchain/community": "^0.2.11",
     "@langchain/openai": "^0.1.2",
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
