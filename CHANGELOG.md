@@ -1,3 +1,9 @@
+## [1.12.2](https://github.com/rpidanny/darwin/compare/v1.12.1...v1.12.2) (2024-06-20)
+
+### Bug Fixes
+
+* **deps:** bump @rpidanny/odysseus from 2.2.0 to 2.3.0 ([#32](https://github.com/rpidanny/darwin/issues/32)) ([8066e4e](https://github.com/rpidanny/darwin/commit/8066e4eb7ebb1343faeaa16406d426a998dc17ef))
+
 ## [1.12.1](https://github.com/rpidanny/darwin/compare/v1.12.0...v1.12.1) (2024-06-14)
 
 ### Bug Fixes
