@@ -23,7 +23,7 @@ $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.12.3 linux-x64 node-v20.14.0
+@rpidanny/darwin/1.12.4 linux-x64 node-v20.14.0
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
