@@ -6,7 +6,7 @@ import { mock } from 'jest-mock-extended'
 import { getSearchResponse } from '../../../test/fixtures/google-scholar'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
-import { AccessionSearchService } from './accession.search.service'
+import { AccessionSearchService } from './accession-search.service'
 
 describe('AccessionSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()

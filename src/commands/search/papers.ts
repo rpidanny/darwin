@@ -4,13 +4,13 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { SearchService } from '../../services/search/search.service.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   private odysseus!: Odysseus
   private scholar!: GoogleScholar
-  private searchService!: SearchService
+  private searchService!: PaperSearchService
   private ioService!: IoService
 
   static summary = 'Search research papers given a list of keywords.'
@@ -51,7 +51,13 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       summary:
         'Regex to find in the paper content. If found, the paper will be included in the CSV file. Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain either Holdemania or Colidextribacter.',
       required: false,
-      helpValue: 'Holdemania|Colidextribacter',
+      // helpValue: 'Holdemania|Colidextribacter',
+    }),
+    'skip-captcha': oclif.Flags.boolean({
+      char: 's',
+      summary: 'Weather to skip captcha or wait for the user to solve the captcha',
+      required: false,
+      default: false,
     }),
   }
 
@@ -68,12 +74,17 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+    this.searchService = new PaperSearchService(
+      this.scholar,
+      this.odysseus,
+      this.ioService,
+      this.logger,
+    )
   }
 
   protected async finally(error: Error | undefined): Promise<void> {
     await super.finally(error)
-    await this.odysseus.close()
+    await this.odysseus?.close()
   }
 
   public async run(): Promise<string> {
@@ -86,6 +97,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       output,
       count,
       this.flags['find-regex'],
+      !this.flags['skip-captcha'],
     )
 
     this.logger.info(`Papers exported to to ${outputFile}`)

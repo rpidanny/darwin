@@ -6,7 +6,7 @@ import { load } from 'cheerio'
 import { IoService } from '../io/io'
 import { PaperEntity } from './interfaces'
 
-export class SearchService {
+export class PaperSearchService {
   constructor(
     protected readonly googleScholar: GoogleScholar,
     protected readonly odysseus: Odysseus,
@@ -18,13 +18,14 @@ export class SearchService {
     keywords: string,
     minItemCount: number = 20,
     findRegex?: string,
+    waitOnCaptcha: boolean = true,
     onData?: (data: PaperEntity) => Promise<any>,
   ): Promise<PaperEntity[]> {
     return this.fetchPapers<PaperEntity>(keywords, minItemCount, async result => {
       let data
 
       if (findRegex) {
-        const items = await this.findInPaper(result, findRegex, true)
+        const items = await this.findInPaper(result, findRegex, waitOnCaptcha)
 
         if (!items.length) return null
 
@@ -44,12 +45,14 @@ export class SearchService {
     filePath: string,
     minItemCount: number = 20,
     findRegex?: string,
+    waitOnCaptcha: boolean = true,
   ): Promise<string> {
     const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
     await this.searchPapers(
       keywords,
       minItemCount,
       findRegex,
+      waitOnCaptcha,
       async data => await outputWriter.write(data),
     )
     await outputWriter.end()

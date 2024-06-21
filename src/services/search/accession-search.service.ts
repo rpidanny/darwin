@@ -2,11 +2,11 @@ import { GoogleScholar, IGoogleScholarResult } from '@rpidanny/google-scholar/di
 import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 
-import { IoService } from '../io/io'
-import { PaperWithAccessionEntity } from './interfaces'
-import { SearchService } from './search.service'
+import { IoService } from '../io/io.js'
+import { PaperWithAccessionEntity } from './interfaces.js'
+import { PaperSearchService } from './paper-search.service.js'
 
-export class AccessionSearchService extends SearchService {
+export class AccessionSearchService extends PaperSearchService {
   private bioProjectAccessionRegex = /PRJNA\d+/g
 
   constructor(

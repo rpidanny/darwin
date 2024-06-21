@@ -7,7 +7,7 @@ import { BaseCommand } from '../../base.command.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.js'
 import { IoService } from '../../services/io/io.js'
-import { AccessionSearchService } from '../../services/search/accession.search.service.js'
+import { AccessionSearchService } from '../../services/search/accession-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {

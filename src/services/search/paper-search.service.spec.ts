@@ -7,9 +7,9 @@ import { getSearchResponse } from '../../../test/fixtures/google-scholar'
 import { getExamplePaperHtmlContent } from '../../../test/fixtures/search.service'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
-import { SearchService } from './search.service'
+import { PaperSearchService } from './paper-search.service'
 
-describe('SearchService', () => {
+describe('PaperSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const odysseusMock = mock<Odysseus>()
   const logger = mock<Quill>()
@@ -18,10 +18,10 @@ describe('SearchService', () => {
     getCsvStreamWriter: jest.fn().mockResolvedValue(mockCsvWriter),
   })
 
-  let service: SearchService
+  let service: PaperSearchService
 
   beforeEach(() => {
-    service = new SearchService(googleScholarMock, odysseusMock, ioService, logger)
+    service = new PaperSearchService(googleScholarMock, odysseusMock, ioService, logger)
   })
 
   afterEach(() => {

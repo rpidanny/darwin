@@ -4,7 +4,7 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { AccessionSearchService } from '../../services/search/accession.search.service.js'
+import { AccessionSearchService } from '../../services/search/accession-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
@@ -14,6 +14,12 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   private ioService!: IoService
 
   static summary = 'Search for papers that contain accession numbers.'
+
+  static deprecationOptions?: oclif.Interfaces.Deprecation = {
+    message: 'Use `darwin search papers` command with  `--find-regex="PRJNA\\d+"` instead.',
+    version: '1.13.0',
+    to: 'search papers',
+  }
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
