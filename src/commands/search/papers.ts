@@ -13,7 +13,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   private searchService!: PaperSearchService
   private ioService!: IoService
 
-  static summary = 'Search research papers given a list of keywords.'
+  static summary =
+    'Search research papers given a set of keywords. Exports the list of papers to a CSV file.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -55,9 +56,11 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary: 'Weather to skip captcha or wait for the user to solve the captcha',
+      summary:
+        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
+      dependsOn: ['find-regex'],
     }),
   }
 

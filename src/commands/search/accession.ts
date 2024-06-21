@@ -60,7 +60,8 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary: 'Weather to skip captcha or wait for the user to solve the captcha',
+      summary:
+        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
