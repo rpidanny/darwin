@@ -90,10 +90,8 @@ export class AccessionSearchService extends PaperSearchService {
     waitOnCaptcha: boolean,
   ): Promise<string[]> {
     if (!result.url) return []
-
     try {
-      const htmlContent = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
-      const textContent = this.stripHtmlTags(htmlContent)
+      const textContent = await this.odysseus.getTextContent(result.url, undefined, waitOnCaptcha)
       const matches = textContent.match(regex)
       return [...new Set(matches)]
     } catch (error) {
