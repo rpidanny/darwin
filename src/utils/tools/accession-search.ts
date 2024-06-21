@@ -2,10 +2,10 @@ import { DynamicStructuredTool } from '@langchain/core/tools'
 import moment from 'moment'
 import { z } from 'zod'
 
-import { SearchService } from '../../services/search/search.service'
+import { AccessionSearchService } from '../../services/search/accession-search.service'
 
 export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool {
-  constructor(private readonly searchService: SearchService) {
+  constructor(private readonly searchService: AccessionSearchService) {
     super({
       name: 'papers-with-accession-numbers-search',
       description:

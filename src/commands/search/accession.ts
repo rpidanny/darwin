@@ -4,16 +4,22 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { SearchService } from '../../services/search/search.service.js'
+import { AccessionSearchService } from '../../services/search/accession-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
   private scholar!: GoogleScholar
-  private searchService!: SearchService
+  private searchService!: AccessionSearchService
   private ioService!: IoService
 
   static summary = 'Search for papers that contain accession numbers.'
+
+  static deprecationOptions?: oclif.Interfaces.Deprecation = {
+    message: 'Use `darwin search papers` command with  `--find-regex="PRJNA\\d+"` instead.',
+    version: '1.13.0',
+    to: 'search papers',
+  }
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -54,7 +60,8 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary: 'Weather to skip captcha or wait for the user to solve the captcha',
+      summary:
+        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
@@ -73,7 +80,12 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+    this.searchService = new AccessionSearchService(
+      this.scholar,
+      this.odysseus,
+      this.ioService,
+      this.logger,
+    )
   }
 
   protected async finally(error: Error | undefined): Promise<void> {

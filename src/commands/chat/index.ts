@@ -7,7 +7,7 @@ import { BaseCommand } from '../../base.command.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.js'
 import { IoService } from '../../services/io/io.js'
-import { SearchService } from '../../services/search/search.service.js'
+import { AccessionSearchService } from '../../services/search/accession-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
@@ -50,7 +50,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
     await this.odysseus.init()
     const scholar = new GoogleScholar(this.odysseus, logger)
     const ioService = new IoService()
-    const searchService = new SearchService(scholar, this.odysseus, ioService, logger)
+    const searchService = new AccessionSearchService(scholar, this.odysseus, ioService, logger)
 
     const llm = new ChatOpenAI({
       apiKey: this.localConfig.openai.apiKey,

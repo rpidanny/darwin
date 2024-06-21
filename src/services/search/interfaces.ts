@@ -7,6 +7,8 @@ export interface PaperEntity {
   citationCount: number
   citationUrl: string
   authors: string[]
+  foundItems?: string[]
+  sentencesOfInterest?: string[]
 }
 
 export interface PaperWithAccessionEntity extends PaperEntity {

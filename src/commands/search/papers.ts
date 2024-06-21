@@ -4,16 +4,17 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { SearchService } from '../../services/search/search.service.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   private odysseus!: Odysseus
   private scholar!: GoogleScholar
-  private searchService!: SearchService
+  private searchService!: PaperSearchService
   private ioService!: IoService
 
-  static summary = 'Search research papers given a list of keywords.'
+  static summary =
+    'Search research papers given a set of keywords. Exports the list of papers to a CSV file.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -46,6 +47,21 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
+    'find-regex': oclif.Flags.string({
+      char: 'f',
+      summary:
+        'Regex to find in the paper content. If found, the paper will be included in the CSV file. Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain either Holdemania or Colidextribacter.',
+      required: false,
+      // helpValue: 'Holdemania|Colidextribacter',
+    }),
+    'skip-captcha': oclif.Flags.boolean({
+      char: 's',
+      summary:
+        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
+      required: false,
+      default: false,
+      dependsOn: ['find-regex'],
+    }),
   }
 
   async init(): Promise<void> {
@@ -61,12 +77,17 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+    this.searchService = new PaperSearchService(
+      this.scholar,
+      this.odysseus,
+      this.ioService,
+      this.logger,
+    )
   }
 
   protected async finally(error: Error | undefined): Promise<void> {
     await super.finally(error)
-    await this.odysseus.close()
+    await this.odysseus?.close()
   }
 
   public async run(): Promise<string> {
@@ -74,7 +95,13 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
-    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, count)
+    const outputFile = await this.searchService.exportPapersToCSV(
+      keywords,
+      output,
+      count,
+      this.flags['find-regex'],
+      !this.flags['skip-captcha'],
+    )
 
     this.logger.info(`Papers exported to to ${outputFile}`)
     return `Papers exported to to ${outputFile}`
