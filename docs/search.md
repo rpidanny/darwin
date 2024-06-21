@@ -24,7 +24,8 @@ FLAGS
   -c, --count=<value>                   [default: 10] The minimum number of papers with accession numbers to search for
   -h, --headless                        Run in headless mode
   -o, --output=<value>                  (required) Output CSV file name/path
-  -s, --skip-captcha                    Weather to skip captcha or wait for the user to solve the captcha
+  -s, --skip-captcha                    Weather to skip captcha on paper URLs or wait for the user to solve the captcha.
+                                        Google Scholar captcha still needs to be solved.
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -36,23 +37,29 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  --log-level debug
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.12.4/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.13.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
-Search research papers given a list of keywords.
+Search research papers given a set of keywords. Exports the list of papers to a CSV file.
 
 ```
 USAGE
-  $ darwin search papers KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-h]
+  $ darwin search papers KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-h] [-s
+    -f <value>]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -c, --count=<value>   [default: 10] Minimum number of results to return
-  -h, --headless        Run in headless mode
-  -o, --output=<value>  (required) Output CSV file name/path
+  -c, --count=<value>       [default: 10] Minimum number of results to return
+  -f, --find-regex=<value>  Regex to find in the paper content. If found, the paper will be included in the CSV file.
+                            Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain
+                            either Holdemania or Colidextribacter.
+  -h, --headless            Run in headless mode
+  -o, --output=<value>      (required) Output CSV file name/path
+  -s, --skip-captcha        Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google
+                            Scholar captcha still needs to be solved.
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -64,4 +71,4 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv  --log-level debug
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.12.4/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.13.0/src/commands/search/papers.ts)_

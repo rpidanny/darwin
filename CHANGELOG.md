@@ -1,3 +1,9 @@
+## [1.13.0](https://github.com/rpidanny/darwin/compare/v1.12.4...v1.13.0) (2024-06-21)
+
+### Features
+
+* **search:** add find-regex flag to only include papers that match the regex ([#36](https://github.com/rpidanny/darwin/issues/36)) ([f3be660](https://github.com/rpidanny/darwin/commit/f3be660200c5f9a50d400c838f0a0406ddb7d72d))
+
 ## [1.12.4](https://github.com/rpidanny/darwin/compare/v1.12.3...v1.12.4) (2024-06-20)
 
 ### Bug Fixes
