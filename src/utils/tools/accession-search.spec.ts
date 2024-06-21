@@ -1,11 +1,11 @@
 import { DynamicStructuredTool } from '@langchain/core/tools'
 import { mock } from 'jest-mock-extended'
 
-import { SearchService } from '../../services/search/search.service'
+import { AccessionSearchService } from '../../services/search/accession.search.service'
 import { PapersWithAccessionNumbersSearchTool } from './accession-search'
 
 describe('PapersWithAccessionNumbersSearchTool', () => {
-  const searchService = mock<SearchService>()
+  const searchService = mock<AccessionSearchService>()
 
   it('should create a new instance of DynamicStructuredTool', () => {
     const tool = new PapersWithAccessionNumbersSearchTool(searchService)

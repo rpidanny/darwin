@@ -4,13 +4,13 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { IoService } from '../../services/io/io.js'
-import { SearchService } from '../../services/search/search.service.js'
+import { AccessionSearchService } from '../../services/search/accession.search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
   private scholar!: GoogleScholar
-  private searchService!: SearchService
+  private searchService!: AccessionSearchService
   private ioService!: IoService
 
   static summary = 'Search for papers that contain accession numbers.'
@@ -73,7 +73,12 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     this.scholar = new GoogleScholar(this.odysseus, this.logger)
     this.ioService = new IoService()
 
-    this.searchService = new SearchService(this.scholar, this.odysseus, this.ioService, this.logger)
+    this.searchService = new AccessionSearchService(
+      this.scholar,
+      this.odysseus,
+      this.ioService,
+      this.logger,
+    )
   }
 
   protected async finally(error: Error | undefined): Promise<void> {

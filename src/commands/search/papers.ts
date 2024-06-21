@@ -46,6 +46,13 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
+    'find-regex': oclif.Flags.string({
+      char: 'f',
+      summary:
+        'Regex to find in the paper content. If found, the paper will be included in the CSV file. Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain either Holdemania or Colidextribacter.',
+      required: false,
+      helpValue: 'Holdemania|Colidextribacter',
+    }),
   }
 
   async init(): Promise<void> {
@@ -74,7 +81,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
-    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, count)
+    const outputFile = await this.searchService.exportPapersToCSV(
+      keywords,
+      output,
+      count,
+      this.flags['find-regex'],
+    )
 
     this.logger.info(`Papers exported to to ${outputFile}`)
     return `Papers exported to to ${outputFile}`

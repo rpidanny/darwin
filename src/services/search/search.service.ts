@@ -1,111 +1,62 @@
 import { GoogleScholar, IGoogleScholarResult } from '@rpidanny/google-scholar/dist'
 import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
+import { load } from 'cheerio'
 
 import { IoService } from '../io/io'
-import { PaperEntity, PaperWithAccessionEntity } from './interfaces'
+import { PaperEntity } from './interfaces'
 
 export class SearchService {
-  private bioProjectAccessionRegex = /PRJNA\d+/g
-
   constructor(
-    private readonly googleScholar: GoogleScholar,
-    private readonly odysseus: Odysseus,
-    private readonly ioService: IoService,
-    private readonly logger?: Quill,
+    protected readonly googleScholar: GoogleScholar,
+    protected readonly odysseus: Odysseus,
+    protected readonly ioService: IoService,
+    protected readonly logger?: Quill,
   ) {}
 
   public async searchPapers(
     keywords: string,
     minItemCount: number = 20,
+    findRegex?: string,
     onData?: (data: PaperEntity) => Promise<any>,
   ): Promise<PaperEntity[]> {
     return this.fetchPapers<PaperEntity>(keywords, minItemCount, async result => {
-      const data = this.mapResultToPaperEntity(result)
+      let data
+
+      if (findRegex) {
+        const items = await this.findInPaper(result, findRegex, true)
+
+        if (!items.length) return null
+
+        this.logger?.debug(`Found search keywords: ${items}`)
+        data = this.mapResultToPaperEntity(result, items)
+      } else {
+        data = this.mapResultToPaperEntity(result)
+      }
+
       if (onData) await onData(data)
       return data
     })
-  }
-
-  public async searchPapersWithAccessionNumbers(
-    keywords: string,
-    regex: RegExp,
-    minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
-    onData?: (data: PaperWithAccessionEntity) => Promise<any>,
-  ): Promise<PaperWithAccessionEntity[]> {
-    return this.fetchPapers<PaperWithAccessionEntity>(keywords, minItemCount, async result => {
-      if (!result || !result.url) return null
-      const accessionNumbers = await this.extractAccessionNumbers(result, regex, waitOnCaptcha)
-      if (!accessionNumbers.length) return null
-      this.logger?.info(`Found accession numbers: ${accessionNumbers}`)
-      const data = this.mapResultToPaperWithAccessionEntity(result, accessionNumbers)
-      if (onData) await onData(data)
-      return data
-    })
-  }
-
-  public async searchPapersWithBioProjectAccessionNumbers(
-    keywords: string,
-    minItemCount = 10,
-    waitOnCaptcha: boolean = true,
-    onData?: (data: PaperWithAccessionEntity) => Promise<any>,
-  ): Promise<PaperWithAccessionEntity[]> {
-    return this.searchPapersWithAccessionNumbers(
-      keywords,
-      this.bioProjectAccessionRegex,
-      minItemCount,
-      waitOnCaptcha,
-      onData,
-    )
   }
 
   public async exportPapersToCSV(
     keywords: string,
     filePath: string,
     minItemCount: number = 20,
+    findRegex?: string,
   ): Promise<string> {
     const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
-    await this.searchPapers(keywords, minItemCount, async data => await outputWriter.write(data))
-    await outputWriter.end()
-    return filePath
-  }
-
-  public async exportPapersWithAccessionNumbersToCSV(
-    keywords: string,
-    regex: RegExp,
-    filePath: string,
-    minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
-  ): Promise<string> {
-    const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
-    await this.searchPapersWithAccessionNumbers(
+    await this.searchPapers(
       keywords,
-      regex,
       minItemCount,
-      waitOnCaptcha,
+      findRegex,
       async data => await outputWriter.write(data),
     )
     await outputWriter.end()
     return filePath
   }
 
-  public async exportPapersWithBioProjectAccessionNumbersToCSV(
-    keywords: string,
-    filePath: string,
-    minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
-  ): Promise<string> {
-    return this.exportPapersWithAccessionNumbersToCSV(
-      keywords,
-      this.bioProjectAccessionRegex,
-      filePath,
-      minItemCount,
-      waitOnCaptcha,
-    )
-  }
-
-  private async fetchPapers<T>(
+  protected async fetchPapers<T>(
     keywords: string,
     minItemCount: number,
     mapResult: (result: IGoogleScholarResult) => Promise<T | null>,
@@ -126,22 +77,30 @@ export class SearchService {
     return entities
   }
 
-  private async extractAccessionNumbers(
+  protected stripHtmlTags(text: string): string {
+    const $ = load(text)
+    return $.text().replace(/\s+/g, ' ').trim()
+  }
+
+  private async findInPaper(
     result: IGoogleScholarResult,
-    regex: RegExp,
+    findRegex: string,
     waitOnCaptcha: boolean,
   ): Promise<string[]> {
+    if (!result.url) return []
     try {
-      const content = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
-      const matches = content.match(regex)
+      const htmlContent = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
+      const textContent = this.stripHtmlTags(htmlContent)
+      const regex = new RegExp(findRegex, 'gi')
+      const matches = textContent.match(regex)
       return [...new Set(matches)]
     } catch (error) {
-      this.logger?.error(`Error extracting accession numbers: ${(error as Error).message}`)
+      this.logger?.error(`Error extracting filter keywords: ${(error as Error).message}`)
       return []
     }
   }
 
-  private mapResultToPaperEntity(result: IGoogleScholarResult): PaperEntity {
+  private mapResultToPaperEntity(result: IGoogleScholarResult, foundItems?: string[]): PaperEntity {
     return {
       title: result.title,
       authors: result.authors.map(author => author.name),
@@ -151,23 +110,7 @@ export class SearchService {
       citationUrl: result.citation.url ?? '',
       citationCount: result.citation.count,
       description: result.description,
-    }
-  }
-
-  private mapResultToPaperWithAccessionEntity(
-    result: IGoogleScholarResult,
-    accessionNumbers: string[],
-  ): PaperWithAccessionEntity {
-    return {
-      title: result.title,
-      accessionNumbers,
-      authors: result.authors.map(author => author.name),
-      url: result.url,
-      paperUrl: result.paper.url,
-      paperType: result.paper.type,
-      citationUrl: result.citation.url ?? '',
-      citationCount: result.citation.count,
-      description: result.description,
+      foundItems,
     }
   }
 }

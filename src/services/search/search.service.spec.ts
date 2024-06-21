@@ -4,6 +4,7 @@ import { Quill } from '@rpidanny/quill'
 import { mock } from 'jest-mock-extended'
 
 import { getSearchResponse } from '../../../test/fixtures/google-scholar'
+import { getExamplePaperHtmlContent } from '../../../test/fixtures/search.service'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
 import { SearchService } from './search.service'
@@ -90,90 +91,34 @@ describe('SearchService', () => {
 
       expect(entities).toHaveLength(6)
     })
-  })
 
-  describe('searchPapersWithAccessionNumbers', () => {
-    const regex = new RegExp('PRJNA\\d+', 'g')
-
-    it('should search for papers with accession numbers', async () => {
+    it('should filter papers based on the findRegex', async () => {
       const mainResp = getSearchResponse()
 
       const resp: ISearchResponse = {
         ...mainResp,
-        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
+        results: [...mainResp.results, ...mainResp.results],
+        next: null,
       }
 
-      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
-
-      odysseusMock.getContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
+      odysseusMock.getContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      odysseusMock.getContent.mockResolvedValue(getExamplePaperHtmlContent('test', 'some-content'))
 
-      const entities = await service.searchPapersWithAccessionNumbers('some keywords', regex)
+      const entities = await service.searchPapers('some keywords', 10, 'cas9')
 
-      expect(entities).toHaveLength(3)
+      expect(entities).toHaveLength(1)
       expect(entities).toEqual(
-        resp.results.map(result => ({
+        [resp.results[0]].map(result => ({
           title: result.title,
           authors: result.authors.map(author => author.name),
+          description: result.description,
           url: result.url,
-          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
-          description: result.description,
           paperUrl: result.paper.url,
           paperType: result.paper.type,
-        })),
-      )
-    })
-
-    it('should not throw error when failed to get accession number', async () => {
-      const mainResp = getSearchResponse()
-
-      const resp: ISearchResponse = {
-        ...mainResp,
-        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
-      }
-
-      odysseusMock.getContent.mockRejectedValue(new Error('Failed to get content'))
-      googleScholarMock.search.mockResolvedValue(resp)
-
-      await expect(
-        service.searchPapersWithAccessionNumbers('some keywords', regex),
-      ).resolves.toEqual([])
-      expect(logger.error).toHaveBeenCalledWith(
-        'Error extracting accession numbers: Failed to get content',
-      )
-    })
-  })
-
-  describe('searchPapersWithBioProjectAccessionNumbers', () => {
-    it('should search for papers with accession numbers', async () => {
-      const mainResp = getSearchResponse()
-
-      const resp: ISearchResponse = {
-        ...mainResp,
-        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
-      }
-
-      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
-
-      odysseusMock.getContent.mockResolvedValue(content)
-      googleScholarMock.search.mockResolvedValue(resp)
-
-      const entities = await service.searchPapersWithBioProjectAccessionNumbers('some keywords')
-
-      expect(entities).toHaveLength(3)
-      expect(entities).toEqual(
-        resp.results.map(result => ({
-          title: result.title,
-          authors: result.authors.map(author => author.name),
-          url: result.url,
-          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
-          description: result.description,
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
+          foundItems: ['Cas9'],
         })),
       )
     })
@@ -208,12 +153,8 @@ describe('SearchService', () => {
       })
       expect(mockCsvWriter.end).toHaveBeenCalled()
     })
-  })
 
-  describe('exportPapersWithAccessionNumbersToCSV', () => {
-    const regex = /PRJNA[0-9]{6}/g
-
-    it('should export papers with accession numbers to CSV', async () => {
+    it('should export papers to CSV while filtering papers when findRegex is provided', async () => {
       const mainResp = getSearchResponse()
 
       const resp: ISearchResponse = {
@@ -221,71 +162,27 @@ describe('SearchService', () => {
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
       }
 
-      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
-
-      odysseusMock.getContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
+      odysseusMock.getContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      odysseusMock.getContent.mockResolvedValue(getExamplePaperHtmlContent('test', 'some-content'))
 
-      const filePath = await service.exportPapersWithAccessionNumbersToCSV(
-        'some keywords',
-        regex,
-        'file.csv',
-      )
+      const filePath = await service.exportPapersToCSV('some keywords', 'file.csv', 10, 'cas9')
 
       expect(filePath).toBe('file.csv')
       expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
-      expect(mockCsvWriter.write).toHaveBeenCalledTimes(resp.results.length)
-      resp.results.map((result, idx) => {
-        expect(mockCsvWriter.write).toHaveBeenNthCalledWith(idx + 1, {
-          title: result.title,
-          authors: result.authors.map(author => author.name),
-          url: result.url,
-          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
-          description: result.description,
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
-        })
+      expect(mockCsvWriter.write).toHaveBeenCalledTimes(1)
+      expect(mockCsvWriter.write).toHaveBeenNthCalledWith(1, {
+        title: resp.results[0].title,
+        authors: resp.results[0].authors.map(author => author.name),
+        url: resp.results[0].url,
+        citationCount: resp.results[0].citation.count,
+        citationUrl: resp.results[0].citation.url ?? '',
+        description: resp.results[0].description,
+        paperUrl: resp.results[0].paper.url,
+        paperType: resp.results[0].paper.type,
+        foundItems: ['Cas9'],
       })
-    })
-  })
-
-  describe('exportPapersWithBioProjectAccessionNumbersToCSV', () => {
-    it('should export papers with accession numbers to CSV', async () => {
-      const mainResp = getSearchResponse()
-
-      const resp: ISearchResponse = {
-        ...mainResp,
-        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
-      }
-
-      const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
-
-      odysseusMock.getContent.mockResolvedValue(content)
-      googleScholarMock.search.mockResolvedValue(resp)
-
-      const filePath = await service.exportPapersWithBioProjectAccessionNumbersToCSV(
-        'some keywords',
-        'file.csv',
-      )
-
-      expect(filePath).toBe('file.csv')
-      expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
-      expect(mockCsvWriter.write).toHaveBeenCalledTimes(resp.results.length)
-      resp.results.map((result, idx) => {
-        expect(mockCsvWriter.write).toHaveBeenNthCalledWith(idx + 1, {
-          title: result.title,
-          authors: result.authors.map(author => author.name),
-          url: result.url,
-          accessionNumbers: ['PRJNA000001', 'PRJNA000002', 'PRJNA000003'],
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
-          description: result.description,
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
-        })
-      })
+      expect(mockCsvWriter.end).toHaveBeenCalled()
     })
   })
 })
