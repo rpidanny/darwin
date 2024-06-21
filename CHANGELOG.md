@@ -1,3 +1,9 @@
+## [1.14.0](https://github.com/rpidanny/darwin/compare/v1.13.0...v1.14.0) (2024-06-21)
+
+### Features
+
+* replace custom html to text with odyseus.getTextContent ([#37](https://github.com/rpidanny/darwin/issues/37)) ([fb8e954](https://github.com/rpidanny/darwin/commit/fb8e954fdcf0125c146205e5776068dec5fc6993))
+
 ## [1.13.0](https://github.com/rpidanny/darwin/compare/v1.12.4...v1.13.0) (2024-06-21)
 
 ### Features
