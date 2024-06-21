@@ -1,7 +1,7 @@
 import { DynamicStructuredTool } from '@langchain/core/tools'
 import { mock } from 'jest-mock-extended'
 
-import { AccessionSearchService } from '../../services/search/accession.search.service'
+import { AccessionSearchService } from '../../services/search/accession-search.service'
 import { PapersWithAccessionNumbersSearchTool } from './accession-search'
 
 describe('PapersWithAccessionNumbersSearchTool', () => {
