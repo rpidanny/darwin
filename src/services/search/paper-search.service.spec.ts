@@ -102,8 +102,10 @@ describe('PaperSearchService', () => {
       }
 
       googleScholarMock.search.mockResolvedValue(resp)
-      odysseusMock.getContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
-      odysseusMock.getContent.mockResolvedValue(getExamplePaperHtmlContent('test', 'some-content'))
+      odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      odysseusMock.getTextContent.mockResolvedValue(
+        getExamplePaperHtmlContent('test', 'some-content'),
+      )
 
       const entities = await service.searchPapers('some keywords', 10, 'cas9')
 
@@ -163,8 +165,10 @@ describe('PaperSearchService', () => {
       }
 
       googleScholarMock.search.mockResolvedValue(resp)
-      odysseusMock.getContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
-      odysseusMock.getContent.mockResolvedValue(getExamplePaperHtmlContent('test', 'some-content'))
+      odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      odysseusMock.getTextContent.mockResolvedValue(
+        getExamplePaperHtmlContent('test', 'some-content'),
+      )
 
       const filePath = await service.exportPapersToCSV('some keywords', 'file.csv', 10, 'cas9')
 

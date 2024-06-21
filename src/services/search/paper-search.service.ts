@@ -1,7 +1,6 @@
 import { GoogleScholar, IGoogleScholarResult } from '@rpidanny/google-scholar/dist'
 import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
-import { load } from 'cheerio'
 
 import { IoService } from '../io/io'
 import { PaperEntity } from './interfaces'
@@ -80,11 +79,6 @@ export class PaperSearchService {
     return entities
   }
 
-  protected stripHtmlTags(text: string): string {
-    const $ = load(text)
-    return $.text().replace(/\s+/g, ' ').trim()
-  }
-
   private async findInPaper(
     result: IGoogleScholarResult,
     findRegex: string,
@@ -92,13 +86,12 @@ export class PaperSearchService {
   ): Promise<string[]> {
     if (!result.url) return []
     try {
-      const htmlContent = await this.odysseus.getContent(result.url, undefined, waitOnCaptcha)
-      const textContent = this.stripHtmlTags(htmlContent)
+      const textContent = await this.odysseus.getTextContent(result.url, undefined, waitOnCaptcha)
       const regex = new RegExp(findRegex, 'gi')
       const matches = textContent.match(regex)
       return [...new Set(matches)]
     } catch (error) {
-      this.logger?.error(`Error extracting filter keywords: ${(error as Error).message}`)
+      this.logger?.error(`Error extracting regex in paper: ${(error as Error).message}`)
       return []
     }
   }

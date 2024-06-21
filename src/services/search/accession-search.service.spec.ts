@@ -40,7 +40,7 @@ describe('AccessionSearchService', () => {
 
       const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
 
-      odysseusMock.getContent.mockResolvedValue(content)
+      odysseusMock.getTextContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
 
       const entities = await service.searchPapersWithAccessionNumbers('some keywords', regex)
@@ -69,7 +69,7 @@ describe('AccessionSearchService', () => {
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
       }
 
-      odysseusMock.getContent.mockRejectedValue(new Error('Failed to get content'))
+      odysseusMock.getTextContent.mockRejectedValue(new Error('Failed to get content'))
       googleScholarMock.search.mockResolvedValue(resp)
 
       await expect(
@@ -92,7 +92,7 @@ describe('AccessionSearchService', () => {
 
       const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
 
-      odysseusMock.getContent.mockResolvedValue(content)
+      odysseusMock.getTextContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
 
       const entities = await service.searchPapersWithBioProjectAccessionNumbers('some keywords')
@@ -127,7 +127,7 @@ describe('AccessionSearchService', () => {
 
       const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
 
-      odysseusMock.getContent.mockResolvedValue(content)
+      odysseusMock.getTextContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
 
       const filePath = await service.exportPapersWithAccessionNumbersToCSV(
@@ -166,7 +166,7 @@ describe('AccessionSearchService', () => {
 
       const content = 'PRJNA000001 PRJNA000002 PRJNA000003'
 
-      odysseusMock.getContent.mockResolvedValue(content)
+      odysseusMock.getTextContent.mockResolvedValue(content)
       googleScholarMock.search.mockResolvedValue(resp)
 
       const filePath = await service.exportPapersWithBioProjectAccessionNumbersToCSV(
