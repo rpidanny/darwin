@@ -1,3 +1,9 @@
+## [1.15.0](https://github.com/rpidanny/darwin/compare/v1.14.0...v1.15.0) (2024-06-22)
+
+### Features
+
+* add sentences of interest in search paper export ([#43](https://github.com/rpidanny/darwin/issues/43)) ([5acd59e](https://github.com/rpidanny/darwin/commit/5acd59e7be36e74510ed9df6e30bbba9b624e4b1))
+
 ## [1.14.0](https://github.com/rpidanny/darwin/compare/v1.13.0...v1.14.0) (2024-06-21)
 
 ### Features
