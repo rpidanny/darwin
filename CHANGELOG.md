@@ -1,3 +1,9 @@
+## [1.15.1](https://github.com/rpidanny/darwin/compare/v1.15.0...v1.15.1) (2024-06-22)
+
+### Bug Fixes
+
+* **deps:** bump langchain from 0.2.5 to 0.2.6 ([#38](https://github.com/rpidanny/darwin/issues/38)) ([9165f1c](https://github.com/rpidanny/darwin/commit/9165f1c4fd66f35d0ae7d1299d2475d1a4609701))
+
 ## [1.15.0](https://github.com/rpidanny/darwin/compare/v1.14.0...v1.15.0) (2024-06-22)
 
 ### Features
