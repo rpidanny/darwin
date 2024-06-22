@@ -6,10 +6,13 @@
   // words - list of words to be always considered correct
   "words": [
     "camelcase",
+    "Colidextribacter",
     "commitlint",
     "crispr",
+    "dialister",
     "Interspaced",
     "langchain",
+    "microbiome",
     "mocrobiome",
     "oclif",
     "Ollama",

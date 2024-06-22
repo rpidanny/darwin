@@ -121,6 +121,10 @@ describe('PaperSearchService', () => {
           paperUrl: result.paper.url,
           paperType: result.paper.type,
           foundItems: ['Cas9'],
+          sentencesOfInterest: [
+            'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
+            'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+          ],
         })),
       )
     })
@@ -185,6 +189,10 @@ describe('PaperSearchService', () => {
         paperUrl: resp.results[0].paper.url,
         paperType: resp.results[0].paper.type,
         foundItems: ['Cas9'],
+        sentencesOfInterest: [
+          'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
+          'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+        ],
       })
       expect(mockCsvWriter.end).toHaveBeenCalled()
     })

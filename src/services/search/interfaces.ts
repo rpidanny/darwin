@@ -14,3 +14,8 @@ export interface PaperEntity {
 export interface PaperWithAccessionEntity extends PaperEntity {
   accessionNumbers: string[]
 }
+
+export interface FoundItem {
+  text: string
+  sentences: string[]
+}

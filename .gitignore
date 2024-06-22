@@ -15,3 +15,5 @@ pnpm-lock.yaml
 coverage
 *.html
 *.csv
+
+data/
