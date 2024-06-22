@@ -3,7 +3,7 @@ import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 
 import { IoService } from '../io/io'
-import { PaperEntity } from './interfaces'
+import { FoundItem, PaperEntity } from './interfaces'
 
 export class PaperSearchService {
   constructor(
@@ -79,24 +79,43 @@ export class PaperSearchService {
     return entities
   }
 
+  private getSentence(text: string, index: number): string {
+    const start = text.lastIndexOf('.', index) + 1
+    const end = text.indexOf('.', index) + 1
+    return text.slice(start, end).trim()
+  }
+
   private async findInPaper(
     result: IGoogleScholarResult,
     findRegex: string,
     waitOnCaptcha: boolean,
-  ): Promise<string[]> {
+  ): Promise<FoundItem[]> {
     if (!result.url) return []
     try {
       const textContent = await this.odysseus.getTextContent(result.url, undefined, waitOnCaptcha)
       const regex = new RegExp(findRegex, 'gi')
-      const matches = textContent.match(regex)
-      return [...new Set(matches)]
+      const matches = textContent.matchAll(regex)
+
+      const foundItems = new Map<string, string[]>()
+
+      for (const match of matches) {
+        const sentence = this.getSentence(textContent, match.index)
+        const currentSentences = foundItems.get(match[0]) || []
+        currentSentences.push(sentence)
+        foundItems.set(match[0], currentSentences)
+      }
+
+      return Array.from(foundItems).map(([text, sentences]) => ({ text, sentences }))
     } catch (error) {
       this.logger?.error(`Error extracting regex in paper: ${(error as Error).message}`)
       return []
     }
   }
 
-  private mapResultToPaperEntity(result: IGoogleScholarResult, foundItems?: string[]): PaperEntity {
+  private mapResultToPaperEntity(
+    result: IGoogleScholarResult,
+    foundItems?: FoundItem[],
+  ): PaperEntity {
     return {
       title: result.title,
       authors: result.authors.map(author => author.name),
@@ -106,7 +125,8 @@ export class PaperSearchService {
       citationUrl: result.citation.url ?? '',
       citationCount: result.citation.count,
       description: result.description,
-      foundItems,
+      foundItems: foundItems?.map(item => item.text) ?? undefined,
+      sentencesOfInterest: foundItems?.map(item => item.sentences).flat() ?? undefined,
     }
   }
 }
