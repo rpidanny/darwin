@@ -1,3 +1,9 @@
+## [1.15.2](https://github.com/rpidanny/darwin/compare/v1.15.1...v1.15.2) (2024-06-22)
+
+### Bug Fixes
+
+* **deps:** bump @langchain/community from 0.2.12 to 0.2.13 ([#41](https://github.com/rpidanny/darwin/issues/41)) ([5067497](https://github.com/rpidanny/darwin/commit/50674974acdc778db39d09eb44268d8caa9aeee8))
+
 ## [1.15.1](https://github.com/rpidanny/darwin/compare/v1.15.0...v1.15.1) (2024-06-22)
 
 ### Bug Fixes
