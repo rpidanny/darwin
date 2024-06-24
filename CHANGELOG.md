@@ -1,3 +1,9 @@
+## [1.16.0](https://github.com/rpidanny/darwin/compare/v1.15.2...v1.16.0) (2024-06-24)
+
+### Features
+
+* add download papers command ([#44](https://github.com/rpidanny/darwin/issues/44)) ([cd5c98c](https://github.com/rpidanny/darwin/commit/cd5c98c658f497e7b5a7a2d2780a14f753ba8e84))
+
 ## [1.15.2](https://github.com/rpidanny/darwin/compare/v1.15.1...v1.15.2) (2024-06-22)
 
 ### Bug Fixes
