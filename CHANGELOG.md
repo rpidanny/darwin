@@ -1,3 +1,9 @@
+## [1.17.0](https://github.com/rpidanny/darwin/compare/v1.16.0...v1.17.0) (2024-06-24)
+
+### Features
+
+* **deps:** update quill and quill-hooks versioning ([#45](https://github.com/rpidanny/darwin/issues/45)) ([d953ea3](https://github.com/rpidanny/darwin/commit/d953ea3f6cf4f59672e48512c71df92d8810bf64))
+
 ## [1.16.0](https://github.com/rpidanny/darwin/compare/v1.15.2...v1.16.0) (2024-06-24)
 
 ### Features
