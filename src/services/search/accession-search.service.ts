@@ -22,8 +22,8 @@ export class AccessionSearchService extends PaperSearchService {
     keywords: string,
     regex: RegExp,
     minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
     onData?: (data: PaperWithAccessionEntity) => Promise<any>,
+    waitOnCaptcha: boolean = true,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.fetchPapers<PaperWithAccessionEntity>(keywords, minItemCount, async result => {
       const accessionNumbers = await this.extractAccessionNumbers(result, regex, waitOnCaptcha)
@@ -38,15 +38,15 @@ export class AccessionSearchService extends PaperSearchService {
   public async searchPapersWithBioProjectAccessionNumbers(
     keywords: string,
     minItemCount = 10,
-    waitOnCaptcha: boolean = true,
     onData?: (data: PaperWithAccessionEntity) => Promise<any>,
+    waitOnCaptcha: boolean = true,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.searchPapersWithAccessionNumbers(
       keywords,
       this.bioProjectAccessionRegex,
       minItemCount,
-      waitOnCaptcha,
       onData,
+      waitOnCaptcha,
     )
   }
 
@@ -62,8 +62,8 @@ export class AccessionSearchService extends PaperSearchService {
       keywords,
       regex,
       minItemCount,
-      waitOnCaptcha,
       async data => await outputWriter.write(data),
+      waitOnCaptcha,
     )
     await outputWriter.end()
     return filePath

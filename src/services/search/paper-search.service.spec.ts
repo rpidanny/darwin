@@ -107,7 +107,7 @@ describe('PaperSearchService', () => {
         getExamplePaperHtmlContent('test', 'some-content'),
       )
 
-      const entities = await service.searchPapers('some keywords', 10, 'cas9')
+      const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
 
       expect(entities).toHaveLength(1)
       expect(entities).toEqual(
