@@ -16,9 +16,9 @@ export class PaperSearchService {
   public async searchPapers(
     keywords: string,
     minItemCount: number = 20,
+    onData?: (data: PaperEntity) => Promise<any>,
     findRegex?: string,
     waitOnCaptcha: boolean = true,
-    onData?: (data: PaperEntity) => Promise<any>,
   ): Promise<PaperEntity[]> {
     return this.fetchPapers<PaperEntity>(keywords, minItemCount, async result => {
       let data
@@ -50,9 +50,9 @@ export class PaperSearchService {
     await this.searchPapers(
       keywords,
       minItemCount,
+      async data => await outputWriter.write(data),
       findRegex,
       waitOnCaptcha,
-      async data => await outputWriter.write(data),
     )
     await outputWriter.end()
     return filePath
@@ -66,14 +66,14 @@ export class PaperSearchService {
     this.logger?.info(`Searching papers for: ${keywords}. Max items: ${minItemCount}`)
     const entities: T[] = []
     let response = await this.googleScholar.search(keywords)
-    while (response && (!minItemCount || entities.length < minItemCount)) {
+    while (response) {
       await Promise.all(
         response.results.map(async (result): Promise<any> => {
           const entity = await mapResult(result)
           if (entity) entities.push(entity)
         }),
       )
-      if (!response.next) break
+      if (!response.next || entities.length >= minItemCount) break
       response = await response.next()
     }
     return entities
