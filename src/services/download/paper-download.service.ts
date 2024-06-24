@@ -13,7 +13,7 @@ export class PaperDownloadService {
 
   public async download(keywords: string, count: number, outputDir: string): Promise<string> {
     await this.paperSearchService.searchPapers(keywords, count, async paper => {
-      const filePath = `${outputDir}/${paper.title.replace(/ /g, '_')}.${paper.paperType}`
+      const filePath = `${outputDir}/${paper.title.replace(/[\s/]/g, '_')}.${paper.paperType}`
       if (paper.paperType === 'pdf') {
         await this.downloadPdf(paper.paperUrl, filePath)
       }
@@ -27,7 +27,7 @@ export class PaperDownloadService {
     const content = await got
       .get(url, {
         timeout: 30_000,
-        throwHttpErrors: true,
+        throwHttpErrors: false,
       })
       .buffer()
     await this.ioService.writeFile(filePath, content)
