@@ -81,7 +81,7 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
       this.logger,
     )
 
-    this.service = new PaperDownloadService(searchService, downloadService)
+    this.service = new PaperDownloadService(searchService, downloadService, this.logger)
   }
 
   protected async finally(error: Error | undefined): Promise<void> {
