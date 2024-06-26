@@ -87,7 +87,6 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    console.log('temp path', `${this.config.dataDir}/downloads/pdf`)
     const pdfService = new PdfService(
       {
         tempPath: `${this.config.dataDir}/downloads/pdf`,

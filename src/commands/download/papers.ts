@@ -62,7 +62,13 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(this.logger)
+    const pdfService = new PdfService(
+      {
+        tempPath: `${this.config.dataDir}/downloads/pdf`,
+      },
+      downloadService,
+      this.logger,
+    )
 
     const searchService = new PaperSearchService(
       {
