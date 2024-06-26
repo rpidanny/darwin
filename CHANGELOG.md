@@ -1,3 +1,9 @@
+## [1.18.0](https://github.com/rpidanny/darwin/compare/v1.17.0...v1.18.0) (2024-06-26)
+
+### Features
+
+* handle pdf ([#46](https://github.com/rpidanny/darwin/issues/46)) ([19c331c](https://github.com/rpidanny/darwin/commit/19c331cf90e020894e62bb0e7f67cd1a4fd7c33c)), closes [#19](https://github.com/rpidanny/darwin/issues/19)
+
 ## [1.17.0](https://github.com/rpidanny/darwin/compare/v1.16.0...v1.17.0) (2024-06-24)
 
 ### Features
