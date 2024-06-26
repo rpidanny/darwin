@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { readFile } from 'fs/promises'
 import { ensureFile } from 'fs-extra'
 import tmp from 'tmp'

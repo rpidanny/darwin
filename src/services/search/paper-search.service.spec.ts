@@ -1,4 +1,5 @@
-import { GoogleScholar, ISearchResponse } from '@rpidanny/google-scholar'
+import { jest } from '@jest/globals'
+import { GoogleScholar, ISearchResponse, PaperUrlType } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist'
 import { Quill } from '@rpidanny/quill'
 import { mock } from 'jest-mock-extended'
@@ -7,31 +8,53 @@ import { getSearchResponse } from '../../../test/fixtures/google-scholar'
 import { getExamplePaperHtmlContent } from '../../../test/fixtures/search.service'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
+import { PdfService } from '../pdf/pdf.service'
+import { IPaperSearchConfig } from './paper-search.config'
 import { PaperSearchService } from './paper-search.service'
 
 describe('PaperSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const odysseusMock = mock<Odysseus>()
+  const pdfServiceMock = mock<PdfService>()
   const logger = mock<Quill>()
-  const mockCsvWriter = mock<CsvStreamWriter>()
-  const ioService = mock<IoService>({
-    getCsvStreamWriter: jest.fn().mockResolvedValue(mockCsvWriter),
-  })
+  const mockConfig: IPaperSearchConfig = {
+    skipCaptcha: true,
+    processPdf: true,
+  }
 
+  let mockCsvWriter: CsvStreamWriter
+  let ioService: IoService
   let service: PaperSearchService
 
+  const mainResp = getSearchResponse()
+  const pdfPaperResult = {
+    ...mainResp.results[0],
+    paper: { type: PaperUrlType.PDF, url: 'http://example.com' },
+  }
+
   beforeEach(() => {
-    service = new PaperSearchService(googleScholarMock, odysseusMock, ioService, logger)
+    mockCsvWriter = mock<CsvStreamWriter>()
+    ioService = mock<IoService>({
+      getCsvStreamWriter: import.meta.jest.fn().mockResolvedValue(mockCsvWriter),
+    })
+
+    service = new PaperSearchService(
+      mockConfig,
+      googleScholarMock,
+      odysseusMock,
+      pdfServiceMock,
+      ioService,
+      logger,
+    )
   })
 
   afterEach(() => {
+    jest.resetAllMocks()
     jest.clearAllMocks()
   })
 
   describe('searchPapers', () => {
     it('should search for papers', async () => {
-      const mainResp = getSearchResponse()
-
       const resp: ISearchResponse = {
         ...mainResp,
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
@@ -58,8 +81,6 @@ describe('PaperSearchService', () => {
     })
 
     it('should stop searching when minItemCount is reached', async () => {
-      const mainResp = getSearchResponse()
-
       const resp: ISearchResponse = {
         ...mainResp,
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
@@ -74,7 +95,6 @@ describe('PaperSearchService', () => {
     })
 
     it('should continue searching when minItemCount is not reached', async () => {
-      const mainResp = getSearchResponse()
       const results = [...mainResp.results, ...mainResp.results, ...mainResp.results]
 
       const resp: ISearchResponse = {
@@ -84,7 +104,7 @@ describe('PaperSearchService', () => {
 
       googleScholarMock.search.mockResolvedValue({
         ...resp,
-        next: jest.fn().mockResolvedValue(resp),
+        next: import.meta.jest.fn().mockResolvedValue(resp),
       })
 
       const entities = await service.searchPapers('some keywords', 10)
@@ -93,17 +113,15 @@ describe('PaperSearchService', () => {
     })
 
     it('should filter papers based on the findRegex', async () => {
-      const mainResp = getSearchResponse()
-
       const resp: ISearchResponse = {
         ...mainResp,
-        results: [...mainResp.results, ...mainResp.results],
+        results: [pdfPaperResult, pdfPaperResult],
         next: null,
       }
 
       googleScholarMock.search.mockResolvedValue(resp)
-      odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
-      odysseusMock.getTextContent.mockResolvedValue(
+      pdfServiceMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      pdfServiceMock.getTextContent.mockResolvedValue(
         getExamplePaperHtmlContent('test', 'some-content'),
       )
 
@@ -128,12 +146,134 @@ describe('PaperSearchService', () => {
         })),
       )
     })
+
+    it('should call odysseus and pdfService for html and pdf papers', async () => {
+      const resp: ISearchResponse = {
+        ...mainResp,
+        results: [...mainResp.results, pdfPaperResult],
+        next: null,
+      }
+
+      googleScholarMock.search.mockResolvedValue(resp)
+      pdfServiceMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+
+      const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
+
+      expect(entities).toHaveLength(2)
+      expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
+      expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
+    })
+
+    describe('getPaperContent Fallback', () => {
+      it('should fallback to web content when pdf processing fails', async () => {
+        const resp: ISearchResponse = {
+          ...mainResp,
+          results: [pdfPaperResult],
+          next: null,
+        }
+
+        googleScholarMock.search.mockResolvedValue(resp)
+        pdfServiceMock.getTextContent.mockRejectedValueOnce(new Error('Failed to process PDF'))
+        odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+
+        const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
+
+        expect(entities).toHaveLength(1)
+        expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
+        expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
+        expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
+          pdfPaperResult.url,
+          undefined,
+          false,
+        )
+      })
+
+      it('should fallback to main web url when pdf processing is disabled', async () => {
+        const service = new PaperSearchService(
+          { ...mockConfig, processPdf: false },
+          googleScholarMock,
+          odysseusMock,
+          pdfServiceMock,
+          ioService,
+          logger,
+        )
+
+        const resp: ISearchResponse = {
+          ...mainResp,
+          results: [pdfPaperResult],
+          next: null,
+        }
+
+        googleScholarMock.search.mockResolvedValue(resp)
+        pdfServiceMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+        odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+
+        const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
+
+        expect(entities).toHaveLength(1)
+        expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+        expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
+        expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
+          pdfPaperResult.url,
+          undefined,
+          false,
+        )
+      })
+
+      it('should fallback to web content when pdf processing is enabled and pdf is not available', async () => {
+        const resp: ISearchResponse = {
+          ...mainResp,
+          results: [mainResp.results[0]],
+          next: null,
+        }
+
+        googleScholarMock.search.mockResolvedValue(resp)
+        odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+
+        const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
+
+        expect(entities).toHaveLength(1)
+        expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+        expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
+        expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
+          mainResp.results[0].paper.url,
+          undefined,
+          false,
+        )
+      })
+
+      it('should fallback to main url when fetching paper url fails', async () => {
+        const resp: ISearchResponse = {
+          ...mainResp,
+          next: null,
+        }
+
+        googleScholarMock.search.mockResolvedValue(resp)
+        odysseusMock.getTextContent.mockRejectedValueOnce(new Error('Failed to fetch paper url'))
+        odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+
+        const entities = await service.searchPapers('some keywords', 10, undefined, 'cas9')
+
+        expect(entities).toHaveLength(1)
+        expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+        expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(2)
+        expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
+          mainResp.results[0].paper.url,
+          undefined,
+          false,
+        )
+        expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
+          mainResp.results[0].url,
+          undefined,
+          false,
+        )
+      })
+    })
   })
 
   describe('exportPapersToCSV', () => {
     it('should export papers to CSV', async () => {
-      const mainResp = getSearchResponse()
-
       const resp: ISearchResponse = {
         ...mainResp,
         results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
@@ -165,12 +305,12 @@ describe('PaperSearchService', () => {
 
       const resp: ISearchResponse = {
         ...mainResp,
-        results: [...mainResp.results, ...mainResp.results, ...mainResp.results],
+        results: [pdfPaperResult, pdfPaperResult, pdfPaperResult],
       }
 
       googleScholarMock.search.mockResolvedValue(resp)
-      odysseusMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
-      odysseusMock.getTextContent.mockResolvedValue(
+      pdfServiceMock.getTextContent.mockResolvedValueOnce(getExamplePaperHtmlContent())
+      pdfServiceMock.getTextContent.mockResolvedValue(
         getExamplePaperHtmlContent('test', 'some-content'),
       )
 

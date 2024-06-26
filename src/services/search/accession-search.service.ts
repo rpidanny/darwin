@@ -3,6 +3,8 @@ import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 
 import { IoService } from '../io/io.js'
+import { PdfService } from '../pdf/pdf.service.js'
+import { IAccessionSearchConfig } from './accession-search.config.js'
 import { PaperWithAccessionEntity } from './interfaces.js'
 import { PaperSearchService } from './paper-search.service.js'
 
@@ -10,12 +12,14 @@ export class AccessionSearchService extends PaperSearchService {
   private bioProjectAccessionRegex = /PRJNA\d+/g
 
   constructor(
+    protected readonly config: IAccessionSearchConfig,
     readonly googleScholar: GoogleScholar,
     readonly odysseus: Odysseus,
+    readonly pdfService: PdfService,
     readonly ioService: IoService,
     readonly logger?: Quill,
   ) {
-    super(googleScholar, odysseus, ioService, logger)
+    super(config, googleScholar, odysseus, pdfService, ioService, logger)
   }
 
   public async searchPapersWithAccessionNumbers(
@@ -23,10 +27,9 @@ export class AccessionSearchService extends PaperSearchService {
     regex: RegExp,
     minItemCount: number = 20,
     onData?: (data: PaperWithAccessionEntity) => Promise<any>,
-    waitOnCaptcha: boolean = true,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.fetchPapers<PaperWithAccessionEntity>(keywords, minItemCount, async result => {
-      const accessionNumbers = await this.extractAccessionNumbers(result, regex, waitOnCaptcha)
+      const accessionNumbers = await this.extractAccessionNumbers(result, regex)
       if (!accessionNumbers.length) return null
       this.logger?.info(`Found accession numbers: ${accessionNumbers}`)
       const data = this.mapResultToPaperWithAccessionEntity(result, accessionNumbers)
@@ -39,14 +42,12 @@ export class AccessionSearchService extends PaperSearchService {
     keywords: string,
     minItemCount = 10,
     onData?: (data: PaperWithAccessionEntity) => Promise<any>,
-    waitOnCaptcha: boolean = true,
   ): Promise<PaperWithAccessionEntity[]> {
     return this.searchPapersWithAccessionNumbers(
       keywords,
       this.bioProjectAccessionRegex,
       minItemCount,
       onData,
-      waitOnCaptcha,
     )
   }
 
@@ -55,7 +56,6 @@ export class AccessionSearchService extends PaperSearchService {
     regex: RegExp,
     filePath: string,
     minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
   ): Promise<string> {
     const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
     await this.searchPapersWithAccessionNumbers(
@@ -63,7 +63,6 @@ export class AccessionSearchService extends PaperSearchService {
       regex,
       minItemCount,
       async data => await outputWriter.write(data),
-      waitOnCaptcha,
     )
     await outputWriter.end()
     return filePath
@@ -73,25 +72,22 @@ export class AccessionSearchService extends PaperSearchService {
     keywords: string,
     filePath: string,
     minItemCount: number = 20,
-    waitOnCaptcha: boolean = true,
   ): Promise<string> {
     return this.exportPapersWithAccessionNumbersToCSV(
       keywords,
       this.bioProjectAccessionRegex,
       filePath,
       minItemCount,
-      waitOnCaptcha,
     )
   }
 
   private async extractAccessionNumbers(
     result: IGoogleScholarResult,
     regex: RegExp,
-    waitOnCaptcha: boolean,
   ): Promise<string[]> {
     if (!result.url) return []
     try {
-      const textContent = await this.odysseus.getTextContent(result.url, undefined, waitOnCaptcha)
+      const textContent = await this.getPaperContent(result)
       const matches = textContent.match(regex)
       return [...new Set(matches)]
     } catch (error) {

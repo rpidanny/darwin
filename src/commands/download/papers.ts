@@ -3,8 +3,10 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
+import { DownloadService } from '../../services/download/download.service.js'
 import { PaperDownloadService } from '../../services/download/paper-download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PdfService } from '../../services/pdf/pdf.service.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
@@ -59,9 +61,21 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     await this.odysseus.init()
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
-    const searchService = new PaperSearchService(scholar, this.odysseus, ioService, this.logger)
+    const downloadService = new DownloadService(ioService, this.logger)
+    const pdfService = new PdfService(this.logger)
 
-    this.service = new PaperDownloadService(searchService, ioService, this.logger)
+    const searchService = new PaperSearchService(
+      {
+        skipCaptcha: true,
+      },
+      scholar,
+      this.odysseus,
+      pdfService,
+      ioService,
+      this.logger,
+    )
+
+    this.service = new PaperDownloadService(searchService, downloadService)
   }
 
   protected async finally(error: Error | undefined): Promise<void> {

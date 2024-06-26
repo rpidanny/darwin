@@ -15,12 +15,12 @@ describe('ChatService', () => {
   beforeEach(() => {
     chatService = new ChatService(agentMock)
     stdin = mockStdin.stdin()
-    jest.spyOn(process.stdout, 'write').mockImplementation()
-    jest.spyOn(console, 'log').mockImplementation()
+    import.meta.jest.spyOn(process.stdout, 'write').mockImplementation()
+    import.meta.jest.spyOn(console, 'log').mockImplementation()
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    import.meta.jest.clearAllMocks()
   })
 
   it('should exit the chat when message is "/exit"', async () => {

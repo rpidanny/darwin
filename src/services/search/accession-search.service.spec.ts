@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { GoogleScholar, ISearchResponse } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist'
 import { Quill } from '@rpidanny/quill'
@@ -6,21 +7,35 @@ import { mock } from 'jest-mock-extended'
 import { getSearchResponse } from '../../../test/fixtures/google-scholar'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io'
+import { PdfService } from '../pdf/pdf.service'
+import { IAccessionSearchConfig } from './accession-search.config'
 import { AccessionSearchService } from './accession-search.service'
 
 describe('AccessionSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const odysseusMock = mock<Odysseus>()
+  const pdfServiceMock = mock<PdfService>()
   const logger = mock<Quill>()
   const mockCsvWriter = mock<CsvStreamWriter>()
   const ioService = mock<IoService>({
-    getCsvStreamWriter: jest.fn().mockResolvedValue(mockCsvWriter),
+    getCsvStreamWriter: import.meta.jest.fn().mockResolvedValue(mockCsvWriter),
   })
+  const mockConfig: IAccessionSearchConfig = {
+    skipCaptcha: true,
+    processPdf: true,
+  }
 
   let service: AccessionSearchService
 
   beforeEach(() => {
-    service = new AccessionSearchService(googleScholarMock, odysseusMock, ioService, logger)
+    service = new AccessionSearchService(
+      mockConfig,
+      googleScholarMock,
+      odysseusMock,
+      pdfServiceMock,
+      ioService,
+      logger,
+    )
   })
 
   afterEach(() => {
