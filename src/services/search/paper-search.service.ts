@@ -59,7 +59,7 @@ export class PaperSearchService {
     return filePath
   }
 
-  protected async fetchPapers<T>(
+  public async fetchPapers<T>(
     keywords: string,
     minItemCount: number,
     mapResult: (result: IGoogleScholarResult) => Promise<T | null>,
