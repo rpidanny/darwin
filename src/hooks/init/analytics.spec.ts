@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { jest } from '@jest/globals'
 import { Hook } from '@oclif/core'
 import { mock } from 'jest-mock-extended'
 import Mixpanel from 'mixpanel'

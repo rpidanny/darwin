@@ -3,12 +3,16 @@ import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 
 import { IoService } from '../io/io'
+import { PdfService } from '../pdf/pdf.service'
 import { FoundItem, PaperEntity } from './interfaces'
+import { IPaperSearchConfig } from './paper-search.config'
 
 export class PaperSearchService {
   constructor(
+    protected readonly config: IPaperSearchConfig,
     protected readonly googleScholar: GoogleScholar,
     protected readonly odysseus: Odysseus,
+    protected readonly pdfService: PdfService,
     protected readonly ioService: IoService,
     protected readonly logger?: Quill,
   ) {}
@@ -18,17 +22,16 @@ export class PaperSearchService {
     minItemCount: number = 20,
     onData?: (data: PaperEntity) => Promise<any>,
     findRegex?: string,
-    waitOnCaptcha: boolean = true,
   ): Promise<PaperEntity[]> {
     return this.fetchPapers<PaperEntity>(keywords, minItemCount, async result => {
       let data
 
       if (findRegex) {
-        const items = await this.findInPaper(result, findRegex, waitOnCaptcha)
+        const items = await this.findInPaper(result, findRegex)
 
         if (!items.length) return null
 
-        this.logger?.debug(`Found search keywords: ${items}`)
+        this.logger?.debug(`Found search keywords: ${items.map(item => item.text).join(', ')}`)
         data = this.mapResultToPaperEntity(result, items)
       } else {
         data = this.mapResultToPaperEntity(result)
@@ -44,7 +47,6 @@ export class PaperSearchService {
     filePath: string,
     minItemCount: number = 20,
     findRegex?: string,
-    waitOnCaptcha: boolean = true,
   ): Promise<string> {
     const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
     await this.searchPapers(
@@ -52,7 +54,6 @@ export class PaperSearchService {
       minItemCount,
       async data => await outputWriter.write(data),
       findRegex,
-      waitOnCaptcha,
     )
     await outputWriter.end()
     return filePath
@@ -85,21 +86,59 @@ export class PaperSearchService {
     return text.slice(start, end).trim()
   }
 
-  private async findInPaper(
-    result: IGoogleScholarResult,
-    findRegex: string,
-    waitOnCaptcha: boolean,
-  ): Promise<FoundItem[]> {
+  private async getWebContent(url: string): Promise<string> {
+    return this.odysseus.getTextContent(url, undefined, !this.config.skipCaptcha)
+  }
+
+  private async getPdfContent(url: string): Promise<string> {
+    return this.pdfService.getTextContent(url)
+  }
+
+  protected async getPaperContent({ url, paper }: IGoogleScholarResult): Promise<string> {
+    // if pdf processing is disabled, get text content from main url
+    if (!this.config.processPdf) {
+      return this.getWebContent(url)
+    }
+
+    // 1: first try to get text content from pdf
+    if (paper.type === 'pdf') {
+      try {
+        return await this.getPdfContent(paper.url)
+      } catch (error) {
+        this.logger?.debug(
+          `Error extracting text from pdf ${paper.url}: ${(error as Error).message}`,
+        )
+      }
+    } else {
+      // 2: if html content, try to get text content from paper url
+      if (paper.url !== '') {
+        try {
+          return await this.getWebContent(paper.url)
+        } catch (error) {
+          this.logger?.debug(
+            `Error extracting text from paper ${paper.url}: ${(error as Error).message}`,
+          )
+        }
+      }
+    }
+
+    this.logger?.debug(`Falling back to main url content ${url}`)
+
+    // 3: if paper url is not available, try to get text content from main url
+    return this.getWebContent(url)
+  }
+
+  private async findInPaper(result: IGoogleScholarResult, findRegex: string): Promise<FoundItem[]> {
     if (!result.url) return []
     try {
-      const textContent = await this.odysseus.getTextContent(result.url, undefined, waitOnCaptcha)
+      const paperContent = await this.getPaperContent(result)
       const regex = new RegExp(findRegex, 'gi')
-      const matches = textContent.matchAll(regex)
+      const matches = paperContent.matchAll(regex)
 
       const foundItems = new Map<string, string[]>()
 
       for (const match of matches) {
-        const sentence = this.getSentence(textContent, match.index)
+        const sentence = this.getSentence(paperContent, match.index)
         const currentSentences = foundItems.get(match[0]) || []
         currentSentences.push(sentence)
         foundItems.set(match[0], currentSentences)

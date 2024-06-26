@@ -9,7 +9,7 @@ export function getSearchResponse(overrides?: Partial<ISearchResponse>): ISearch
         description:
           '… and Cas9 orthologs have contributed greatly to our understanding of CRISPR–Cas9 mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology …',
         paper: {
-          type: PaperUrlType.PDF,
+          type: PaperUrlType.HTML,
           url: 'https://www.annualreviews.org/doi/pdf/10.1146/annurev-biophys-062215-010822',
         },
         authors: [

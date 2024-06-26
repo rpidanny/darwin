@@ -3,15 +3,15 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
+import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PdfService } from '../../services/pdf/pdf.service.js'
 import { AccessionSearchService } from '../../services/search/accession-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
-  private scholar!: GoogleScholar
   private searchService!: AccessionSearchService
-  private ioService!: IoService
 
   static summary = 'Search for papers that contain accession numbers.'
 
@@ -23,7 +23,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  --log-level debug',
+    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  --log-level DEBUG',
   ]
 
   static args = {
@@ -65,6 +65,13 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       required: false,
       default: false,
     }),
+    'process-pdf': oclif.Flags.boolean({
+      char: 'p',
+      summary:
+        '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
+      required: false,
+      default: false,
+    }),
   }
 
   async init(): Promise<void> {
@@ -77,13 +84,28 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       this.logger,
     )
     await this.odysseus.init()
-    this.scholar = new GoogleScholar(this.odysseus, this.logger)
-    this.ioService = new IoService()
+    const scholar = new GoogleScholar(this.odysseus, this.logger)
+    const ioService = new IoService()
+    const downloadService = new DownloadService(ioService, this.logger)
+    const pdfService = new PdfService(
+      {
+        tempPath: `${this.config.dataDir}/downloads/pdf`,
+      },
+      downloadService,
+      this.logger,
+    )
+
+    const config = {
+      skipCaptcha: this.flags['skip-captcha'],
+      processPdf: this.flags['process-pdf'],
+    }
 
     this.searchService = new AccessionSearchService(
-      this.scholar,
+      config,
+      scholar,
       this.odysseus,
-      this.ioService,
+      pdfService,
+      ioService,
       this.logger,
     )
   }
@@ -103,7 +125,6 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       new RegExp(this.flags['accession-number-regex'], 'g'),
       output,
       count,
-      !this.flags['skip-captcha'],
     )
 
     this.logger.info(`Papers exported to to ${outputPath}`)

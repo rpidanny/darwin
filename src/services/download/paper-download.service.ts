@@ -1,35 +1,19 @@
-import { Quill } from '@rpidanny/quill'
-import got from 'got'
-
-import { IoService } from '../io/io.js'
 import { PaperSearchService } from '../search/paper-search.service.js'
+import { DownloadService } from './download.service.js'
 
 export class PaperDownloadService {
   constructor(
     private readonly paperSearchService: PaperSearchService,
-    private readonly ioService: IoService,
-    private readonly logger?: Quill,
+    private readonly downloadService: DownloadService,
   ) {}
 
   public async download(keywords: string, count: number, outputDir: string): Promise<string> {
     await this.paperSearchService.searchPapers(keywords, count, async paper => {
       const filePath = `${outputDir}/${paper.title.replace(/[\s/]/g, '_')}.${paper.paperType}`
       if (paper.paperType === 'pdf') {
-        await this.downloadPdf(paper.paperUrl, filePath)
+        await this.downloadService.download(paper.paperUrl, filePath)
       }
     })
     return outputDir
-  }
-
-  private async downloadPdf(url: string, filePath: string): Promise<void> {
-    this.logger?.debug(`Downloading PDF: ${filePath}`)
-
-    const content = await got
-      .get(url, {
-        timeout: 30_000,
-        throwHttpErrors: false,
-      })
-      .buffer()
-    await this.ioService.writeFile(filePath, content)
   }
 }

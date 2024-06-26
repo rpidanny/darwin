@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { Hook } from '@oclif/core'
 
 import { getMockConfig } from './config'

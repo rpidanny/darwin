@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import fs from 'fs/promises'
 import path from 'path'
 import tmp from 'tmp'

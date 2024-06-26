@@ -14,7 +14,7 @@
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "lint:fix": "eslint . --ext .ts --config .eslintrc --fix",
-    "test": "jest --coverage -u",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage -u",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "npm run lint",
     "prepack": "oclif manifest && oclif readme --multi",
@@ -54,7 +54,9 @@
     "moment": "^2.30.1",
     "ora": "^5.4.1",
     "p-retry": "^6.2.0",
-    "playwright": "^1.44.1"
+    "pdf-text-reader": "^5.1.0",
+    "playwright": "^1.44.1",
+    "tough-cookie": "^4.1.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

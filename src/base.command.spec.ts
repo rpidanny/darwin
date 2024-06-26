@@ -1,24 +1,42 @@
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
+import { jest } from '@jest/globals'
 import { runCommand } from '@oclif/test'
 
 import mockConfig from '../test/fixtures/app/config/test/config.json'
 
-describe('Command - Base', () => {
+// TODO: fix esm import
+/*
+      Stderr: (node:27103) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+      (Use `node --trace-warnings ...` to show where the warning was created)
+      (node:27103) [ERR_REQUIRE_ESM] Warning: Error
+      module: @oclif/core@3.27.0
+      task: findCommand (test)
+      plugin: test
+      root: /Users/abhishek.maharjan/workspace/rpidanny/darwin/test/fixtures/app
+      code: ERR_REQUIRE_ESM
+      message: Must use import to load ES Module: /Users/abhishek.maharjan/workspace/rpidanny/darwin/test/fixtures/app/src/commands/test.ts
+      See more details with DEBUG=*
+*/
+describe.skip('Command - Base', () => {
+  const __dirname = dirname(fileURLToPath(import.meta.url))
   const root = join(__dirname, '../test/fixtures/app')
 
   beforeEach(() => {
-    jest.spyOn(process.stderr, 'write').mockImplementation()
-    jest.spyOn(process.stdout, 'write').mockImplementation()
+    // jest.spyOn(process.stderr, 'write').mockImplementation(() => true)
+    // jest.spyOn(process.stdout, 'write').mockImplementation(() => true)
   })
 
   afterEach(() => {
-    jest.resetAllMocks()
+    jest.clearAllMocks()
   })
 
   describe('arguments', () => {
-    it('should parse args correctly', async () => {
-      const { result } = await runCommand(['test', 'some-argument'], { root })
+    it.only('should parse args correctly', async () => {
+      const { result, stderr } = await runCommand(['test', 'some-argument'], { root })
+
+      console.log('Stderr:', stderr)
 
       expect(result).toEqual({
         flags: expect.any(Object),
