@@ -31,7 +31,7 @@ export class PaperSearchService {
 
         if (!items.length) return null
 
-        this.logger?.debug(`Found search keywords: ${items}`)
+        this.logger?.debug(`Found search keywords: ${items.map(item => item.text).join(', ')}`)
         data = this.mapResultToPaperEntity(result, items)
       } else {
         data = this.mapResultToPaperEntity(result)
@@ -110,7 +110,7 @@ export class PaperSearchService {
         )
       }
     } else {
-      // 2: if pdf content is not available, try to get text content from paper url
+      // 2: if html content, try to get text content from paper url
       if (paper.url !== '') {
         try {
           return await this.getWebContent(paper.url)
@@ -122,7 +122,7 @@ export class PaperSearchService {
       }
     }
 
-    this.logger?.debug('Falling back to main url content...')
+    this.logger?.debug(`Falling back to main url content ${url}`)
 
     // 3: if paper url is not available, try to get text content from main url
     return this.getWebContent(url)
