@@ -1,3 +1,9 @@
+## [1.18.1](https://github.com/rpidanny/darwin/compare/v1.18.0...v1.18.1) (2024-06-26)
+
+### Bug Fixes
+
+* download papers paper count ([#48](https://github.com/rpidanny/darwin/issues/48)) ([244233b](https://github.com/rpidanny/darwin/commit/244233b00d1449bb2c7a335519532b612aaec632))
+
 ## [1.18.0](https://github.com/rpidanny/darwin/compare/v1.17.0...v1.18.0) (2024-06-26)
 
 ### Features
