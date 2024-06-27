@@ -65,10 +65,10 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       required: false,
       default: false,
     }),
-    'process-pdf': oclif.Flags.boolean({
+    pdf: oclif.Flags.boolean({
       char: 'p',
       summary:
-        '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
+        '[Experimental] Whether to try to process the PDFs if it exists while searching for keywords inside papers. This is experimental and may not work well.',
       required: false,
       default: false,
     }),
@@ -77,7 +77,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   async init(): Promise<void> {
     await super.init()
 
-    const { headless } = this.flags
+    const { headless, pdf } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -97,7 +97,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
     const config = {
       skipCaptcha: this.flags['skip-captcha'],
-      processPdf: this.flags['process-pdf'],
+      processPdf: pdf,
     }
 
     this.searchService = new AccessionSearchService(
@@ -120,6 +120,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
+
     const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
       keywords,
       new RegExp(this.flags['accession-number-regex'], 'g'),
@@ -127,7 +128,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       count,
     )
 
-    this.logger.info(`Papers exported to to ${outputPath}`)
-    return `Papers exported to to ${outputPath}`
+    this.logger.info(`Papers list exported to ${outputPath}`)
+    return `Papers list exported to ${outputPath}`
   }
 }

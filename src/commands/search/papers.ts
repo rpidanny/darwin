@@ -47,12 +47,11 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
-    'find-regex': oclif.Flags.string({
+    find: oclif.Flags.string({
       char: 'f',
       summary:
         'Regex to find in the paper content. If found, the paper will be included in the CSV file. Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain either Holdemania or Colidextribacter.',
       required: false,
-      // helpValue: 'Holdemania|Colidextribacter',
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
@@ -61,10 +60,10 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
-    'process-pdf': oclif.Flags.boolean({
+    pdf: oclif.Flags.boolean({
       char: 'p',
       summary:
-        '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
+        '[Experimental] Whether to try to process the PDFs if it exists while searching for keywords inside papers. This is experimental and may not work well.',
       required: false,
       default: false,
     }),
@@ -73,7 +72,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   async init(): Promise<void> {
     await super.init()
 
-    const { headless } = this.flags
+    const { headless, pdf } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -93,7 +92,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
 
     const config = {
       skipCaptcha: this.flags['skip-captcha'],
-      processPdf: this.flags['process-pdf'],
+      processPdf: pdf,
     }
 
     this.searchService = new PaperSearchService(
@@ -112,18 +111,14 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<string> {
-    const { count, output } = this.flags
+    const { count, output, find } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
-    const outputFile = await this.searchService.exportPapersToCSV(
-      keywords,
-      output,
-      count,
-      this.flags['find-regex'],
-    )
 
-    this.logger.info(`Papers exported to to ${outputFile}`)
-    return `Papers exported to to ${outputFile}`
+    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, count, find)
+
+    this.logger.info(`Papers list exported to ${outputFile}`)
+    return `Papers list exported to ${outputFile}`
   }
 }

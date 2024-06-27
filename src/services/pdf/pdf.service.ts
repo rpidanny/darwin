@@ -1,4 +1,5 @@
 import { Quill } from '@rpidanny/quill'
+import fs from 'fs-extra'
 import { combinePagesIntoSingleString, parsePageItems } from 'pdf-text-reader'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs'
 import type { TextItem } from 'pdfjs-dist/types/src/display/api'
@@ -32,6 +33,9 @@ export class PdfService {
       page.items.filter((item): item is TextItem => 'str' in item),
     )
     const parsedPages = parsePageItems(items)
+
+    await fs.remove(path)
+
     return combinePagesIntoSingleString([parsedPages])
   }
 }

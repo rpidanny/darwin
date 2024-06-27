@@ -28,7 +28,6 @@ export class PaperSearchService {
 
       if (findRegex) {
         const items = await this.findInPaper(result, findRegex)
-
         if (!items.length) return null
 
         this.logger?.debug(`Found search keywords: ${items.map(item => item.text).join(', ')}`)
@@ -96,45 +95,26 @@ export class PaperSearchService {
 
   protected async getPaperContent({ url, paper }: IGoogleScholarResult): Promise<string> {
     // if pdf processing is disabled, get text content from main url
-    if (!this.config.processPdf) {
-      return this.getWebContent(url)
+    if (!this.config.processPdf) return this.getWebContent(url)
+
+    try {
+      if (paper.type === 'pdf') return await this.getPdfContent(paper.url)
+      if (paper.url !== '') return await this.getWebContent(paper.url)
+    } catch (error) {
+      this.logger?.debug(
+        `Error extracting text from ${paper.type} ${paper.url}: ${(error as Error).message}`,
+      )
     }
 
-    // 1: first try to get text content from pdf
-    if (paper.type === 'pdf') {
-      try {
-        return await this.getPdfContent(paper.url)
-      } catch (error) {
-        this.logger?.debug(
-          `Error extracting text from pdf ${paper.url}: ${(error as Error).message}`,
-        )
-      }
-    } else {
-      // 2: if html content, try to get text content from paper url
-      if (paper.url !== '') {
-        try {
-          return await this.getWebContent(paper.url)
-        } catch (error) {
-          this.logger?.debug(
-            `Error extracting text from paper ${paper.url}: ${(error as Error).message}`,
-          )
-        }
-      }
-    }
-
+    if (url === '') return ''
     this.logger?.debug(`Falling back to main url content ${url}`)
-
-    // 3: if paper url is not available, try to get text content from main url
     return this.getWebContent(url)
   }
 
   private async findInPaper(result: IGoogleScholarResult, findRegex: string): Promise<FoundItem[]> {
-    if (!result.url) return []
     try {
       const paperContent = await this.getPaperContent(result)
-      const regex = new RegExp(findRegex, 'gi')
-      const matches = paperContent.matchAll(regex)
-
+      const matches = paperContent.matchAll(new RegExp(findRegex, 'gi'))
       const foundItems = new Map<string, string[]>()
 
       for (const match of matches) {
@@ -164,8 +144,8 @@ export class PaperSearchService {
       citationUrl: result.citation.url ?? '',
       citationCount: result.citation.count,
       description: result.description,
-      foundItems: foundItems?.map(item => item.text) ?? undefined,
-      sentencesOfInterest: foundItems?.map(item => item.sentences).flat() ?? undefined,
+      foundItems: foundItems?.map(item => item.text),
+      sentencesOfInterest: foundItems?.flatMap(item => item.sentences),
     }
   }
 }
