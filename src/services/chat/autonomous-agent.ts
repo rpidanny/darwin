@@ -10,14 +10,14 @@ import { AgentExecutor, createOpenAIFunctionsAgent } from 'langchain/agents'
 
 import { PapersWithAccessionNumbersSearchTool } from '../../utils/tools/accession-search.js'
 import { PapersSearchTool } from '../../utils/tools/paper-search.js'
-import { AccessionSearchService } from '../search/accession-search.service.js'
+import { PaperSearchService } from '../search/paper-search.service.js'
 
 export class AutonomousAgent {
   private agent!: AgentExecutor
 
   constructor(
     private llm: ChatOpenAI,
-    private readonly searchService: AccessionSearchService,
+    private readonly searchService: PaperSearchService,
   ) {}
 
   async init(verbose = false) {

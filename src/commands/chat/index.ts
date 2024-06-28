@@ -5,11 +5,12 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
-import { ChatService } from '../../services/chat/chat.js'
+import { ChatService } from '../../services/chat/chat.service.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
-import { AccessionSearchService } from '../../services/search/accession-search.service.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
@@ -22,6 +23,12 @@ export default class Chat extends BaseCommand<typeof Chat> {
   static examples = ['<%= config.bin %> <%= command.id %>']
 
   static flags = {
+    concurrency: oclif.Flags.integer({
+      char: 'c',
+      summary: 'The number of concurrent papers to process at a time',
+      required: false,
+      default: 10,
+    }),
     includeAppLogs: oclif.Flags.boolean({
       char: 'l',
       name: 'include-app-logs',
@@ -36,7 +43,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       required: false,
       default: false,
     }),
-    'process-pdf': oclif.Flags.boolean({
+    pdf: oclif.Flags.boolean({
       char: 'p',
       summary:
         '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
@@ -55,7 +62,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       process.exit(1)
     }
 
-    const { includeAppLogs } = this.flags
+    const { includeAppLogs, pdf, concurrency } = this.flags
 
     const logger = includeAppLogs ? this.logger : undefined
 
@@ -67,24 +74,24 @@ export default class Chat extends BaseCommand<typeof Chat> {
     const scholar = new GoogleScholar(this.odysseus, logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(
+    const pdfService = new PdfService(downloadService, this.logger)
+    const paperService = new PaperService(
       {
-        tempPath: `${this.config.dataDir}/downloads/pdf`,
+        skipCaptcha: this.flags['skip-captcha'],
+        processPdf: pdf,
       },
+      this.odysseus,
+      pdfService,
       downloadService,
       this.logger,
     )
 
-    const config = {
-      skipCaptcha: this.flags['skip-captcha'],
-      processPdf: this.flags['process-pdf'],
-    }
-
-    const searchService = new AccessionSearchService(
-      config,
+    const searchService = new PaperSearchService(
+      {
+        concurrency,
+      },
       scholar,
-      this.odysseus,
-      pdfService,
+      paperService,
       ioService,
       this.logger,
     )

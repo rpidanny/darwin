@@ -1,4 +1,4 @@
-export interface PaperEntity {
+export interface IPaperEntity {
   title: string
   description: string
   url: string
@@ -9,13 +9,4 @@ export interface PaperEntity {
   authors: string[]
   foundItems?: string[]
   sentencesOfInterest?: string[]
-}
-
-export interface PaperWithAccessionEntity extends PaperEntity {
-  accessionNumbers: string[]
-}
-
-export interface FoundItem {
-  text: string
-  sentences: string[]
 }

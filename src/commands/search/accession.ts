@@ -5,25 +5,27 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
-import { AccessionSearchService } from '../../services/search/accession-search.service.js'
+import { AccessionPattern } from '../../services/search/constants.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
-  private searchService!: AccessionSearchService
+  private searchService!: PaperSearchService
 
   static summary = 'Search for papers that contain accession numbers.'
 
   static deprecationOptions?: oclif.Interfaces.Deprecation = {
-    message: 'Use `darwin search papers` command with  `--find-regex="PRJNA\\d+"` instead.',
+    message: 'Use `darwin search papers` command with  `--find="PRJNA\\d+"` instead.',
     version: '1.13.0',
     to: 'search papers',
   }
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG',
   ]
 
   static args = {
@@ -35,9 +37,15 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   static flags = {
-    count: oclif.Flags.integer({
-      char: 'c',
+    nums: oclif.Flags.integer({
+      char: 'n',
       summary: 'The minimum number of papers with accession numbers to search for',
+      required: false,
+      default: 10,
+    }),
+    concurrency: oclif.Flags.integer({
+      char: 'c',
+      summary: 'The number of concurrent papers to process at a time',
       required: false,
       default: 10,
     }),
@@ -56,7 +64,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       char: 'a',
       summary: 'Regex to match accession numbers. Defaults to BioProject accession numbers.',
       required: false,
-      default: 'PRJNA\\d+',
+      default: AccessionPattern.BioProject,
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
@@ -77,7 +85,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   async init(): Promise<void> {
     await super.init()
 
-    const { headless, pdf } = this.flags
+    const { headless, pdf, concurrency } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -87,24 +95,24 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(
+    const pdfService = new PdfService(downloadService, this.logger)
+    const paperService = new PaperService(
       {
-        tempPath: `${this.config.dataDir}/downloads/pdf`,
+        skipCaptcha: this.flags['skip-captcha'],
+        processPdf: pdf,
       },
+      this.odysseus,
+      pdfService,
       downloadService,
       this.logger,
     )
 
-    const config = {
-      skipCaptcha: this.flags['skip-captcha'],
-      processPdf: pdf,
-    }
-
-    this.searchService = new AccessionSearchService(
-      config,
+    this.searchService = new PaperSearchService(
+      {
+        concurrency,
+      },
       scholar,
-      this.odysseus,
-      pdfService,
+      paperService,
       ioService,
       this.logger,
     )
@@ -116,16 +124,16 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<string> {
-    const { count, output } = this.flags
+    const { nums, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
 
-    const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
+    const outputPath = await this.searchService.exportToCSV(
       keywords,
-      new RegExp(this.flags['accession-number-regex'], 'g'),
       output,
-      count,
+      nums,
+      this.flags['accession-number-regex'],
     )
 
     this.logger.info(`Papers list exported to ${outputPath}`)

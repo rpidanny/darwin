@@ -1,28 +1,32 @@
+import { GoogleScholar } from '@rpidanny/google-scholar/dist/google-scholar.js'
 import { Quill } from '@rpidanny/quill'
 
-import { PaperSearchService } from '../search/paper-search.service.js'
-import { DownloadService } from './download.service.js'
+import { PaperService } from '../paper/paper.service.js'
 
 export class PaperDownloadService {
   constructor(
-    private readonly paperSearchService: PaperSearchService,
-    private readonly downloadService: DownloadService,
+    private readonly googleScholar: GoogleScholar,
+    private readonly paperService: PaperService,
     private readonly logger?: Quill,
   ) {}
 
-  public async download(keywords: string, count: number, outputDir: string): Promise<string> {
-    await this.paperSearchService.fetchPapers<any>(keywords, count, async paper => {
-      if (paper.paper.type !== 'pdf') return paper
+  public async downloadPapers(keywords: string, count: number, outputDir: string): Promise<string> {
+    let paperCount = 0
+    await this.googleScholar.iteratePapers(
+      { keywords },
+      async paper => {
+        try {
+          await this.paperService.download(paper, outputDir)
+          paperCount++
+          if (paperCount >= count) return false
+        } catch (error) {
+          this.logger?.warn(`Failed to download paper: ${paper.title}: ${(error as Error).message}`)
+        }
+        return true
+      },
+      1,
+    )
 
-      const filePath = `${outputDir}/${paper.title.replace(/[\s/]/g, '_')}.${paper.paper.type}`
-      try {
-        await this.downloadService.download(paper.paper.url, filePath)
-      } catch (err) {
-        this.logger?.warn(`Failed to download paper: ${paper.title}: ${(err as Error).message}`)
-        return null
-      }
-      return paper
-    })
     return outputDir
   }
 }

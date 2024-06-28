@@ -5,6 +5,7 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
@@ -18,7 +19,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv  --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -n 20 --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -n 5 -c 1 -f "tcell" --log-level DEBUG',
   ]
 
   static args = {
@@ -30,9 +32,15 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   static flags = {
-    count: oclif.Flags.integer({
+    nums: oclif.Flags.integer({
+      char: 'n',
+      summary: 'The minimum number of papers to search for.',
+      required: false,
+      default: 10,
+    }),
+    concurrency: oclif.Flags.integer({
       char: 'c',
-      summary: 'Minimum number of results to return',
+      summary: 'The number of concurrent papers to process at a time',
       required: false,
       default: 10,
     }),
@@ -72,7 +80,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   async init(): Promise<void> {
     await super.init()
 
-    const { headless, pdf } = this.flags
+    const { headless, pdf, concurrency } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -82,24 +90,24 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(
+    const pdfService = new PdfService(downloadService, this.logger)
+    const paperService = new PaperService(
       {
-        tempPath: `${this.config.dataDir}/downloads/pdf`,
+        skipCaptcha: this.flags['skip-captcha'],
+        processPdf: pdf,
       },
+      this.odysseus,
+      pdfService,
       downloadService,
       this.logger,
     )
 
-    const config = {
-      skipCaptcha: this.flags['skip-captcha'],
-      processPdf: pdf,
-    }
-
     this.searchService = new PaperSearchService(
-      config,
+      {
+        concurrency,
+      },
       scholar,
-      this.odysseus,
-      pdfService,
+      paperService,
       ioService,
       this.logger,
     )
@@ -111,12 +119,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<string> {
-    const { count, output, find } = this.flags
+    const { nums, output, find } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
 
-    const outputFile = await this.searchService.exportPapersToCSV(keywords, output, count, find)
+    const outputFile = await this.searchService.exportToCSV(keywords, output, nums, find)
 
     this.logger.info(`Papers list exported to ${outputFile}`)
     return `Papers list exported to ${outputFile}`

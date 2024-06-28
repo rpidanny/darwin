@@ -1,4 +1,3 @@
 export interface IPaperSearchConfig {
-  skipCaptcha: boolean
-  processPdf?: boolean
+  concurrency: number
 }

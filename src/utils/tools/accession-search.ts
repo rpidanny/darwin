@@ -2,10 +2,11 @@ import { DynamicStructuredTool } from '@langchain/core/tools'
 import moment from 'moment'
 import { z } from 'zod'
 
-import { AccessionSearchService } from '../../services/search/accession-search.service'
+import { AccessionPattern } from '../../services/search/constants'
+import { PaperSearchService } from '../../services/search/paper-search.service'
 
 export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool {
-  constructor(private readonly searchService: AccessionSearchService) {
+  constructor(private readonly searchService: PaperSearchService) {
     super({
       name: 'papers-with-accession-numbers-search',
       description:
@@ -27,10 +28,11 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
         const filePath = `${cwd}/${fileName}`
 
-        const outputFile = await this.searchService.exportPapersWithBioProjectAccessionNumbersToCSV(
+        const outputFile = await this.searchService.exportToCSV(
           keywords,
           filePath,
           count,
+          AccessionPattern.BioProject,
         )
         return `Papers has been exported to ${outputFile}. Return the local file path to the user as plain text. DON'T USE MARKDOWN.`
       },

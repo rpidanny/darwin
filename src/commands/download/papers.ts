@@ -6,8 +6,8 @@ import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { PaperDownloadService } from '../../services/download/paper-download.service.js'
 import { IoService } from '../../services/io/io.js'
+import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
-import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
@@ -30,8 +30,8 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   }
 
   static flags = {
-    count: oclif.Flags.integer({
-      char: 'c',
+    nums: oclif.Flags.integer({
+      char: 'n',
       summary: 'Minimum number of papers to download',
       required: false,
       default: 10,
@@ -62,26 +62,19 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(
+    const pdfService = new PdfService(downloadService, this.logger)
+    const paperService = new PaperService(
       {
-        tempPath: `${this.config.dataDir}/downloads/pdf`,
+        skipCaptcha: true,
+        processPdf: false,
       },
+      this.odysseus,
+      pdfService,
       downloadService,
       this.logger,
     )
 
-    const searchService = new PaperSearchService(
-      {
-        skipCaptcha: true,
-      },
-      scholar,
-      this.odysseus,
-      pdfService,
-      ioService,
-      this.logger,
-    )
-
-    this.service = new PaperDownloadService(searchService, downloadService, this.logger)
+    this.service = new PaperDownloadService(scholar, paperService, this.logger)
   }
 
   protected async finally(error: Error | undefined): Promise<void> {
@@ -90,12 +83,12 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   }
 
   public async run(): Promise<string> {
-    const { count, output } = this.flags
+    const { nums, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Downloading papers related to: ${keywords}`)
 
-    const outputFile = await this.service.download(keywords, count, output)
+    const outputFile = await this.service.downloadPapers(keywords, nums, output)
 
     this.logger.info(`Papers downloaded to ${outputFile}`)
     return `Papers downloaded to ${outputFile}`
