@@ -2,7 +2,7 @@ import { Quill } from '@rpidanny/quill'
 import got from 'got'
 import { CookieJar } from 'tough-cookie'
 
-import { IoService } from '../io/io'
+import { IoService } from '../io/io.service'
 
 export class DownloadService {
   constructor(

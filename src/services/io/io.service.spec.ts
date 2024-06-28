@@ -4,7 +4,7 @@ import path from 'path'
 import tmp from 'tmp'
 
 import { CsvStreamWriter } from './csv-stream-writer.js'
-import { IoService } from './io.js'
+import { IoService } from './io.service.js'
 
 tmp.setGracefulCleanup()
 

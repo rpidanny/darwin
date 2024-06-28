@@ -4,7 +4,7 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
-import { IoService } from '../../services/io/io.js'
+import { IoService } from '../../services/io/io.service.js'
 import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { AccessionPattern } from '../../services/search/constants.js'

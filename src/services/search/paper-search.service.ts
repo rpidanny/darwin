@@ -1,7 +1,7 @@
 import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
 import { Quill } from '@rpidanny/quill'
 
-import { IoService } from '../io/io'
+import { IoService } from '../io/io.service'
 import { IFoundItem } from '../paper/interfaces'
 import { PaperService } from '../paper/paper.service'
 import { IPaperEntity } from './interfaces'

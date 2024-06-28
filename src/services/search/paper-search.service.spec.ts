@@ -5,7 +5,7 @@ import { mock } from 'jest-mock-extended'
 
 import { getMockPageContent } from '../../../test/fixtures/google-scholar'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
-import { IoService } from '../io/io'
+import { IoService } from '../io/io.service'
 import { PaperService } from '../paper/paper.service'
 import { IPaperSearchConfig } from './paper-search.config'
 import { PaperSearchService } from './paper-search.service'
