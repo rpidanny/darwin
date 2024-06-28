@@ -4,7 +4,7 @@ import { Quill } from '@rpidanny/quill'
 
 import { DownloadService } from '../download/download.service'
 import { PdfService } from '../pdf/pdf.service'
-import { IFoundItem } from './interfaces'
+import { ITextMatch } from './interfaces'
 import { IPaperServiceConfig } from './paper.service.config'
 
 export class PaperService {
@@ -63,7 +63,7 @@ export class PaperService {
    * Finds occurrences of a regex pattern in the paper content.
    * Returns an array of found items, each containing the matched text and associated sentences.
    * */
-  public async findInPaper(paper: IPaperMetadata, findRegex: string): Promise<IFoundItem[]> {
+  public async findInPaper(paper: IPaperMetadata, findRegex: string): Promise<ITextMatch[]> {
     try {
       const paperContent = await this.getTextContent(paper)
       const matches = paperContent.matchAll(new RegExp(findRegex, 'gi'))
@@ -76,7 +76,7 @@ export class PaperService {
         foundItems.set(match[0], currentSentences)
       }
 
-      return Array.from(foundItems).map(([text, sentences]) => ({ text, sentences }))
+      return Array.from(foundItems).map(([content, sentences]) => ({ content, sentences }))
     } catch (error) {
       this.logger?.warn(`Error extracting regex in paper: ${(error as Error).message}`)
       return []

@@ -72,7 +72,7 @@ describe('PaperSearchService', () => {
     it('should filter papers if paperIncludes is provided', async () => {
       paperService.findInPaper.mockResolvedValueOnce([
         {
-          text: 'Cas9',
+          content: 'Cas9',
           sentences: [
             'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
             'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
@@ -128,7 +128,7 @@ describe('PaperSearchService', () => {
     it('should export papers to CSV while filtering papers when paperIncludes is provided', async () => {
       paperService.findInPaper.mockResolvedValueOnce([
         {
-          text: 'Cas9',
+          content: 'Cas9',
           sentences: [
             'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
             'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',

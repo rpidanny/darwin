@@ -2,7 +2,7 @@ import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
 import { Quill } from '@rpidanny/quill'
 
 import { IoService } from '../io/io.service'
-import { IFoundItem } from '../paper/interfaces'
+import { ITextMatch } from '../paper/interfaces'
 import { PaperService } from '../paper/paper.service'
 import { IPaperEntity } from './interfaces'
 import { IPaperSearchConfig } from './paper-search.config'
@@ -66,12 +66,12 @@ export class PaperSearchService {
     return this.toEntity(paper, foundItems)
   }
 
-  private logFoundItems(foundItems: IFoundItem[]): void {
-    const foundTexts = foundItems.map(item => item.text).join(', ')
+  private logFoundItems(foundItems: ITextMatch[]): void {
+    const foundTexts = foundItems.map(item => item.content).join(', ')
     this.logger?.debug(`Found items: ${foundTexts}`)
   }
 
-  private toEntity(result: IPaperMetadata, foundItems?: IFoundItem[]): IPaperEntity {
+  private toEntity(result: IPaperMetadata, foundItems?: ITextMatch[]): IPaperEntity {
     return {
       title: result.title,
       authors: result.authors.map(author => author.name),
@@ -81,7 +81,7 @@ export class PaperSearchService {
       citationUrl: result.citation.url ?? '',
       citationCount: result.citation.count,
       description: result.description,
-      foundItems: foundItems?.map(item => item.text),
+      foundItems: foundItems?.map(item => item.content),
       sentencesOfInterest: foundItems?.flatMap(item => item.sentences),
     }
   }

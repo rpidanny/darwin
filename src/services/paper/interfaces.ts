@@ -1,4 +1,4 @@
-export interface IFoundItem {
-  text: string
+export interface ITextMatch {
+  content: string
   sentences: string[]
 }

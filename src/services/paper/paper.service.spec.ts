@@ -156,7 +156,7 @@ describe('PaperService', () => {
       const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR–Cas9')
 
       expect(foundItems).toHaveLength(1)
-      expect(foundItems[0].text).toBe('CRISPR–Cas9')
+      expect(foundItems[0].content).toBe('CRISPR–Cas9')
       expect(foundItems[0].sentences).toEqual([
         'CRISPR–Cas9 structures and mechanisms.',
         'In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.',
@@ -173,12 +173,12 @@ describe('PaperService', () => {
       const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR|Cas9')
 
       expect(foundItems).toHaveLength(2)
-      expect(foundItems[0].text).toBe('CRISPR')
+      expect(foundItems[0].content).toBe('CRISPR')
       expect(foundItems[0].sentences).toEqual([
         'CRISPR–Cas9 structures and mechanisms.',
         'In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.',
       ])
-      expect(foundItems[1].text).toBe('Cas9')
+      expect(foundItems[1].content).toBe('Cas9')
       expect(foundItems[1].sentences).toEqual([
         'CRISPR–Cas9 structures and mechanisms.',
         'In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.',
