@@ -15,7 +15,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   private odysseus!: Odysseus
   private searchService!: PaperSearchService
 
-  static summary = 'Search for papers that contain accession numbers.'
+  static summary = 'Search and export papers containing accession numbers to a CSV file.'
 
   static deprecationOptions?: oclif.Interfaces.Deprecation = {
     message: 'Use `darwin search papers` command with  `--find="PRJNA\\d+"` instead.',
@@ -37,46 +37,47 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   static flags = {
-    nums: oclif.Flags.integer({
-      char: 'n',
-      summary: 'The minimum number of papers with accession numbers to search for',
+    count: oclif.Flags.integer({
+      char: 'c',
+      summary:
+        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
       required: false,
       default: 10,
     }),
     concurrency: oclif.Flags.integer({
-      char: 'c',
-      summary: 'The number of concurrent papers to process at a time',
+      char: 'p',
+      summary: 'The number papers to process in parallel.',
       required: false,
       default: 10,
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary: 'Output CSV file name/path',
+      summary: 'The name or path of the output CSV file.',
       required: true,
-    }),
-    headless: oclif.Flags.boolean({
-      char: 'h',
-      summary: 'Run in headless mode',
-      required: false,
-      default: false,
     }),
     'accession-number-regex': oclif.Flags.string({
       char: 'a',
-      summary: 'Regex to match accession numbers. Defaults to BioProject accession numbers.',
+      summary:
+        'Regex to match accession numbers. Defaults to matching BioProject accession numbers.',
       required: false,
       default: AccessionPattern.BioProject,
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary:
-        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
+      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
-    pdf: oclif.Flags.boolean({
+    'process-pdf': oclif.Flags.boolean({
       char: 'p',
       summary:
-        '[Experimental] Whether to try to process the PDFs if it exists while searching for keywords inside papers. This is experimental and may not work well.',
+        '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
+      required: false,
+      default: false,
+    }),
+    headless: oclif.Flags.boolean({
+      char: 'h',
+      summary: 'Run the browser in headless mode (no UI).',
       required: false,
       default: false,
     }),
@@ -85,7 +86,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   async init(): Promise<void> {
     await super.init()
 
-    const { headless, pdf, concurrency } = this.flags
+    const { headless, concurrency } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -99,7 +100,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
-        processPdf: pdf,
+        processPdf: this.flags['process-pdf'],
       },
       this.odysseus,
       pdfService,
@@ -124,7 +125,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<string> {
-    const { nums, output } = this.flags
+    const { count, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching accession numbers for: ${keywords}`)
@@ -132,7 +133,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const outputPath = await this.searchService.exportToCSV(
       keywords,
       output,
-      nums,
+      count,
       this.flags['accession-number-regex'],
     )
 

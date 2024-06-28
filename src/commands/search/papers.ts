@@ -14,13 +14,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   private odysseus!: Odysseus
   private searchService!: PaperSearchService
 
-  static summary =
-    'Search research papers given a set of keywords. Exports the list of papers to a CSV file.'
+  static summary = 'Searches and exports research papers based on keywords to a CSV file.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -n 20 --log-level DEBUG',
-    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -n 5 -c 1 -f "tcell" --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -c 20 --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG',
   ]
 
   static args = {
@@ -32,46 +31,46 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   static flags = {
-    nums: oclif.Flags.integer({
-      char: 'n',
-      summary: 'The minimum number of papers to search for.',
+    count: oclif.Flags.integer({
+      char: 'c',
+      summary:
+        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
       required: false,
       default: 10,
     }),
     concurrency: oclif.Flags.integer({
-      char: 'c',
-      summary: 'The number of concurrent papers to process at a time',
+      char: 'p',
+      summary: 'The number papers to process in parallel.',
       required: false,
       default: 10,
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary: 'Output CSV file name/path',
+      summary: 'The name or path of the output CSV file.',
       required: true,
     }),
-    headless: oclif.Flags.boolean({
-      char: 'h',
-      summary: 'Run in headless mode',
-      required: false,
-      default: false,
-    }),
-    find: oclif.Flags.string({
+    filter: oclif.Flags.string({
       char: 'f',
       summary:
-        'Regex to find in the paper content. If found, the paper will be included in the CSV file. Its case-insensitive. Example: "Holdemania|Colidextribacter" will find papers that contain either Holdemania or Colidextribacter.',
+        'Case-insensitive regex to filter papers by content. Example: "Holdemania|Colidextribacter" will only include papers containing either term.',
       required: false,
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary:
-        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
+      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
-    pdf: oclif.Flags.boolean({
+    'process-pdf': oclif.Flags.boolean({
       char: 'p',
       summary:
-        '[Experimental] Whether to try to process the PDFs if it exists while searching for keywords inside papers. This is experimental and may not work well.',
+        '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
+      required: false,
+      default: false,
+    }),
+    headless: oclif.Flags.boolean({
+      char: 'h',
+      summary: 'Run the browser in headless mode (no UI).',
       required: false,
       default: false,
     }),
@@ -80,7 +79,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   async init(): Promise<void> {
     await super.init()
 
-    const { headless, pdf, concurrency } = this.flags
+    const { headless, concurrency } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -94,7 +93,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
-        processPdf: pdf,
+        processPdf: this.flags['process-pdf'],
       },
       this.odysseus,
       pdfService,
@@ -119,12 +118,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<string> {
-    const { nums, output, find } = this.flags
+    const { count, output, filter } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers related to: ${keywords}`)
 
-    const outputFile = await this.searchService.exportToCSV(keywords, output, nums, find)
+    const outputFile = await this.searchService.exportToCSV(keywords, output, count, filter)
 
     this.logger.info(`Papers list exported to ${outputFile}`)
     return `Papers list exported to ${outputFile}`

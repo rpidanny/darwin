@@ -14,7 +14,7 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   private service!: PaperDownloadService
   private odysseus!: Odysseus
 
-  static summary = 'Download pdf papers based on the given keywords.'
+  static summary = 'Download PDF papers based on specified keywords.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
@@ -30,20 +30,21 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   }
 
   static flags = {
-    nums: oclif.Flags.integer({
-      char: 'n',
-      summary: 'Minimum number of papers to download',
+    count: oclif.Flags.integer({
+      char: 'c',
+      summary:
+        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
       required: false,
       default: 10,
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary: 'Output path to store the downloaded papers',
+      summary: 'The path to save the downloaded papers.',
       required: true,
     }),
     headless: oclif.Flags.boolean({
       char: 'h',
-      summary: 'Run in headless mode',
+      summary: 'Run the browser in headless mode (no UI).',
       required: false,
       default: false,
     }),
@@ -83,12 +84,12 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   }
 
   public async run(): Promise<string> {
-    const { nums, output } = this.flags
+    const { count, output } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Downloading papers related to: ${keywords}`)
 
-    const outputFile = await this.service.downloadPapers(keywords, nums, output)
+    const outputFile = await this.service.downloadPapers(keywords, count, output)
 
     this.logger.info(`Papers downloaded to ${outputFile}`)
     return `Papers downloaded to ${outputFile}`

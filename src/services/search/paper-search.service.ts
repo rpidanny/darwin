@@ -20,14 +20,14 @@ export class PaperSearchService {
     keywords: string,
     minItemCount: number = 20,
     onData?: (data: IPaperEntity) => Promise<any>,
-    paperIncludes?: string,
+    filterPattern?: string,
   ): Promise<IPaperEntity[]> {
     const papers: IPaperEntity[] = []
 
     await this.googleScholar.iteratePapers(
       { keywords },
       async paper => {
-        const entity = await this.processPaper(paper, paperIncludes)
+        const entity = await this.processPaper(paper, filterPattern)
         if (!entity) return true
 
         papers.push(entity)
@@ -45,21 +45,21 @@ export class PaperSearchService {
     keywords: string,
     filePath: string,
     minItemCount: number = 20,
-    paperIncludes?: string,
+    filterPattern?: string,
   ): Promise<string> {
     const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
-    await this.search(keywords, minItemCount, page => outputWriter.write(page), paperIncludes)
+    await this.search(keywords, minItemCount, page => outputWriter.write(page), filterPattern)
     await outputWriter.end()
     return filePath
   }
 
   private async processPaper(
     paper: IPaperMetadata,
-    paperIncludes?: string,
+    filterPattern?: string,
   ): Promise<IPaperEntity | undefined> {
-    if (!paperIncludes) return this.toEntity(paper)
+    if (!filterPattern) return this.toEntity(paper)
 
-    const foundItems = await this.paperService.findInPaper(paper, paperIncludes)
+    const foundItems = await this.paperService.findInPaper(paper, filterPattern)
     if (foundItems.length === 0) return undefined
 
     this.logFoundItems(foundItems)

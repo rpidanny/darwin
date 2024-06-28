@@ -24,29 +24,27 @@ export default class Chat extends BaseCommand<typeof Chat> {
 
   static flags = {
     concurrency: oclif.Flags.integer({
-      char: 'c',
-      summary: 'The number of concurrent papers to process at a time',
+      char: 'p',
+      summary: 'The number papers to process in parallel.',
       required: false,
       default: 10,
     }),
-    includeAppLogs: oclif.Flags.boolean({
+    logs: oclif.Flags.boolean({
       char: 'l',
-      name: 'include-app-logs',
-      summary: 'Include application logs in the chat while performing actions',
+      summary: 'Include application logs along with the chat conversations.',
       required: false,
       default: false,
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary:
-        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
+      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
-    pdf: oclif.Flags.boolean({
+    'process-pdf': oclif.Flags.boolean({
       char: 'p',
       summary:
-        '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
+        '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
       required: false,
       default: false,
     }),
@@ -62,9 +60,9 @@ export default class Chat extends BaseCommand<typeof Chat> {
       process.exit(1)
     }
 
-    const { includeAppLogs, pdf, concurrency } = this.flags
+    const { logs, concurrency } = this.flags
 
-    const logger = includeAppLogs ? this.logger : undefined
+    const logger = logs ? this.logger : undefined
 
     this.odysseus = new Odysseus(
       { headless: false, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -78,7 +76,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
-        processPdf: pdf,
+        processPdf: this.flags['process-pdf'],
       },
       this.odysseus,
       pdfService,
