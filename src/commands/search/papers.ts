@@ -117,15 +117,14 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     await this.odysseus?.close()
   }
 
-  public async run(): Promise<string> {
+  public async run(): Promise<void> {
     const { count, output, filter } = this.flags
     const { keywords } = this.args
 
-    this.logger.info(`Searching papers related to: ${keywords}`)
+    this.logger.info(`Searching papers for: ${keywords}`)
 
     const outputFile = await this.searchService.exportToCSV(keywords, output, count, filter)
 
-    this.logger.info(`Papers list exported to ${outputFile}`)
-    return `Papers list exported to ${outputFile}`
+    this.logger.info(`Exported papers list to: ${outputFile}`)
   }
 }

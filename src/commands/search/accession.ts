@@ -124,20 +124,14 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     await this.odysseus?.close()
   }
 
-  public async run(): Promise<string> {
-    const { count, output } = this.flags
+  public async run(): Promise<void> {
+    const { count, output, 'accession-number-regex': filterPattern } = this.flags
     const { keywords } = this.args
 
-    this.logger.info(`Searching accession numbers for: ${keywords}`)
+    this.logger.info(`Searching papers with Accession Numbers (${filterPattern}) for: ${keywords}`)
 
-    const outputPath = await this.searchService.exportToCSV(
-      keywords,
-      output,
-      count,
-      this.flags['accession-number-regex'],
-    )
+    const outputPath = await this.searchService.exportToCSV(keywords, output, count, filterPattern)
 
-    this.logger.info(`Papers list exported to ${outputPath}`)
-    return `Papers list exported to ${outputPath}`
+    this.logger.info(`Exported papers list to: ${outputPath}`)
   }
 }

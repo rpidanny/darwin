@@ -29,7 +29,7 @@ export class DownloadService {
   }
 
   async download(url: string, filePath: string): Promise<void> {
-    this.logger?.debug(`Downloading file ${url}`)
+    this.logger?.debug(`Downloading ${url}`)
     const content = await this.getContent(url)
     await this.ioService.writeFile(filePath, content)
   }

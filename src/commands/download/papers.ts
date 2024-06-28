@@ -83,15 +83,14 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     await this.odysseus?.close()
   }
 
-  public async run(): Promise<string> {
+  public async run(): Promise<void> {
     const { count, output } = this.flags
     const { keywords } = this.args
 
-    this.logger.info(`Downloading papers related to: ${keywords}`)
+    this.logger.info(`Downloading papers for: ${keywords}`)
 
     const outputFile = await this.service.downloadPapers(keywords, count, output)
 
-    this.logger.info(`Papers downloaded to ${outputFile}`)
-    return `Papers downloaded to ${outputFile}`
+    this.logger.info(`Papers downloaded to: ${outputFile}`)
   }
 }

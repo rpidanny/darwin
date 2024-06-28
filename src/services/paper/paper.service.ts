@@ -37,12 +37,13 @@ export class PaperService {
    * If processPdf is enabled:
    * - If the paper is a PDF, the text content is extracted from the PDF URL.
    * - If the paper is not a PDF, the text content is extracted from the paper URL.
-   * If either of them fails, the text content is extracted from the main URL.
+   * If either extraction fails, the text content is extracted from the main URL.
    * If the main URL is empty, an empty string is returned.
    * */
   public async getTextContent({ url, paper }: IPaperMetadata): Promise<string> {
-    // if pdf processing is disabled, get text content from main url
-    if (!this.config.processPdf) return url !== '' ? this.getWebContent(url) : ''
+    if (!this.config.processPdf) {
+      return url !== '' ? this.getWebContent(url) : ''
+    }
 
     try {
       if (paper.type === 'pdf') return await this.getPdfContent(paper.url)
@@ -59,8 +60,8 @@ export class PaperService {
   }
 
   /*
-   * Finds the regex in the paper content.
-   * Returns an array of found items, where each item contains the text and the sentences where it was found.
+   * Finds occurrences of a regex pattern in the paper content.
+   * Returns an array of found items, each containing the matched text and associated sentences.
    * */
   public async findInPaper(paper: IPaperMetadata, findRegex: string): Promise<IFoundItem[]> {
     try {
@@ -77,7 +78,7 @@ export class PaperService {
 
       return Array.from(foundItems).map(([text, sentences]) => ({ text, sentences }))
     } catch (error) {
-      this.logger?.error(`Error extracting regex in paper: ${(error as Error).message}`)
+      this.logger?.warn(`Error extracting regex in paper: ${(error as Error).message}`)
       return []
     }
   }
@@ -87,7 +88,7 @@ export class PaperService {
    * */
   public async download({ title, paper }: IPaperMetadata, outputDir: string): Promise<void> {
     if (paper.type !== 'pdf') {
-      this.logger?.debug(`Paper ${title} is not a PDF so skipping download`)
+      this.logger?.debug(`Skipping download for non-PDF paper: ${title}`)
       return
     }
 

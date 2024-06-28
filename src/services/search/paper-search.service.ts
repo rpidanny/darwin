@@ -68,7 +68,7 @@ export class PaperSearchService {
 
   private logFoundItems(foundItems: IFoundItem[]): void {
     const foundTexts = foundItems.map(item => item.text).join(', ')
-    this.logger?.debug(`Found search keywords: ${foundTexts}`)
+    this.logger?.debug(`Found items: ${foundTexts}`)
   }
 
   private toEntity(result: IPaperMetadata, foundItems?: IFoundItem[]): IPaperEntity {
