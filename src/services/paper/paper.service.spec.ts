@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals'
-import { PaperUrlType } from '@rpidanny/google-scholar/dist'
-import { Odysseus } from '@rpidanny/odysseus/dist'
+import { PaperSourceType } from '@rpidanny/google-scholar'
+import { Odysseus } from '@rpidanny/odysseus'
 import { mock } from 'jest-mock-extended'
 
 import { getMockPaperMetadata } from '../../../test/fixtures/google-scholar'
@@ -12,9 +12,9 @@ import { IPaperServiceConfig } from './paper.service.config'
 describe('PaperService', () => {
   const htmlPaperMetadata = getMockPaperMetadata()
   const pdfPaperMetadata = getMockPaperMetadata({
-    paper: {
-      ...htmlPaperMetadata.paper,
-      type: PaperUrlType.PDF,
+    source: {
+      ...htmlPaperMetadata.source,
+      type: PaperSourceType.PDF,
     },
   })
 
@@ -66,7 +66,7 @@ describe('PaperService', () => {
 
       expect(content).toBe('some-text')
       expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(pdfServiceMock.getTextContent).toHaveBeenCalledWith(pdfPaperMetadata.paper.url)
+      expect(pdfServiceMock.getTextContent).toHaveBeenCalledWith(pdfPaperMetadata.source.url)
       expect(odysseusMock.getTextContent).not.toHaveBeenCalled()
     })
 
@@ -78,7 +78,7 @@ describe('PaperService', () => {
       expect(content).toBe('some-text')
       expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
       expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
-        htmlPaperMetadata.paper.url,
+        htmlPaperMetadata.source.url,
         undefined,
         !config.skipCaptcha,
       )
@@ -102,7 +102,7 @@ describe('PaperService', () => {
     })
 
     it('should fallback to main url when paper url is empty', async () => {
-      const metadata = getMockPaperMetadata({ paper: { ...htmlPaperMetadata.paper, url: '' } })
+      const metadata = getMockPaperMetadata({ source: { ...htmlPaperMetadata.source, url: '' } })
       odysseusMock.getTextContent.mockResolvedValueOnce('some-text')
 
       const content = await service.getTextContent(metadata)
@@ -212,7 +212,7 @@ describe('PaperService', () => {
 
       expect(downloadService.download).toHaveBeenCalledTimes(1)
       expect(downloadService.download).toHaveBeenCalledWith(
-        pdfPaperMetadata.paper.url,
+        pdfPaperMetadata.source.url,
         expectedFilePath,
       )
     })

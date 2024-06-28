@@ -57,8 +57,8 @@ describe('PaperSearchService', () => {
           url: result.url,
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
+          sourceUrl: result.source.url,
+          sourceType: result.source.type,
         })),
       )
     })
@@ -92,10 +92,10 @@ describe('PaperSearchService', () => {
           url: result.url,
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
-          foundItems: ['Cas9'],
-          sentencesOfInterest: [
+          sourceUrl: result.source.url,
+          sourceType: result.source.type,
+          matchedTexts: ['Cas9'],
+          relevantSentences: [
             'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
             'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
           ],
@@ -118,8 +118,8 @@ describe('PaperSearchService', () => {
           citationCount: result.citation.count,
           citationUrl: result.citation.url ?? '',
           description: result.description,
-          paperUrl: result.paper.url,
-          paperType: result.paper.type,
+          sourceUrl: result.source.url,
+          sourceType: result.source.type,
         })
       })
       expect(mockCsvWriter.end).toHaveBeenCalled()
@@ -149,10 +149,10 @@ describe('PaperSearchService', () => {
         citationCount: page.papers[0].citation.count,
         citationUrl: page.papers[0].citation.url ?? '',
         description: page.papers[0].description,
-        paperUrl: page.papers[0].paper.url,
-        paperType: page.papers[0].paper.type,
-        foundItems: ['Cas9'],
-        sentencesOfInterest: [
+        sourceUrl: page.papers[0].source.url,
+        sourceType: page.papers[0].source.type,
+        matchedTexts: ['Cas9'],
+        relevantSentences: [
           'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
           'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
         ],

@@ -74,15 +74,15 @@ export class PaperSearchService {
   private toEntity(result: IPaperMetadata, foundItems?: ITextMatch[]): IPaperEntity {
     return {
       title: result.title,
+      description: result.description,
       authors: result.authors.map(author => author.name),
       url: result.url,
-      paperType: result.paper.type,
-      paperUrl: result.paper.url,
       citationUrl: result.citation.url ?? '',
       citationCount: result.citation.count,
-      description: result.description,
-      foundItems: foundItems?.map(item => item.content),
-      sentencesOfInterest: foundItems?.flatMap(item => item.sentences),
+      sourceType: result.source.type,
+      sourceUrl: result.source.url,
+      matchedTexts: foundItems?.map(item => item.content),
+      relevantSentences: foundItems?.flatMap(item => item.sentences),
     }
   }
 }

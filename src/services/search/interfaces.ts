@@ -2,11 +2,11 @@ export interface IPaperEntity {
   title: string
   description: string
   url: string
-  paperType: string
-  paperUrl: string
+  sourceType: string
+  sourceUrl: string
   citationCount: number
   citationUrl: string
   authors: string[]
-  foundItems?: string[]
-  sentencesOfInterest?: string[]
+  matchedTexts?: string[]
+  relevantSentences?: string[]
 }

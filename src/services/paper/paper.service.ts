@@ -40,17 +40,17 @@ export class PaperService {
    * If either extraction fails, the text content is extracted from the main URL.
    * If the main URL is empty, an empty string is returned.
    * */
-  public async getTextContent({ url, paper }: IPaperMetadata): Promise<string> {
+  public async getTextContent({ url, source }: IPaperMetadata): Promise<string> {
     if (!this.config.processPdf) {
       return url !== '' ? this.getWebContent(url) : ''
     }
 
     try {
-      if (paper.type === 'pdf') return await this.getPdfContent(paper.url)
-      if (paper.url !== '') return await this.getWebContent(paper.url)
+      if (source.type === 'pdf') return await this.getPdfContent(source.url)
+      if (source.url !== '') return await this.getWebContent(source.url)
     } catch (error) {
       this.logger?.debug(
-        `Error extracting text from ${paper.type} ${paper.url}: ${(error as Error).message}`,
+        `Error extracting text from ${source.type} ${source.url}: ${(error as Error).message}`,
       )
     }
 
@@ -86,13 +86,13 @@ export class PaperService {
   /*
    * Downloads the paper if it is a PDF.
    * */
-  public async download({ title, paper }: IPaperMetadata, outputDir: string): Promise<void> {
-    if (paper.type !== 'pdf') {
+  public async download({ title, source }: IPaperMetadata, outputDir: string): Promise<void> {
+    if (source.type !== 'pdf') {
       this.logger?.debug(`Skipping download for non-PDF paper: ${title}`)
       return
     }
 
-    const filePath = `${outputDir}/${title.replace(/[\s/]/g, '_')}.${paper.type}`
-    await this.downloadService.download(paper.url, filePath)
+    const filePath = `${outputDir}/${title.replace(/[\s/]/g, '_')}.${source.type}`
+    await this.downloadService.download(source.url, filePath)
   }
 }
