@@ -15,7 +15,7 @@ describe('PdfService', () => {
       readFile(
         join(
           __dirname,
-          '../../../test/data/papers/pdf/The-new-frontier-of-genome-engineering-with-CRISPR-Cas9.pdf',
+          '../../../test/data/papers/The-new-frontier-of-genome-engineering-with-CRISPR-Cas9.pdf',
         ),
       ),
   })
