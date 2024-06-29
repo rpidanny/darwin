@@ -4,6 +4,16 @@
 
 * comprehensive refactor, feature enhancements, and critical fixes ([#49](https://github.com/rpidanny/darwin/issues/49)) ([07ced13](https://github.com/rpidanny/darwin/commit/07ced13946e901f46d8c31085e3087f581419bfb))
 
+### Bug Fixes
+
+* imports ([#55](https://github.com/rpidanny/darwin/issues/55)) ([0451138](https://github.com/rpidanny/darwin/commit/0451138a68e728ebc8638ea65308a0e9e09558d5))
+
+## [1.19.0](https://github.com/rpidanny/darwin/compare/v1.18.1...v1.19.0) (2024-06-29)
+
+### Features
+
+* comprehensive refactor, feature enhancements, and critical fixes ([#49](https://github.com/rpidanny/darwin/issues/49)) ([07ced13](https://github.com/rpidanny/darwin/commit/07ced13946e901f46d8c31085e3087f581419bfb))
+
 ## [1.18.1](https://github.com/rpidanny/darwin/compare/v1.18.0...v1.18.1) (2024-06-26)
 
 ### Bug Fixes
