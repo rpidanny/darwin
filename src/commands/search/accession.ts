@@ -52,8 +52,10 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary: 'The name or path of the output CSV file.',
-      required: true,
+      summary:
+        'Specify the output destination for the CSV file. If a folder path is given, the filename is auto-generated; if a file path is given, it is used directly.',
+      required: false,
+      default: '.',
     }),
     'accession-number-regex': oclif.Flags.string({
       char: 'a',

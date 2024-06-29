@@ -1,5 +1,6 @@
 import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
 import { Quill } from '@rpidanny/quill'
+import { join } from 'path'
 
 import { ITextMatch } from '../../utils/text/interfaces'
 import { IoService } from '../io/io.service'
@@ -41,16 +42,28 @@ export class PaperSearchService {
     return papers
   }
 
+  public getFilePath(path: string, keywords: string, filterPattern?: string): string {
+    if (this.ioService.isDirectory(path)) {
+      const sanitizedFilter = filterPattern?.replace(/[^a-zA-Z0-9-_]/g, '-') || ''
+      const fileName = `${keywords.replace(/ /g, '-')}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`
+      console.log('fileName', fileName)
+      return join(path, fileName)
+    } else {
+      return path
+    }
+  }
+
   public async exportToCSV(
     keywords: string,
     filePath: string,
     minItemCount: number = 20,
     filterPattern?: string,
   ): Promise<string> {
-    const outputWriter = await this.ioService.getCsvStreamWriter(filePath)
+    const fullPath = this.getFilePath(filePath, keywords, filterPattern)
+    const outputWriter = await this.ioService.getCsvStreamWriter(fullPath)
     await this.search(keywords, minItemCount, page => outputWriter.write(page), filterPattern)
     await outputWriter.end()
-    return filePath
+    return fullPath
   }
 
   private async processPaper(
