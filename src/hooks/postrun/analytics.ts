@@ -15,13 +15,13 @@ const hook: Hook<'postrun'> = async function (opts) {
   const { metadata, mixpanel, startTime } = customData
 
   const endTime = performance.now()
-  const duration = endTime - (startTime || 0)
+  const durationMs = endTime - (startTime || 0)
 
   const payload = {
     ...metadata,
     endTime: moment(now).format('YYYY-MM-DD HH:mm:ss'),
     endTimestamp: now.getTime(),
-    duration: prettyMilliseconds(duration),
+    duration: prettyMilliseconds(durationMs),
   }
 
   mixpanel.track(Metric.CommandComplete, payload)
