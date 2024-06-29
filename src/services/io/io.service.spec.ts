@@ -155,6 +155,7 @@ describe('IoService', () => {
   describe('isFilePath', () => {
     it.each`
       path                                        | isFile
+      ${'file.csv'}                               | ${true}
       ${'/home/user/documents/report.pdf'}        | ${true}
       ${'C:\\Users\\User\\Documents\\report.pdf'} | ${true}
       ${'/usr/local/bin'}                         | ${false}
