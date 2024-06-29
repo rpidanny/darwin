@@ -57,6 +57,7 @@
     "p-retry": "^6.2.0",
     "pdf-text-reader": "^5.1.0",
     "playwright": "^1.44.1",
+    "pretty-ms": "^9.0.0",
     "tough-cookie": "^4.1.4"
   },
   "devDependencies": {
@@ -124,6 +125,10 @@
     ],
     "topicSeparator": " ",
     "topics": {
+      "test": {
+        "description": "Test cli commands",
+        "hidden": true
+      },
       "search": {
         "description": "Search for papers, accession numbers, or other content.",
         "hidden": false
@@ -141,7 +146,8 @@
       "init": [
         "./dist/hooks/init/analytics",
         "./dist/hooks/init/banner"
-      ]
+      ],
+      "postrun": "./dist/hooks/postrun/analytics"
     },
     "macos": {
       "identifier": "com.rpidanny.darwin"

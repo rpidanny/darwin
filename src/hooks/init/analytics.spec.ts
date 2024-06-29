@@ -7,7 +7,8 @@ import os from 'os'
 
 import { getMockConfig } from '../../../test/fixtures/config.js'
 import { getMockHooksContext } from '../../../test/fixtures/hooks.js'
-import hook, { Metric } from './analytics.js' // Update with the actual path to your hook file
+import { Metric } from '../../utils/analytics/metric.js'
+import hook from './analytics.js'
 
 describe('Hook Tests', () => {
   const ciFlag = process.env.CI
@@ -19,6 +20,7 @@ describe('Hook Tests', () => {
   let hookContext: Hook.Context
 
   beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(1_719_669_891_008)
     // Clear mock function calls and reset state before each test
     jest.clearAllMocks()
     hookContext = getMockHooksContext({ config: mockConfig })
@@ -31,6 +33,7 @@ describe('Hook Tests', () => {
     // Restore the original implementation of Mixpanel.init() after each test
     jest.restoreAllMocks()
     process.env.CI = ciFlag
+    jest.useRealTimers()
   })
 
   it('should initialize Mixpanel with the correct token', async () => {
@@ -62,6 +65,8 @@ describe('Hook Tests', () => {
       osPlatform: 'darwin',
       osType: 'Darwin',
       osVersion: osVersion,
+      startTime: '2024-06-29 16:04:51',
+      startTimestamp: 1_719_669_891_008,
       hostArchitecture: mockConfig.arch,
       hostname: 'mock-hostname',
       args: ['arg1', '--flag1', 'value1'],
