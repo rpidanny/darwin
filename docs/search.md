@@ -12,7 +12,7 @@ Search and export papers containing accession numbers to a CSV file.
 
 ```
 USAGE
-  $ darwin search accession KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p
+  $ darwin search accession KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
     <value>] [-a <value>] [-s] [-P] [-h]
 
 ARGUMENTS
@@ -26,7 +26,9 @@ FLAGS
   -c, --count=<value>                   [default: 10] The minimum number of papers to search for. (When running
                                         concurrently, the actual number of papers may be a bit higher)
   -h, --headless                        Run the browser in headless mode (no UI).
-  -o, --output=<value>                  (required) The name or path of the output CSV file.
+  -o, --output=<value>                  [default: .] Specify the output destination for the CSV file. If a folder path
+                                        is given, the filename is auto-generated; if a file path is given, it is used
+                                        directly.
   -p, --concurrency=<value>             [default: 10] The number papers to process in parallel.
   -s, --skip-captcha                    Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be
                                         solved.
@@ -41,7 +43,7 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.19.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.20.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -49,7 +51,7 @@ Searches and exports research papers based on keywords to a CSV file.
 
 ```
 USAGE
-  $ darwin search papers KEYWORDS -o <value> [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p
+  $ darwin search papers KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
     <value>] [-f <value>] [-s] [-P] [-h]
 
 ARGUMENTS
@@ -63,7 +65,8 @@ FLAGS
   -f, --filter=<value>       Case-insensitive regex to filter papers by content. Example: "Holdemania|Colidextribacter"
                              will only include papers containing either term.
   -h, --headless             Run the browser in headless mode (no UI).
-  -o, --output=<value>       (required) The name or path of the output CSV file.
+  -o, --output=<value>       [default: .] Specify the output destination for the CSV file. If a folder path is given,
+                             the filename is auto-generated; if a file path is given, it is used directly.
   -p, --concurrency=<value>  [default: 10] The number papers to process in parallel.
   -s, --skip-captcha         Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
 
@@ -79,4 +82,4 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.19.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.20.0/src/commands/search/papers.ts)_

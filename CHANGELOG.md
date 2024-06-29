@@ -1,3 +1,9 @@
+## [1.20.0](https://github.com/rpidanny/darwin/compare/v1.19.0...v1.20.0) (2024-06-29)
+
+### Features
+
+* optional output flag ([#56](https://github.com/rpidanny/darwin/issues/56)) ([add84e4](https://github.com/rpidanny/darwin/commit/add84e43037c723e525922729f413f2a5b628640))
+
 ## [1.19.0](https://github.com/rpidanny/darwin/compare/v1.18.1...v1.19.0) (2024-06-29)
 
 ### Features
