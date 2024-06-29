@@ -1,12 +1,13 @@
+import { ICitation, IPaperSource } from '@rpidanny/google-scholar'
+
+import { ITextMatch } from '../paper/interfaces'
+
 export interface IPaperEntity {
   title: string
   description: string
   url: string
-  sourceType: string
-  sourceUrl: string
-  citationCount: number
-  citationUrl: string
+  source: IPaperSource
+  citation: ICitation
   authors: string[]
-  matchedTexts?: string[]
-  relevantSentences?: string[]
+  matches?: ITextMatch[]
 }

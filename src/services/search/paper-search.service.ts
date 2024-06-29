@@ -77,12 +77,9 @@ export class PaperSearchService {
       description: result.description,
       authors: result.authors.map(author => author.name),
       url: result.url,
-      citationUrl: result.citation.url ?? '',
-      citationCount: result.citation.count,
-      sourceType: result.source.type,
-      sourceUrl: result.source.url,
-      matchedTexts: foundItems?.map(item => item.content),
-      relevantSentences: foundItems?.flatMap(item => item.sentences),
+      citation: result.citation,
+      source: result.source,
+      matches: foundItems,
     }
   }
 }

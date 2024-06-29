@@ -55,19 +55,6 @@ describe('IoService', () => {
     await expect(fs.readFile(filePath, 'utf-8')).resolves.toBe(JSON.stringify(content, null, 2))
   })
 
-  it('should write a CSV file', async () => {
-    const filePath = `${tempDir.name}/test.csv`
-    const content = [
-      { id: '1', name: 'Abhishek' },
-      { id: '2', name: 'Maharjan' },
-    ]
-
-    await ioService.writeCsv(filePath, content)
-
-    const fileContent = await fs.readFile(filePath, 'utf-8')
-    expect(fileContent).toBe('id,name\n1,Abhishek\n2,Maharjan')
-  })
-
   it('should read a file', async () => {
     const filePath = path.join(process.cwd(), './test/data/io/test.txt')
     const expectedContent = 'Hello, World!\n'
@@ -122,5 +109,46 @@ describe('IoService', () => {
 
     expect(result).toBeInstanceOf(CsvStreamWriter)
     expect(result.filePath).toBe(filePath)
+  })
+
+  describe('writeCsv', () => {
+    it('should write a CSV file with headers', async () => {
+      const filePath = `${tempDir.name}/test.csv`
+      const data = [
+        { id: '1', name: 'Abhishek' },
+        { id: '2', name: 'Maharjan' },
+      ]
+
+      await ioService.writeCsv(filePath, data)
+
+      const fileContent = await fs.readFile(filePath, 'utf-8')
+      expect(fileContent).toBe('id,name\n1,Abhishek\n2,Maharjan')
+    })
+
+    it('should write JSON containing array properly', async () => {
+      const filePath = `${tempDir.name}/test.csv`
+      const data = [
+        { id: '1', arr: ['a', 'b'] },
+        { id: '2', arr: ['c', 'd'] },
+      ]
+
+      await ioService.writeCsv(filePath, data)
+
+      const fileContent = await fs.readFile(filePath, 'utf-8')
+      expect(fileContent).toBe('id,arr\n1,"[""a"",""b""]"\n2,"[""c"",""d""]"')
+    })
+
+    it('should write nested JSON properly', async () => {
+      const filePath = `${tempDir.name}/test.csv`
+      const data = [
+        { id: '1', obj: { key: 'a' } },
+        { id: '2', obj: { key: 'b' } },
+      ]
+
+      await ioService.writeCsv(filePath, data)
+
+      const fileContent = await fs.readFile(filePath, 'utf-8')
+      expect(fileContent).toBe('id,obj.key\n1,a\n2,b')
+    })
   })
 })

@@ -55,10 +55,8 @@ describe('PaperSearchService', () => {
           authors: result.authors.map(author => author.name),
           description: result.description,
           url: result.url,
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
-          sourceUrl: result.source.url,
-          sourceType: result.source.type,
+          citation: result.citation,
+          source: result.source,
         })),
       )
     })
@@ -90,14 +88,16 @@ describe('PaperSearchService', () => {
           authors: result.authors.map(author => author.name),
           description: result.description,
           url: result.url,
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
-          sourceUrl: result.source.url,
-          sourceType: result.source.type,
-          matchedTexts: ['Cas9'],
-          relevantSentences: [
-            'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
-            'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+          citation: result.citation,
+          source: result.source,
+          matches: [
+            {
+              content: 'Cas9',
+              sentences: [
+                'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
+                'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+              ],
+            },
           ],
         })),
       )
@@ -115,11 +115,9 @@ describe('PaperSearchService', () => {
           title: result.title,
           authors: result.authors.map(author => author.name),
           url: result.url,
-          citationCount: result.citation.count,
-          citationUrl: result.citation.url ?? '',
           description: result.description,
-          sourceUrl: result.source.url,
-          sourceType: result.source.type,
+          citation: result.citation,
+          source: result.source,
         })
       })
       expect(mockCsvWriter.end).toHaveBeenCalled()
@@ -146,15 +144,17 @@ describe('PaperSearchService', () => {
         title: page.papers[0].title,
         authors: page.papers[0].authors.map(author => author.name),
         url: page.papers[0].url,
-        citationCount: page.papers[0].citation.count,
-        citationUrl: page.papers[0].citation.url ?? '',
         description: page.papers[0].description,
-        sourceUrl: page.papers[0].source.url,
-        sourceType: page.papers[0].source.type,
-        matchedTexts: ['Cas9'],
-        relevantSentences: [
-          'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
-          'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+        citation: page.papers[0].citation,
+        source: page.papers[0].source,
+        matches: [
+          {
+            content: 'Cas9',
+            sentences: [
+              'The key proteins involved in CRISPR are Cas (CRISPR-associated) proteins, with Cas9 being the most well-known.',
+              'Cas9 acts like molecular scissors, guided by RNA sequences to specific locations on the DNA strand where it makes precise cuts.',
+            ],
+          },
         ],
       })
       expect(mockCsvWriter.end).toHaveBeenCalled()
