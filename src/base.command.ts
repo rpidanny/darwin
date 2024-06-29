@@ -3,10 +3,13 @@ import { LogLevel, LogOutputFormat, Quill } from '@rpidanny/quill'
 import { log2fs } from '@rpidanny/quill-hooks'
 import { readFile } from 'fs/promises'
 import { ensureFile, pathExists } from 'fs-extra'
+import moment from 'moment'
 import path from 'path'
+import prettyMilliseconds from 'pretty-ms'
 
 import { CONFIG_FILE_NAME } from './config/constants.js'
 import { TConfig } from './config/schema.js'
+import { Metric } from './utils/analytics/metric.js'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof BaseCommand)['baseFlags'] & T['flags']
@@ -55,6 +58,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {
     // add any custom logic to handle errors from the command
     // or simply return the parent class error handling
+
+    await this.emitErrorMetric(err)
     return super.catch(err)
   }
 
@@ -79,5 +84,25 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
       level: this.flags['log-level'] as LogLevel,
       hooks: [log2fs(this.logFilePath)],
     })
+  }
+
+  private async emitErrorMetric(err: Error): Promise<void> {
+    const { customData } = this.config
+
+    if (customData) {
+      const { metadata, mixpanel, startTime } = customData
+      const now = new Date()
+
+      const endTime = performance.now()
+      const durationMs = endTime - (startTime || 0)
+
+      mixpanel.track(Metric.CommandError, {
+        ...metadata,
+        duration: prettyMilliseconds(durationMs),
+        endTime: moment(now).format('YYYY-MM-DD HH:mm:ss'),
+        error: err.message,
+        stack: err.stack,
+      })
+    }
   }
 }

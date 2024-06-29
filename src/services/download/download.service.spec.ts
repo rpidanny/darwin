@@ -2,7 +2,7 @@ import { jest } from '@jest/globals'
 import { mock } from 'jest-mock-extended'
 import nock from 'nock'
 
-import { IoService } from '../io/io'
+import { IoService } from '../io/io.service'
 import { DownloadService } from './download.service'
 
 describe('DownloadService', () => {

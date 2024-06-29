@@ -1,21 +1,13 @@
-export interface PaperEntity {
+import { ICitation, IPaperSource } from '@rpidanny/google-scholar'
+
+import { ITextMatch } from '../../utils/text/interfaces'
+
+export interface IPaperEntity {
   title: string
   description: string
   url: string
-  paperType: string
-  paperUrl: string
-  citationCount: number
-  citationUrl: string
+  source: IPaperSource
+  citation: ICitation
   authors: string[]
-  foundItems?: string[]
-  sentencesOfInterest?: string[]
-}
-
-export interface PaperWithAccessionEntity extends PaperEntity {
-  accessionNumbers: string[]
-}
-
-export interface FoundItem {
-  text: string
-  sentences: string[]
+  matches?: ITextMatch[]
 }

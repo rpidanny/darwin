@@ -2,7 +2,7 @@ import { Quill } from '@rpidanny/quill'
 import got from 'got'
 import { CookieJar } from 'tough-cookie'
 
-import { IoService } from '../io/io'
+import { IoService } from '../io/io.service'
 
 export class DownloadService {
   constructor(
@@ -10,10 +10,9 @@ export class DownloadService {
     private readonly logger?: Quill,
   ) {}
 
-  async download(url: string, filePath: string): Promise<void> {
-    this.logger?.debug(`Downloading file ${url}`)
-
-    const content = await got
+  async getContent(url: string): Promise<Buffer> {
+    // TODO: update user agent
+    return await got
       .get(url, {
         timeout: 30_000,
         throwHttpErrors: true,
@@ -27,7 +26,11 @@ export class DownloadService {
         },
       })
       .buffer()
+  }
 
+  async download(url: string, filePath: string): Promise<void> {
+    this.logger?.debug(`Downloading ${url}`)
+    const content = await this.getContent(url)
     await this.ioService.writeFile(filePath, content)
   }
 }

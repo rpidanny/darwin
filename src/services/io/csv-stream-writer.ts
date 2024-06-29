@@ -1,24 +1,33 @@
-import csvWriter, { CsvWriteStream } from 'csv-write-stream'
+import { Transform } from '@json2csv/node'
+import { flatten } from '@json2csv/transforms'
 import { createWriteStream, existsSync } from 'fs'
 import { ensureFileSync } from 'fs-extra'
+import stream from 'stream'
 
 import { IStreamWriter } from './interfaces.js'
 
 export class CsvStreamWriter implements IStreamWriter {
-  private writer: CsvWriteStream
-  constructor(readonly filePath: string) {
-    this.writer = csvWriter({
-      separator: ',',
-      newline: '\n',
-      headers: undefined,
-      sendHeaders: true,
-    })
+  private writer: stream.Transform
 
+  constructor(readonly filePath: string) {
     if (existsSync(filePath)) {
       throw new Error(`File already exists: ${filePath}`)
     }
 
     ensureFileSync(filePath)
+
+    this.writer = new Transform(
+      {
+        transforms: [
+          flatten({
+            objects: true,
+            arrays: true,
+          }),
+        ],
+      },
+      {},
+      { objectMode: true },
+    )
 
     this.writer.pipe(createWriteStream(filePath))
   }

@@ -1,11 +1,12 @@
 import { DynamicStructuredTool } from '@langchain/core/tools'
 import { mock } from 'jest-mock-extended'
 
-import { AccessionSearchService } from '../../services/search/accession-search.service'
+import { AccessionPattern } from '../../services/search/constants'
+import { PaperSearchService } from '../../services/search/paper-search.service'
 import { PapersWithAccessionNumbersSearchTool } from './accession-search'
 
 describe('PapersWithAccessionNumbersSearchTool', () => {
-  const searchService = mock<AccessionSearchService>()
+  const searchService = mock<PaperSearchService>()
 
   it('should create a new instance of DynamicStructuredTool', () => {
     const tool = new PapersWithAccessionNumbersSearchTool(searchService)
@@ -17,17 +18,16 @@ describe('PapersWithAccessionNumbersSearchTool', () => {
     const keywords = 'keywords'
     const count = 5
 
-    searchService.exportPapersWithBioProjectAccessionNumbersToCSV.mockResolvedValue(
-      'outputFile.csv',
-    )
+    searchService.exportToCSV.mockResolvedValue('outputFile.csv')
 
     const resp = await tool.func({ keywords, count })
 
     expect(resp).toContain(`Papers has been exported to outputFile.csv`)
-    expect(searchService.exportPapersWithBioProjectAccessionNumbersToCSV).toHaveBeenCalledWith(
+    expect(searchService.exportToCSV).toHaveBeenCalledWith(
       keywords,
       expect.stringContaining('papers-keywords-'),
       count,
+      AccessionPattern.BioProject,
     )
   })
 })

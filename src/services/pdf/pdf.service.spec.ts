@@ -1,21 +1,29 @@
 import { jest } from '@jest/globals'
+import { readFile } from 'fs/promises'
 import { mock } from 'jest-mock-extended'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
 import { DownloadService } from '../download/download.service'
-import { IPdfConfig } from './pdf.config'
 import { PdfService } from './pdf.service'
 
 describe('PdfService', () => {
-  const mockDownloadService = mock<DownloadService>()
-  const mockPdfConfig = mock<IPdfConfig>({
-    tempPath: '/tmp',
+  const __dirname = dirname(fileURLToPath(import.meta.url))
+
+  const mockDownloadService = mock<DownloadService>({
+    getContent: () =>
+      readFile(
+        join(
+          __dirname,
+          '../../../test/data/papers/The-new-frontier-of-genome-engineering-with-CRISPR-Cas9.pdf',
+        ),
+      ),
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let pdfService: PdfService
-
   beforeEach(() => {
-    pdfService = new PdfService(mockPdfConfig, mockDownloadService)
+    pdfService = new PdfService(mockDownloadService)
   })
 
   afterEach(() => {
@@ -24,7 +32,8 @@ describe('PdfService', () => {
 
   describe('getTextContent', () => {
     it('should get text content from PDF', async () => {
-      // TODO: add test
+      const content = await pdfService.getTextContent('https://example.com')
+      expect(content).toContain('The new frontier of genome engineering with CRISPR-Cas9')
     })
   })
 })

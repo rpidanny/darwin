@@ -4,26 +4,25 @@ import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs'
 import type { TextItem } from 'pdfjs-dist/types/src/display/api'
 
 import { DownloadService } from '../download/download.service'
-import { IPdfConfig } from './pdf.config'
 
 export class PdfService {
   constructor(
-    private readonly config: IPdfConfig,
     private readonly downloadService: DownloadService,
     private readonly logger?: Quill,
   ) {}
 
   async getTextContent(url: string): Promise<string> {
-    const path = `${this.config.tempPath}/${Date.now()}.pdf`
+    let fileContent: Buffer
 
     try {
-      await this.downloadService.download(url, path)
+      fileContent = await this.downloadService.getContent(url)
     } catch (error) {
-      this.logger?.debug(`Failed to download PDF ${url} : ${(error as Error).message}`)
+      this.logger?.debug(`Failed to get PDF from ${url} : ${(error as Error).message}`)
       throw error
     }
 
-    const doc = await pdfjs.getDocument({ url: path, useSystemFonts: true }).promise
+    const doc = await pdfjs.getDocument({ data: new Uint8Array(fileContent), useSystemFonts: true })
+      .promise
     const pages = await Promise.all(
       Array.from({ length: doc.numPages }, (_, i) => doc.getPage(i + 1)),
     )

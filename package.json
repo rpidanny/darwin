@@ -1,6 +1,6 @@
 {
   "name": "@rpidanny/darwin",
-  "description": "A cli tool to download research papers / datasets from various sources",
+  "description": "An elegant CLI wizard enhancing biotech research efficiency, with adaptable features for other domains, albeit with minor constraints.",
   "version": "1.18.1",
   "author": "Abhishek <abhishek.rpidanny@gmail.com>",
   "bin": {
@@ -30,17 +30,18 @@
   },
   "bugs": "https://github.com/rpidanny/darwin/issues",
   "dependencies": {
+    "@json2csv/node": "^7.0.6",
+    "@json2csv/transforms": "^7.0.6",
     "@langchain/community": "^0.2.13",
     "@langchain/openai": "^0.1.3",
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-not-found": "^3.2.1",
-    "@rpidanny/google-scholar": "^1.2.0",
+    "@rpidanny/google-scholar": "^3.2.0",
     "@rpidanny/odysseus": "^2.4.0",
     "@rpidanny/quill": "^1.6.0",
     "@rpidanny/quill-hooks": "^1.0.2",
     "bottleneck": "^2.19.5",
-    "csv-write-stream": "^2.0.0",
     "csvtojson": "^2.0.10",
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
@@ -56,6 +57,7 @@
     "p-retry": "^6.2.0",
     "pdf-text-reader": "^5.1.0",
     "playwright": "^1.44.1",
+    "pretty-ms": "^9.0.0",
     "tough-cookie": "^4.1.4"
   },
   "devDependencies": {
@@ -119,16 +121,24 @@
     "dirname": "darwin",
     "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-not-found"
     ],
     "topicSeparator": " ",
     "topics": {
+      "test": {
+        "description": "Test cli commands",
+        "hidden": true
+      },
       "search": {
-        "description": "Search content (papers / accession numbers / etc)",
+        "description": "Search for papers, accession numbers, or other content.",
+        "hidden": false
+      },
+      "download": {
+        "description": "Download papers, datasets, or other content.",
         "hidden": false
       },
       "config": {
-        "description": "Manage the app config",
+        "description": "Manage application configurations.",
         "hidden": false
       }
     },
@@ -136,7 +146,8 @@
       "init": [
         "./dist/hooks/init/analytics",
         "./dist/hooks/init/banner"
-      ]
+      ],
+      "postrun": "./dist/hooks/postrun/analytics"
     },
     "macos": {
       "identifier": "com.rpidanny.darwin"

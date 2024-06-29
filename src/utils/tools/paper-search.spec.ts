@@ -17,12 +17,12 @@ describe('PapersSearchTool', () => {
     const keywords = 'keywords'
     const count = 5
 
-    searchService.exportPapersToCSV.mockResolvedValue('outputFile.csv')
+    searchService.exportToCSV.mockResolvedValue('outputFile.csv')
 
     const resp = await tool.func({ keywords, count })
 
     expect(resp).toContain(`Papers has been exported to outputFile.csv`)
-    expect(searchService.exportPapersToCSV).toHaveBeenCalledWith(
+    expect(searchService.exportToCSV).toHaveBeenCalledWith(
       keywords,
       expect.stringContaining('papers-keywords-'),
       count,

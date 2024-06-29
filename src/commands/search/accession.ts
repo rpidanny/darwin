@@ -4,26 +4,28 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
-import { IoService } from '../../services/io/io.js'
+import { IoService } from '../../services/io/io.service.js'
+import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
-import { AccessionSearchService } from '../../services/search/accession-search.service.js'
+import { AccessionPattern } from '../../services/search/constants.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
   private odysseus!: Odysseus
-  private searchService!: AccessionSearchService
+  private searchService!: PaperSearchService
 
-  static summary = 'Search for papers that contain accession numbers.'
+  static summary = 'Search and export papers containing accession numbers to a CSV file.'
 
   static deprecationOptions?: oclif.Interfaces.Deprecation = {
-    message: 'Use `darwin search papers` command with  `--find-regex="PRJNA\\d+"` instead.',
+    message: 'Use `darwin search papers` command with  `--find="PRJNA\\d+"` instead.',
     version: '1.13.0',
     to: 'search papers',
   }
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG',
   ]
 
   static args = {
@@ -37,38 +39,45 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   static flags = {
     count: oclif.Flags.integer({
       char: 'c',
-      summary: 'The minimum number of papers with accession numbers to search for',
+      summary:
+        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
+      required: false,
+      default: 10,
+    }),
+    concurrency: oclif.Flags.integer({
+      char: 'p',
+      summary: 'The number papers to process in parallel.',
       required: false,
       default: 10,
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary: 'Output CSV file name/path',
+      summary: 'The name or path of the output CSV file.',
       required: true,
-    }),
-    headless: oclif.Flags.boolean({
-      char: 'h',
-      summary: 'Run in headless mode',
-      required: false,
-      default: false,
     }),
     'accession-number-regex': oclif.Flags.string({
       char: 'a',
-      summary: 'Regex to match accession numbers. Defaults to BioProject accession numbers.',
+      summary:
+        'Regex to match accession numbers. Defaults to matching BioProject accession numbers.',
       required: false,
-      default: 'PRJNA\\d+',
+      default: AccessionPattern.BioProject,
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary:
-        'Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar captcha still needs to be solved.',
+      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
       required: false,
       default: false,
     }),
     'process-pdf': oclif.Flags.boolean({
-      char: 'p',
+      char: 'P',
       summary:
-        '[Experimental] Process the PDFs to extract text. This will take longer to export the papers.',
+        '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
+      required: false,
+      default: false,
+    }),
+    headless: oclif.Flags.boolean({
+      char: 'h',
+      summary: 'Run the browser in headless mode (no UI).',
       required: false,
       default: false,
     }),
@@ -77,7 +86,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   async init(): Promise<void> {
     await super.init()
 
-    const { headless } = this.flags
+    const { headless, concurrency } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -87,24 +96,24 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(
+    const pdfService = new PdfService(downloadService, this.logger)
+    const paperService = new PaperService(
       {
-        tempPath: `${this.config.dataDir}/downloads/pdf`,
+        skipCaptcha: this.flags['skip-captcha'],
+        processPdf: this.flags['process-pdf'],
       },
+      this.odysseus,
+      pdfService,
       downloadService,
       this.logger,
     )
 
-    const config = {
-      skipCaptcha: this.flags['skip-captcha'],
-      processPdf: this.flags['process-pdf'],
-    }
-
-    this.searchService = new AccessionSearchService(
-      config,
+    this.searchService = new PaperSearchService(
+      {
+        concurrency,
+      },
       scholar,
-      this.odysseus,
-      pdfService,
+      paperService,
       ioService,
       this.logger,
     )
@@ -115,19 +124,14 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     await this.odysseus?.close()
   }
 
-  public async run(): Promise<string> {
-    const { count, output } = this.flags
+  public async run(): Promise<void> {
+    const { count, output, 'accession-number-regex': filterPattern } = this.flags
     const { keywords } = this.args
 
-    this.logger.info(`Searching accession numbers for: ${keywords}`)
-    const outputPath = await this.searchService.exportPapersWithAccessionNumbersToCSV(
-      keywords,
-      new RegExp(this.flags['accession-number-regex'], 'g'),
-      output,
-      count,
-    )
+    this.logger.info(`Searching papers with Accession Numbers (${filterPattern}) for: ${keywords}`)
 
-    this.logger.info(`Papers exported to to ${outputPath}`)
-    return `Papers exported to to ${outputPath}`
+    const outputPath = await this.searchService.exportToCSV(keywords, output, count, filterPattern)
+
+    this.logger.info(`Exported papers list to: ${outputPath}`)
   }
 }

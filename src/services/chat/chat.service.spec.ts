@@ -2,7 +2,7 @@ import { mock } from 'jest-mock-extended'
 import mockStdin from 'mock-stdin'
 
 import { AutonomousAgent } from './autonomous-agent'
-import { ChatService } from './chat'
+import { ChatService } from './chat.service'
 
 describe('ChatService', () => {
   const agentMock = mock<AutonomousAgent>({

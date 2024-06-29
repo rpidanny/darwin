@@ -1,28 +1,28 @@
 import { jest } from '@jest/globals'
-import { PaperUrlType } from '@rpidanny/google-scholar/dist'
+import { GoogleScholar } from '@rpidanny/google-scholar/dist'
 import { mock } from 'jest-mock-extended'
 import nock from 'nock'
 
-import { getSearchResponse } from '../../../test/fixtures/google-scholar'
-import { PaperSearchService } from '../search/paper-search.service'
-import { DownloadService } from './download.service'
+import { getMockPageContent } from '../../../test/fixtures/google-scholar'
+import { PaperService } from '../paper/paper.service'
 import { PaperDownloadService } from './paper-download.service'
 
 describe('PaperDownloadService', () => {
-  const downloadServiceMock = mock<DownloadService>()
-  const paperSearchServiceMock = mock<PaperSearchService>()
-  let paperDownloadService: PaperDownloadService
+  const paperService = mock<PaperService>()
+  const googleScholar = mock<GoogleScholar>()
+  let service: PaperDownloadService
 
-  const exampleScholarResponse = getSearchResponse()
+  const page = getMockPageContent()
 
   beforeEach(() => {
-    downloadServiceMock.download.mockImplementation()
-    paperSearchServiceMock.fetchPapers.mockImplementation(async (_keywords, _count, onPaper) => {
-      if (onPaper) await onPaper(exampleScholarResponse.results[0])
-      return []
+    paperService.download.mockImplementation()
+    googleScholar.iteratePapers.mockImplementation(async (_options, onPaper) => {
+      for (const paper of page.papers) {
+        if (!(await onPaper(paper))) return
+      }
     })
 
-    paperDownloadService = new PaperDownloadService(paperSearchServiceMock, downloadServiceMock)
+    service = new PaperDownloadService(googleScholar, paperService)
 
     nock.disableNetConnect()
   })
@@ -32,42 +32,20 @@ describe('PaperDownloadService', () => {
   })
 
   describe('download', () => {
-    it('should download PDFs', async () => {
-      const paper = {
-        ...exampleScholarResponse.results[0],
-        paper: { type: PaperUrlType.PDF, url: 'http://example.com' },
-      }
+    it('should download papers', async () => {
+      await expect(service.downloadPapers('CRISPR', 10, '/output')).resolves.toEqual('/output')
 
-      paperSearchServiceMock.fetchPapers.mockImplementation(async (_keywords, _count, onPaper) => {
-        if (onPaper) await onPaper(paper)
-        return []
-      })
-
-      await expect(paperDownloadService.download('CRISPR', 1, '/output')).resolves.toEqual(
-        '/output',
-      )
-
-      expect(downloadServiceMock.download).toHaveBeenCalledWith(
-        paper.paper.url,
-        `/output/${paper.title.replace(/[\s/]/g, '_')}.pdf`,
-      )
+      expect(paperService.download).toHaveBeenCalledTimes(3)
+      expect(paperService.download).toHaveBeenNthCalledWith(1, page.papers[0], '/output')
+      expect(paperService.download).toHaveBeenNthCalledWith(2, page.papers[1], '/output')
+      expect(paperService.download).toHaveBeenNthCalledWith(3, page.papers[2], '/output')
     })
 
-    it('should not download if not pfd', async () => {
-      const paper = {
-        ...exampleScholarResponse.results[0],
-      }
+    it('should stop downloading papers when count is reached', async () => {
+      await expect(service.downloadPapers('CRISPR', 1, '/output')).resolves.toEqual('/output')
 
-      paperSearchServiceMock.fetchPapers.mockImplementation(async (_keywords, _count, onPaper) => {
-        if (onPaper) await onPaper(paper)
-        return []
-      })
-
-      await expect(paperDownloadService.download('CRISPR', 1, '/output')).resolves.toEqual(
-        '/output',
-      )
-
-      expect(downloadServiceMock.download).not.toHaveBeenCalled()
+      expect(paperService.download).toHaveBeenCalledTimes(1)
+      expect(paperService.download).toHaveBeenCalledWith(page.papers[0], '/output')
     })
   })
 })
