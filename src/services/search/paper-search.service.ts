@@ -44,9 +44,8 @@ export class PaperSearchService {
 
   public getFilePath(path: string, keywords: string, filterPattern?: string): string {
     if (this.ioService.isDirectory(path)) {
-      const sanitizedFilter = filterPattern?.replace(/[^a-zA-Z0-9-_]/g, '-') || ''
-      const fileName = `${keywords.replace(/ /g, '-')}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`
-      console.log('fileName', fileName)
+      const sanitizedFilter = filterPattern?.replace(/[^\w-]/g, '-') || ''
+      const fileName = `${keywords.replace(/[^\w-]/g, '-')}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`
       return join(path, fileName)
     } else {
       return path
