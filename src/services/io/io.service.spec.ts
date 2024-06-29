@@ -159,6 +159,8 @@ describe('IoService', () => {
       ${'C:\\Users\\User\\Documents\\report.pdf'} | ${true}
       ${'/usr/local/bin'}                         | ${false}
       ${'D:\\Photos\\Vacation'}                   | ${false}
+      ${'./'}                                     | ${false}
+      ${'.\\'}                                    | ${false}
     `('should return $isFile for path $path', ({ path, isFile }) => {
       expect(ioService.isFilePath(path)).toBe(isFile)
     })
@@ -172,6 +174,8 @@ describe('IoService', () => {
       ${'/usr/local/bin'}                         | ${true}
       ${'D:\\Photos\\Vacation'}                   | ${true}
       ${'data/exports/'}                          | ${true}
+      ${'./'}                                     | ${true}
+      ${'.\\'}                                    | ${true}
     `('should return $isDir for path $path', ({ path, isDir }) => {
       expect(ioService.isDirectory(path)).toBe(isDir)
     })
