@@ -1,4 +1,4 @@
-import { findInText, getSentence } from './index'
+import { findInText, getSentence } from './text-search'
 
 describe('getSentence', () => {
   it('should return the sentence containing the given index', () => {
