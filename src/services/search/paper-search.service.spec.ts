@@ -146,7 +146,7 @@ describe('PaperSearchService', () => {
 
       const expectedPath = `data/exports/some-keywords_PRJNA-d-_1719677868856.csv`
       const filePath = await service.exportToCSV(
-        'some keywords',
+        'some  keywords',
         'data/exports/',
         10,
         AccessionPattern.BioProject,

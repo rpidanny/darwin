@@ -49,7 +49,11 @@ export class PaperSearchService {
 
     const sanitizedFilter = filterPattern?.replace(/[^\w-]/g, '-')
     const sanitizedKeywords = keywords.replace(/[^\w-]/g, '-')
-    const fileName = `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`
+    const fileName =
+      `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`.replace(
+        /-+/g,
+        '-',
+      )
 
     return join(path, fileName)
   }
