@@ -1,3 +1,9 @@
+## [1.20.2](https://github.com/rpidanny/darwin/compare/v1.20.1...v1.20.2) (2024-06-29)
+
+### Bug Fixes
+
+* filter non alphanumeric chars from filename ([#58](https://github.com/rpidanny/darwin/issues/58)) ([9a87f4b](https://github.com/rpidanny/darwin/commit/9a87f4b00295fe84c081c96927aa82b0693e8720))
+
 ## [1.20.1](https://github.com/rpidanny/darwin/compare/v1.20.0...v1.20.1) (2024-06-29)
 
 ### Bug Fixes
