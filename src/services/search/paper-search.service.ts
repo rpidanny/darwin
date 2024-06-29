@@ -59,16 +59,16 @@ export class PaperSearchService {
   ): Promise<IPaperEntity | undefined> {
     if (!filterPattern) return this.toEntity(paper)
 
-    const foundItems = await this.paperService.findInPaper(paper, filterPattern)
-    if (foundItems.length === 0) return undefined
+    const matches = await this.paperService.findInPaper(paper, filterPattern)
+    if (matches.length === 0) return undefined
 
-    this.logFoundItems(foundItems)
-    return this.toEntity(paper, foundItems)
+    this.logMatches(matches)
+    return this.toEntity(paper, matches)
   }
 
-  private logFoundItems(foundItems: ITextMatch[]): void {
+  private logMatches(foundItems: ITextMatch[]): void {
     const foundTexts = foundItems.map(item => item.content).join(', ')
-    this.logger?.debug(`Found items: ${foundTexts}`)
+    this.logger?.info(`Found matches: ${foundTexts}`)
   }
 
   private toEntity(result: IPaperMetadata, foundItems?: ITextMatch[]): IPaperEntity {
