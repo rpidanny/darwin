@@ -1,4 +1,4 @@
-import '../src/types/config.d.ts'
+import '../src/types/config.d'
 
 import { jest } from '@jest/globals'
 

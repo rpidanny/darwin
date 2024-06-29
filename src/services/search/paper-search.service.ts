@@ -1,8 +1,8 @@
 import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
 import { Quill } from '@rpidanny/quill'
 
+import { ITextMatch } from '../../utils/text/interfaces'
 import { IoService } from '../io/io.service'
-import { ITextMatch } from '../paper/interfaces'
 import { PaperService } from '../paper/paper.service'
 import { IPaperEntity } from './interfaces'
 import { IPaperSearchConfig } from './paper-search.config'

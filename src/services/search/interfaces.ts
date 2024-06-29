@@ -1,6 +1,6 @@
 import { ICitation, IPaperSource } from '@rpidanny/google-scholar'
 
-import { ITextMatch } from '../paper/interfaces'
+import { ITextMatch } from '../../utils/text/interfaces'
 
 export interface IPaperEntity {
   title: string

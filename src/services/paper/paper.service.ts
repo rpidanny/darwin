@@ -2,9 +2,10 @@ import { IPaperMetadata } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 
+import { findInText } from '../../utils/text/index.js'
+import { ITextMatch } from '../../utils/text/interfaces'
 import { DownloadService } from '../download/download.service'
 import { PdfService } from '../pdf/pdf.service'
-import { ITextMatch } from './interfaces'
 import { IPaperServiceConfig } from './paper.service.config'
 
 export class PaperService {
@@ -22,13 +23,6 @@ export class PaperService {
 
   private async getPdfContent(url: string): Promise<string> {
     return this.pdfService.getTextContent(url)
-  }
-
-  // TODO: limit length of sentence
-  private getSentence(text: string, index: number): string {
-    const start = text.lastIndexOf('.', index) + 1
-    const end = text.indexOf('.', index) + 1
-    return text.slice(start, end).trim()
   }
 
   /*
@@ -66,17 +60,7 @@ export class PaperService {
   public async findInPaper(paper: IPaperMetadata, findRegex: string): Promise<ITextMatch[]> {
     try {
       const paperContent = await this.getTextContent(paper)
-      const matches = paperContent.matchAll(new RegExp(findRegex, 'gi'))
-      const foundItems = new Map<string, string[]>()
-
-      for (const match of matches) {
-        const sentence = this.getSentence(paperContent, match.index)
-        const currentSentences = foundItems.get(match[0]) || []
-        currentSentences.push(sentence)
-        foundItems.set(match[0], currentSentences)
-      }
-
-      return Array.from(foundItems).map(([content, sentences]) => ({ content, sentences }))
+      return findInText(paperContent, new RegExp(findRegex, 'gi'))
     } catch (error) {
       this.logger?.warn(`Error extracting regex in paper: ${(error as Error).message}`)
       return []

@@ -62,7 +62,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       default: false,
     }),
     'process-pdf': oclif.Flags.boolean({
-      char: 'p',
+      char: 'P',
       summary:
         '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
       required: false,
