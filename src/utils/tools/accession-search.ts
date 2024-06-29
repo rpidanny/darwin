@@ -2,8 +2,8 @@ import { DynamicStructuredTool } from '@langchain/core/tools'
 import moment from 'moment'
 import { z } from 'zod'
 
-import { AccessionPattern } from '../../services/search/constants'
-import { PaperSearchService } from '../../services/search/paper-search.service'
+import { AccessionPattern } from '../../services/search/constants.js'
+import { PaperSearchService } from '../../services/search/paper-search.service.js'
 
 export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool {
   constructor(private readonly searchService: PaperSearchService) {

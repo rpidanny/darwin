@@ -11,13 +11,14 @@ Chat with Darwin. Can be used to instruct Darwin to do things in natural languag
 
 ```
 USAGE
-  $ darwin chat [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-l] [-s] [-p]
+  $ darwin chat [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-p <value>] [-l] [-s] [-P]
 
 FLAGS
-  -l, --includeAppLogs  Include application logs in the chat while performing actions
-  -p, --process-pdf     [Experimental] Process the PDFs to extract text. This will take longer to export the papers.
-  -s, --skip-captcha    Weather to skip captcha on paper URLs or wait for the user to solve the captcha. Google Scholar
-                        captcha still needs to be solved.
+  -P, --process-pdf          [Experimental] Attempt to process PDFs for keywords within papers. This feature is
+                             experimental and may be unreliable.
+  -l, --logs                 Include application logs along with the chat conversations.
+  -p, --concurrency=<value>  [default: 10] The number papers to process in parallel.
+  -s, --skip-captcha         Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -27,4 +28,4 @@ EXAMPLES
   $ darwin chat
 ```
 
-_See code: [src/commands/chat/index.ts](https://github.com/rpidanny/darwin/blob/v1.18.1/src/commands/chat/index.ts)_
+_See code: [src/commands/chat/index.ts](https://github.com/rpidanny/darwin/blob/v1.19.0/src/commands/chat/index.ts)_
