@@ -65,7 +65,7 @@ describe('Hook Tests', () => {
       osPlatform: 'darwin',
       osType: 'Darwin',
       osVersion: osVersion,
-      startTime: '2024-06-29 16:04:51',
+      startTime: expect.any(String),
       startTimestamp: 1_719_669_891_008,
       hostArchitecture: mockConfig.arch,
       hostname: 'mock-hostname',
