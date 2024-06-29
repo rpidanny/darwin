@@ -1,13 +1,13 @@
 `darwin download`
 =================
 
-Download pdf papers based on the given keywords.
+Download papers, datasets, or other content.
 
 * [`darwin download papers KEYWORDS`](#darwin-download-papers-keywords)
 
 ## `darwin download papers KEYWORDS`
 
-Download pdf papers based on the given keywords.
+Download PDF papers based on specified keywords.
 
 ```
 USAGE
@@ -17,9 +17,10 @@ ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -c, --count=<value>   [default: 10] Minimum number of papers to download
-  -h, --headless        Run in headless mode
-  -o, --output=<value>  (required) Output path to store the downloaded papers
+  -c, --count=<value>   [default: 10] The minimum number of papers to search for. (When running concurrently, the actual
+                        number of papers may be a bit higher)
+  -h, --headless        Run the browser in headless mode (no UI).
+  -o, --output=<value>  (required) The path to save the downloaded papers.
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -31,4 +32,4 @@ EXAMPLES
   $ darwin download papers "crispr cas9" -o papers/ -c 100 --log-level debug
 ```
 
-_See code: [src/commands/download/papers.ts](https://github.com/rpidanny/darwin/blob/v1.18.1/src/commands/download/papers.ts)_
+_See code: [src/commands/download/papers.ts](https://github.com/rpidanny/darwin/blob/v1.19.0/src/commands/download/papers.ts)_
