@@ -43,7 +43,7 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.20.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.20.1/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -82,4 +82,4 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.20.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.20.1/src/commands/search/papers.ts)_

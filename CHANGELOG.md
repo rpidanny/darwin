@@ -1,3 +1,9 @@
+## [1.20.1](https://github.com/rpidanny/darwin/compare/v1.20.0...v1.20.1) (2024-06-29)
+
+### Bug Fixes
+
+* isDirectory classification ([#57](https://github.com/rpidanny/darwin/issues/57)) ([a6a3fc8](https://github.com/rpidanny/darwin/commit/a6a3fc847c2cd79f2e39534b6402ccb71acf32c3))
+
 ## [1.20.0](https://github.com/rpidanny/darwin/compare/v1.19.0...v1.20.0) (2024-06-29)
 
 ### Features
