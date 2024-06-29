@@ -151,4 +151,29 @@ describe('IoService', () => {
       expect(fileContent).toBe('id,obj.key\n1,a\n2,b')
     })
   })
+
+  describe('isFilePath', () => {
+    it.each`
+      path                                        | isFile
+      ${'/home/user/documents/report.pdf'}        | ${true}
+      ${'C:\\Users\\User\\Documents\\report.pdf'} | ${true}
+      ${'/usr/local/bin'}                         | ${false}
+      ${'D:\\Photos\\Vacation'}                   | ${false}
+    `('should return $isFile for path $path', ({ path, isFile }) => {
+      expect(ioService.isFilePath(path)).toBe(isFile)
+    })
+  })
+
+  describe('isDirectory', () => {
+    it.each`
+      path                                        | isDir
+      ${'/home/user/documents/report.pdf'}        | ${false}
+      ${'C:\\Users\\User\\Documents\\report.pdf'} | ${false}
+      ${'/usr/local/bin'}                         | ${true}
+      ${'D:\\Photos\\Vacation'}                   | ${true}
+      ${'data/exports/'}                          | ${true}
+    `('should return $isDir for path $path', ({ path, isDir }) => {
+      expect(ioService.isDirectory(path)).toBe(isDir)
+    })
+  })
 })

@@ -2,7 +2,7 @@ import csv from 'csvtojson'
 import fs from 'fs/promises'
 import fsExtra from 'fs-extra'
 import { json2csv } from 'json-2-csv'
-import path from 'path'
+import path, { extname, sep } from 'path'
 
 import { CsvStreamWriter } from './csv-stream-writer.js'
 
@@ -59,5 +59,14 @@ export class IoService {
 
   async getCsvStreamWriter(filePath: string): Promise<CsvStreamWriter> {
     return new CsvStreamWriter(filePath)
+  }
+
+  isFilePath(path: string): boolean {
+    return extname(path) !== ''
+  }
+
+  isDirectory(path: string): boolean {
+    // A basic heuristic: if the string does not contain a dot or ends with a '/', consider it a directory.
+    return !path.includes('.') || path.endsWith(sep)
   }
 }
