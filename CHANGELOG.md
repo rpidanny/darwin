@@ -1,3 +1,9 @@
+## [1.21.0](https://github.com/rpidanny/darwin/compare/v1.20.2...v1.21.0) (2024-06-30)
+
+### Features
+
+* rename --process-pdf ([#59](https://github.com/rpidanny/darwin/issues/59)) ([b12c0cf](https://github.com/rpidanny/darwin/commit/b12c0cf2f00d4b49330f543b7d040150f0e85ab9))
+
 ## [1.20.2](https://github.com/rpidanny/darwin/compare/v1.20.1...v1.20.2) (2024-06-29)
 
 ### Bug Fixes
