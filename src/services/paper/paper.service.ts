@@ -18,7 +18,10 @@ export class PaperService {
   ) {}
 
   private async getWebContent(url: string): Promise<string> {
-    return this.odysseus.getTextContent(url, undefined, !this.config.skipCaptcha)
+    return this.odysseus.getTextContent(url, {
+      waitOnCaptcha: !this.config.skipCaptcha,
+      throwOnCaptcha: true,
+    })
   }
 
   private async getPdfContent(url: string): Promise<string> {
@@ -35,7 +38,7 @@ export class PaperService {
    * If the main URL is empty, an empty string is returned.
    * */
   public async getTextContent({ url, source }: IPaperMetadata): Promise<string> {
-    if (!this.config.processPdf) {
+    if (this.config.legacyProcessing) {
       return url !== '' ? this.getWebContent(url) : ''
     }
 
@@ -62,7 +65,7 @@ export class PaperService {
       const paperContent = await this.getTextContent(paper)
       return findInText(paperContent, new RegExp(findRegex, 'gi'))
     } catch (error) {
-      this.logger?.warn(`Error extracting regex in paper: ${(error as Error).message}`)
+      this.logger?.debug(`Failed finding ${findRegex} in paper: ${(error as Error).message}`)
       return []
     }
   }

@@ -22,7 +22,7 @@ describe('PaperService', () => {
   const odysseusMock = mock<Odysseus>()
   const downloadService = mock<DownloadService>()
   const config: IPaperServiceConfig = {
-    processPdf: true,
+    legacyProcessing: false,
     skipCaptcha: true,
   }
 
@@ -39,7 +39,7 @@ describe('PaperService', () => {
   describe('getTextContent', () => {
     it('should get text content from main url when pdf processing is disabled', async () => {
       const service = new PaperService(
-        { ...config, processPdf: false },
+        { ...config, legacyProcessing: true },
         odysseusMock,
         pdfServiceMock,
         downloadService,
@@ -51,11 +51,10 @@ describe('PaperService', () => {
 
       expect(content).toBe('some-text')
       expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
-        htmlPaperMetadata.url,
-        undefined,
-        !config.skipCaptcha,
-      )
+      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(htmlPaperMetadata.url, {
+        waitOnCaptcha: !config.skipCaptcha,
+        throwOnCaptcha: true,
+      })
       expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
     })
 
@@ -77,11 +76,10 @@ describe('PaperService', () => {
 
       expect(content).toBe('some-text')
       expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
-        htmlPaperMetadata.source.url,
-        undefined,
-        !config.skipCaptcha,
-      )
+      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(htmlPaperMetadata.source.url, {
+        waitOnCaptcha: !config.skipCaptcha,
+        throwOnCaptcha: true,
+      })
       expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
     })
 
@@ -94,11 +92,10 @@ describe('PaperService', () => {
       expect(content).toBe('some-text')
       expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
       expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
-        pdfPaperMetadata.url,
-        undefined,
-        !config.skipCaptcha,
-      )
+      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(pdfPaperMetadata.url, {
+        waitOnCaptcha: !config.skipCaptcha,
+        throwOnCaptcha: true,
+      })
     })
 
     it('should fallback to main url when paper url is empty', async () => {
@@ -109,16 +106,15 @@ describe('PaperService', () => {
 
       expect(content).toBe('some-text')
       expect(odysseusMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(
-        metadata.url,
-        undefined,
-        !config.skipCaptcha,
-      )
+      expect(odysseusMock.getTextContent).toHaveBeenCalledWith(metadata.url, {
+        waitOnCaptcha: !config.skipCaptcha,
+        throwOnCaptcha: true,
+      })
     })
 
     it('should return empty string when url is empty when processPdf is false', async () => {
       const service = new PaperService(
-        { ...config, processPdf: false },
+        { ...config, legacyProcessing: true },
         odysseusMock,
         pdfServiceMock,
         downloadService,
