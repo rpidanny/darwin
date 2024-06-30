@@ -38,7 +38,7 @@ export class PaperService {
    * If the main URL is empty, an empty string is returned.
    * */
   public async getTextContent({ url, source }: IPaperMetadata): Promise<string> {
-    if (!this.config.processPdf) {
+    if (this.config.legacyProcessing) {
       return url !== '' ? this.getWebContent(url) : ''
     }
 

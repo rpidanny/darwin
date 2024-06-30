@@ -67,7 +67,7 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     const paperService = new PaperService(
       {
         skipCaptcha: true,
-        processPdf: false,
+        legacyProcessing: false,
       },
       this.odysseus,
       pdfService,

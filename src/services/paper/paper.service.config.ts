@@ -1,4 +1,4 @@
 export interface IPaperServiceConfig {
   skipCaptcha: boolean
-  processPdf: boolean
+  legacyProcessing: boolean
 }

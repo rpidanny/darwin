@@ -22,7 +22,7 @@ describe('PaperService', () => {
   const odysseusMock = mock<Odysseus>()
   const downloadService = mock<DownloadService>()
   const config: IPaperServiceConfig = {
-    processPdf: true,
+    legacyProcessing: false,
     skipCaptcha: true,
   }
 
@@ -39,7 +39,7 @@ describe('PaperService', () => {
   describe('getTextContent', () => {
     it('should get text content from main url when pdf processing is disabled', async () => {
       const service = new PaperService(
-        { ...config, processPdf: false },
+        { ...config, legacyProcessing: true },
         odysseusMock,
         pdfServiceMock,
         downloadService,
@@ -114,7 +114,7 @@ describe('PaperService', () => {
 
     it('should return empty string when url is empty when processPdf is false', async () => {
       const service = new PaperService(
-        { ...config, processPdf: false },
+        { ...config, legacyProcessing: true },
         odysseusMock,
         pdfServiceMock,
         downloadService,

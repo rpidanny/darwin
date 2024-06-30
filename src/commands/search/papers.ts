@@ -63,10 +63,9 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
-    'process-pdf': oclif.Flags.boolean({
-      char: 'P',
+    'legacy-processing': oclif.Flags.boolean({
       summary:
-        '[Experimental] Attempt to process PDFs for keywords within papers. This feature is experimental and may be unreliable.',
+        'Enable legacy processing of papers that only extracts text from the main URL. The new method attempts to extract text from the source URLs (pdf or html) and falls back to the main URL.',
       required: false,
       default: false,
     }),
@@ -95,7 +94,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
-        processPdf: this.flags['process-pdf'],
+        legacyProcessing: this.flags['legacy-processing'],
       },
       this.odysseus,
       pdfService,
