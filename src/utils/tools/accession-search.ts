@@ -28,12 +28,11 @@ export class PapersWithAccessionNumbersSearchTool extends DynamicStructuredTool 
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
         const filePath = `${cwd}/${fileName}`
 
-        const outputFile = await this.searchService.exportToCSV(
+        const outputFile = await this.searchService.exportToCSV(filePath, {
           keywords,
-          filePath,
-          count,
-          AccessionPattern.BioProject,
-        )
+          minItemCount: count,
+          filterPattern: AccessionPattern.BioProject,
+        })
         return `Papers has been exported to ${outputFile}. Return the local file path to the user as plain text. DON'T USE MARKDOWN.`
       },
     })

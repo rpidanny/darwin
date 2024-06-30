@@ -143,13 +143,10 @@ describe('PaperService', () => {
 
   describe('findInPaper', () => {
     it('should find regex in paper content', async () => {
-      jest
-        .spyOn(service, 'getTextContent')
-        .mockResolvedValueOnce(
-          'CRISPR–Cas9 structures and mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.',
-        )
+      const text =
+        'CRISPR–Cas9 structures and mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.'
 
-      const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR–Cas9')
+      const foundItems = await service.findInPaper(text, 'CRISPR–Cas9')
 
       expect(foundItems).toHaveLength(1)
       expect(foundItems[0].content).toBe('CRISPR–Cas9')
@@ -160,13 +157,10 @@ describe('PaperService', () => {
     })
 
     it('should find multiple items in paper content', async () => {
-      jest
-        .spyOn(service, 'getTextContent')
-        .mockResolvedValueOnce(
-          'CRISPR–Cas9 structures and mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.',
-        )
+      const text =
+        'CRISPR–Cas9 structures and mechanisms. In this review, we briefly explain the biology underlying CRISPR–Cas9 technology.'
 
-      const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR|Cas9')
+      const foundItems = await service.findInPaper(text, 'CRISPR|Cas9')
 
       expect(foundItems).toHaveLength(2)
       expect(foundItems[0].content).toBe('CRISPR')
@@ -182,17 +176,7 @@ describe('PaperService', () => {
     })
 
     it('should return empty array if regex is not found in paper content', async () => {
-      jest.spyOn(service, 'getTextContent').mockResolvedValueOnce('some-text')
-
-      const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR–Cas9')
-
-      expect(foundItems).toHaveLength(0)
-    })
-
-    it('should return empty string when getTextContent fails', async () => {
-      jest.spyOn(service, 'getTextContent').mockRejectedValueOnce(new Error('Failed to get text'))
-
-      const foundItems = await service.findInPaper(htmlPaperMetadata, 'CRISPR–Cas9')
+      const foundItems = await service.findInPaper('some-text', 'CRISPR–Cas9')
 
       expect(foundItems).toHaveLength(0)
     })

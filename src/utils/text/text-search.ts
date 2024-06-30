@@ -3,13 +3,13 @@ import { ITextMatch } from './interfaces'
 function getStartIndex(text: string, index: number): number {
   const dot = text.lastIndexOf('.', index)
   const nl = text.lastIndexOf('\n', index)
-  return Math.max(dot, nl) + 1
+  return Math.max(dot, nl, index - 200) + 1
 }
 
 function getEndIndex(text: string, index: number): number {
   const dot = text.indexOf('.', index)
   const nl = text.indexOf('\n', index)
-  return Math.min(dot === -1 ? Infinity : dot, nl === -1 ? Infinity : nl) + 1
+  return Math.min(dot === -1 ? Infinity : dot, nl === -1 ? Infinity : nl, index + 200) + 1
 }
 
 export function getSentence(text: string, index: number): string {

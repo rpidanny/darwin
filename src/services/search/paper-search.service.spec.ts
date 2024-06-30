@@ -7,6 +7,7 @@ import { getMockPageContent } from '../../../test/fixtures/google-scholar'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io.service'
 import { PaperService } from '../paper/paper.service'
+import { SummaryService } from '../summary/summary.service.js'
 import { AccessionPattern } from './constants.js'
 import { IPaperSearchConfig } from './paper-search.config'
 import { PaperSearchService } from './paper-search.service'
@@ -17,6 +18,8 @@ describe('PaperSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const paperService = mock<PaperService>()
   const logger = mock<Quill>()
+  const summaryService = mock<SummaryService>()
+
   const mockConfig: IPaperSearchConfig = {
     concurrency: 1,
   }
@@ -37,7 +40,14 @@ describe('PaperSearchService', () => {
       }
     })
 
-    service = new PaperSearchService(mockConfig, googleScholarMock, paperService, ioService, logger)
+    service = new PaperSearchService(
+      mockConfig,
+      googleScholarMock,
+      paperService,
+      ioService,
+      summaryService,
+      logger,
+    )
   })
 
   afterEach(() => {
@@ -54,7 +64,7 @@ describe('PaperSearchService', () => {
 
   describe('search', () => {
     it('should search for papers', async () => {
-      const entities = await service.search('some keywords')
+      const entities = await service.search({ keywords: 'some keywords', minItemCount: 10 })
 
       expect(entities).toHaveLength(3)
       expect(entities).toEqual(
@@ -70,7 +80,7 @@ describe('PaperSearchService', () => {
     })
 
     it('should stop searching when minItemCount is reached', async () => {
-      const entities = await service.search('some keywords', 1)
+      const entities = await service.search({ keywords: 'some keywords', minItemCount: 1 })
 
       expect(entities.length).toBeGreaterThan(1)
     })
@@ -87,7 +97,11 @@ describe('PaperSearchService', () => {
       ])
       paperService.findInPaper.mockResolvedValue([])
 
-      const entities = await service.search('some keywords', 10, undefined, 'cas9')
+      const entities = await service.search({
+        keywords: 'some keywords',
+        minItemCount: 10,
+        filterPattern: 'cas9',
+      })
 
       expect(entities).toHaveLength(1)
       expect(entities).toEqual(
@@ -110,11 +124,37 @@ describe('PaperSearchService', () => {
         })),
       )
     })
+
+    it('should summarize papers if summarize is true', async () => {
+      summaryService.summarize.mockResolvedValue('This is a summary.')
+
+      const entities = await service.search({
+        keywords: 'some keywords',
+        minItemCount: 10,
+        summarize: true,
+      })
+
+      expect(entities).toHaveLength(3)
+      expect(entities).toEqual(
+        page.papers.map(result => ({
+          title: result.title,
+          authors: result.authors.map(author => author.name),
+          description: result.description,
+          url: result.url,
+          citation: result.citation,
+          source: result.source,
+          summary: 'This is a summary.',
+        })),
+      )
+    })
   })
 
   describe('exportToCSV', () => {
     it('should export papers to CSV', async () => {
-      const filePath = await service.exportToCSV('some keywords', 'file.csv')
+      const filePath = await service.exportToCSV('file.csv', {
+        keywords: 'some keywords',
+        minItemCount: 10,
+      })
 
       expect(filePath).toBe('file.csv')
       expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
@@ -145,12 +185,11 @@ describe('PaperSearchService', () => {
       paperService.findInPaper.mockResolvedValue([])
 
       const expectedPath = `data/exports/some-keywords_PRJNA-d-_1719677868856.csv`
-      const filePath = await service.exportToCSV(
-        'some  keywords',
-        'data/exports/',
-        10,
-        AccessionPattern.BioProject,
-      )
+      const filePath = await service.exportToCSV('data/exports/', {
+        keywords: 'some keywords',
+        minItemCount: 10,
+        filterPattern: AccessionPattern.BioProject,
+      })
 
       expect(filePath).toBe(expectedPath)
       expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith(expectedPath)
@@ -187,7 +226,11 @@ describe('PaperSearchService', () => {
       ])
       paperService.findInPaper.mockResolvedValue([])
 
-      const filePath = await service.exportToCSV('some keywords', 'file.csv', 10, 'cas9')
+      const filePath = await service.exportToCSV('file.csv', {
+        keywords: 'some keywords',
+        minItemCount: 10,
+        filterPattern: 'cas9',
+      })
 
       expect(filePath).toBe('file.csv')
       expect(ioService.getCsvStreamWriter).toHaveBeenCalledWith('file.csv')
