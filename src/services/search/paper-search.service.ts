@@ -81,22 +81,20 @@ export class PaperSearchService {
   ): Promise<IPaperEntity | undefined> {
     const entity = this.toEntity(paper)
 
-    let textContent: string
+    if (!filterPattern && !summarize) return entity
 
-    if (filterPattern || summarize) {
-      textContent = await this.paperService.getTextContent(paper)
+    const textContent = await this.paperService.getTextContent(paper)
 
-      if (filterPattern) {
-        const matches = await this.paperService.findInPaper(textContent, filterPattern)
-        if (matches.length === 0) return undefined
-        this.logMatches(matches)
-        entity.matches = matches
-      }
+    if (filterPattern) {
+      const matches = await this.paperService.findInPaper(textContent, filterPattern)
+      if (matches.length === 0) return undefined
+      this.logMatches(matches)
+      entity.matches = matches
+    }
 
-      if (summarize) {
-        const summary = await this.summaryService.summarize(textContent)
-        entity.summary = summary
-      }
+    if (summarize) {
+      const summary = await this.summaryService.summarize(textContent)
+      entity.summary = summary
     }
 
     return entity
