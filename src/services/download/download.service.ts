@@ -5,6 +5,7 @@ import { CookieJar } from 'tough-cookie'
 import { IoService } from '../io/io.service'
 
 export class DownloadService {
+  cookieJar = new CookieJar()
   constructor(
     private readonly ioService: IoService,
     private readonly logger?: Quill,
@@ -16,7 +17,8 @@ export class DownloadService {
       .get(url, {
         timeout: 30_000,
         throwHttpErrors: true,
-        cookieJar: new CookieJar(),
+        cookieJar: this.cookieJar,
+        followRedirect: true,
         headers: {
           'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
