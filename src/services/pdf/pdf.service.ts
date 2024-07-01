@@ -23,8 +23,11 @@ export class PdfService {
       throw error
     }
 
-    const doc = await pdfjs.getDocument({ data: new Uint8Array(fileContent), useSystemFonts: true })
-      .promise
+    const doc = await pdfjs.getDocument({
+      data: new Uint8Array(fileContent),
+      useSystemFonts: true,
+      verbosity: pdfjs.VerbosityLevel.ERRORS,
+    }).promise
     const pages = await Promise.all(
       Array.from({ length: doc.numPages }, (_, i) => doc.getPage(i + 1)),
     )
