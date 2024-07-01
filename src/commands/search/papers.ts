@@ -82,7 +82,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       summary:
         'Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
       description:
-        'Summaries are generated using llama3 running locally so make sure OLLAMA server is running. See https://ollama.com/',
+        'Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See https://ollama.com/',
       required: false,
       default: false,
     }),
