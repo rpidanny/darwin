@@ -24,7 +24,10 @@ export class PapersSearchTool extends DynamicStructuredTool {
         const fileName = `papers-${keywords.replace(/ /g, '-')}-${moment().format('YYYY-MM-DD-HH-mm-ss')}.csv`
         const filePath = `${cwd}/${fileName}`
 
-        const outputFile = await this.searchService.exportToCSV(keywords, filePath, count)
+        const outputFile = await this.searchService.exportToCSV(filePath, {
+          keywords,
+          minItemCount: count,
+        })
         return `Papers has been exported to ${outputFile}. Return the local file path to the user as plain text without markdown. DON'T USE MARKDOWN.`
       },
     })

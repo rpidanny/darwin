@@ -37,7 +37,10 @@ export class PaperService {
    * If either extraction fails, the text content is extracted from the main URL.
    * If the main URL is empty, an empty string is returned.
    * */
-  public async getTextContent({ url, source }: IPaperMetadata): Promise<string> {
+  public async getTextContent({
+    url,
+    source,
+  }: Pick<IPaperMetadata, 'url' | 'source'>): Promise<string> {
     if (this.config.legacyProcessing) {
       return url !== '' ? this.getWebContent(url) : ''
     }
@@ -60,9 +63,8 @@ export class PaperService {
    * Finds occurrences of a regex pattern in the paper content.
    * Returns an array of found items, each containing the matched text and associated sentences.
    * */
-  public async findInPaper(paper: IPaperMetadata, findRegex: string): Promise<ITextMatch[]> {
+  public async findInPaper(paperContent: string, findRegex: string): Promise<ITextMatch[]> {
     try {
-      const paperContent = await this.getTextContent(paper)
       return findInText(paperContent, new RegExp(findRegex, 'gi'))
     } catch (error) {
       this.logger?.debug(`Failed finding ${findRegex} in paper: ${(error as Error).message}`)

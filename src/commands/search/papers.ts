@@ -1,3 +1,4 @@
+import { ChatOpenAI } from '@langchain/openai'
 import * as oclif from '@oclif/core'
 import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
@@ -8,6 +9,7 @@ import { IoService } from '../../services/io/io.service.js'
 import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
+import { SummaryService } from '../../services/summary/summary.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
@@ -75,12 +77,21 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       required: false,
       default: false,
     }),
+    'include-summary': oclif.Flags.boolean({
+      char: 'S',
+      summary:
+        'Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
+      description:
+        'Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See https://ollama.com/',
+      required: false,
+      default: false,
+    }),
   }
 
   async init(): Promise<void> {
     await super.init()
 
-    const { headless, concurrency } = this.flags
+    const { headless, concurrency, 'include-summary': summarize } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -91,6 +102,14 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
     const pdfService = new PdfService(downloadService, this.logger)
+    const llm = new ChatOpenAI({
+      model: 'llama3:instruct',
+      apiKey: 'ollama',
+      configuration: {
+        baseURL: 'http://localhost:11434/v1',
+      },
+    })
+    const summaryService = new SummaryService(llm, this.logger)
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
@@ -104,11 +123,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
 
     this.searchService = new PaperSearchService(
       {
-        concurrency,
+        concurrency: summarize ? 1 : concurrency,
       },
       scholar,
       paperService,
       ioService,
+      summaryService,
       this.logger,
     )
   }
@@ -119,12 +139,17 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<void> {
-    const { count, output, filter } = this.flags
+    const { count, output, filter, 'include-summary': summarize } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers for: ${keywords}`)
 
-    const outputFile = await this.searchService.exportToCSV(keywords, output, count, filter)
+    const outputFile = await this.searchService.exportToCSV(output, {
+      keywords,
+      minItemCount: count,
+      filterPattern: filter,
+      summarize,
+    })
 
     this.logger.info(`Exported papers list to: ${outputFile}`)
   }

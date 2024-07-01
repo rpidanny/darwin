@@ -24,10 +24,12 @@ describe('PapersWithAccessionNumbersSearchTool', () => {
 
     expect(resp).toContain(`Papers has been exported to outputFile.csv`)
     expect(searchService.exportToCSV).toHaveBeenCalledWith(
-      keywords,
       expect.stringContaining('papers-keywords-'),
-      count,
-      AccessionPattern.BioProject,
+      {
+        keywords,
+        minItemCount: count,
+        filterPattern: AccessionPattern.BioProject,
+      },
     )
   })
 })

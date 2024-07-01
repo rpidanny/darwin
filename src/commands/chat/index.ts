@@ -11,6 +11,7 @@ import { IoService } from '../../services/io/io.service.js'
 import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
+import { SummaryService } from '../../services/summary/summary.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
@@ -82,6 +83,14 @@ export default class Chat extends BaseCommand<typeof Chat> {
       downloadService,
       this.logger,
     )
+    const localLlm = new ChatOpenAI({
+      model: 'llama3:instruct',
+      apiKey: 'ollama',
+      configuration: {
+        baseURL: 'http://localhost:11434/v1',
+      },
+    })
+    const summaryService = new SummaryService(localLlm, this.logger)
 
     const searchService = new PaperSearchService(
       {
@@ -90,6 +99,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       scholar,
       paperService,
       ioService,
+      summaryService,
       this.logger,
     )
 

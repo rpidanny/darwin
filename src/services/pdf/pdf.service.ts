@@ -12,6 +12,8 @@ export class PdfService {
   ) {}
 
   async getTextContent(url: string): Promise<string> {
+    this.logger?.debug(`Fetching PDF from ${url}`)
+
     let fileContent: Buffer
 
     try {

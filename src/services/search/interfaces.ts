@@ -10,4 +10,13 @@ export interface IPaperEntity {
   citation: ICitation
   authors: string[]
   matches?: ITextMatch[]
+  summary?: string
+}
+
+export interface ISearchOptions {
+  keywords: string
+  minItemCount: number
+  filterPattern?: string
+  summarize?: boolean
+  onData?: (data: IPaperEntity) => Promise<any>
 }

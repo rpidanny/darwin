@@ -5,30 +5,33 @@ import { join } from 'path'
 import { ITextMatch } from '../../utils/text/interfaces'
 import { IoService } from '../io/io.service'
 import { PaperService } from '../paper/paper.service'
-import { IPaperEntity } from './interfaces'
+import { SummaryService } from '../summary/summary.service'
+import { IPaperEntity, ISearchOptions } from './interfaces'
 import { IPaperSearchConfig } from './paper-search.config'
 
 export class PaperSearchService {
   constructor(
-    protected readonly config: IPaperSearchConfig,
-    protected readonly googleScholar: GoogleScholar,
-    protected readonly paperService: PaperService,
-    protected readonly ioService: IoService,
-    protected readonly logger?: Quill,
+    private readonly config: IPaperSearchConfig,
+    private readonly googleScholar: GoogleScholar,
+    private readonly paperService: PaperService,
+    private readonly ioService: IoService,
+    private readonly summaryService: SummaryService,
+    private readonly logger?: Quill,
   ) {}
 
-  public async search(
-    keywords: string,
-    minItemCount: number = 20,
-    onData?: (data: IPaperEntity) => Promise<any>,
-    filterPattern?: string,
-  ): Promise<IPaperEntity[]> {
+  public async search({
+    keywords,
+    minItemCount,
+    filterPattern,
+    summarize,
+    onData,
+  }: ISearchOptions): Promise<IPaperEntity[]> {
     const papers: IPaperEntity[] = []
 
     await this.googleScholar.iteratePapers(
       { keywords },
       async paper => {
-        const entity = await this.processPaper(paper, filterPattern)
+        const entity = await this.processPaper(paper, filterPattern, summarize)
         if (!entity) return true
 
         papers.push(entity)
@@ -58,15 +61,15 @@ export class PaperSearchService {
     return join(path, fileName)
   }
 
-  public async exportToCSV(
-    keywords: string,
-    filePath: string,
-    minItemCount: number = 20,
-    filterPattern?: string,
-  ): Promise<string> {
-    const fullPath = this.getFilePath(filePath, keywords, filterPattern)
+  public async exportToCSV(filePath: string, opts: ISearchOptions): Promise<string> {
+    const fullPath = this.getFilePath(filePath, opts.keywords, opts.filterPattern)
     const outputWriter = await this.ioService.getCsvStreamWriter(fullPath)
-    await this.search(keywords, minItemCount, page => outputWriter.write(page), filterPattern)
+    await this.search({
+      ...opts,
+      onData: async data => {
+        await outputWriter.write(data)
+      },
+    })
     await outputWriter.end()
     return fullPath
   }
@@ -74,14 +77,27 @@ export class PaperSearchService {
   private async processPaper(
     paper: IPaperMetadata,
     filterPattern?: string,
+    summarize?: boolean,
   ): Promise<IPaperEntity | undefined> {
-    if (!filterPattern) return this.toEntity(paper)
+    const entity = this.toEntity(paper)
 
-    const matches = await this.paperService.findInPaper(paper, filterPattern)
-    if (matches.length === 0) return undefined
+    if (!filterPattern && !summarize) return entity
 
-    this.logMatches(matches)
-    return this.toEntity(paper, matches)
+    const textContent = await this.paperService.getTextContent(paper)
+
+    if (filterPattern) {
+      const matches = await this.paperService.findInPaper(textContent, filterPattern)
+      if (matches.length === 0) return undefined
+      this.logMatches(matches)
+      entity.matches = matches
+    }
+
+    if (summarize) {
+      const summary = await this.summaryService.summarize(textContent)
+      entity.summary = summary
+    }
+
+    return entity
   }
 
   private logMatches(foundItems: ITextMatch[]): void {
@@ -89,7 +105,7 @@ export class PaperSearchService {
     this.logger?.info(`Found matches: ${foundTexts}`)
   }
 
-  private toEntity(result: IPaperMetadata, foundItems?: ITextMatch[]): IPaperEntity {
+  private toEntity(result: IPaperMetadata): IPaperEntity {
     return {
       title: result.title,
       description: result.description,
@@ -97,7 +113,6 @@ export class PaperSearchService {
       url: result.url,
       citation: result.citation,
       source: result.source,
-      matches: foundItems,
     }
   }
 }
