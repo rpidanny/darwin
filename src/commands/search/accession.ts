@@ -106,6 +106,12 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
     const { headless, concurrency, 'include-summary': summarize } = this.flags
 
+    if (summarize) {
+      this.logger.debug(
+        `Summarizing papers using Model Provider: ${modelProvider},  Model: ${model}, Endpoint: ${baseURL}`,
+      )
+    }
+
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
       this.logger,
