@@ -11,9 +11,9 @@ import {
 } from 'langchain/chains'
 import { TokenTextSplitter } from 'langchain/text_splitter'
 
-import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from './prompt.templates.js'
+import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from './prompt-templates/summary.template.js'
 
-export class SummaryService {
+export class LLMService {
   summarizeChain!: RefineDocumentsChain | MapReduceDocumentsChain | StuffDocumentsChain
   textSplitter!: TokenTextSplitter
 

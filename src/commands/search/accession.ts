@@ -6,11 +6,11 @@ import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 import { BaseCommand } from '../../base.command.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
+import { LLMService } from '../../services/llm/llm.service.js'
 import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { AccessionPattern } from '../../services/search/constants.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
-import { SummaryService } from '../../services/summary/summary.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
@@ -87,7 +87,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     'include-summary': oclif.Flags.boolean({
       char: 'S',
       summary:
-        'Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
+        '[LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
       description:
         'Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See https://ollama.com/',
       required: false,
@@ -116,7 +116,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
         baseURL: 'http://localhost:11434/v1',
       },
     })
-    const summaryService = new SummaryService(llm, this.logger)
+    const llmService = new LLMService(llm, this.logger)
     const paperService = new PaperService(
       {
         skipCaptcha: this.flags['skip-captcha'],
@@ -135,7 +135,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       scholar,
       paperService,
       ioService,
-      summaryService,
+      llmService,
       this.logger,
     )
   }
