@@ -8,7 +8,7 @@ import path from 'path'
 import prettyMilliseconds from 'pretty-ms'
 
 import { CONFIG_FILE_NAME } from './config/constants.js'
-import { TConfig } from './config/schema.js'
+import { ConfigSchema, TConfig } from './config/schema.js'
 import { Metric } from './utils/analytics/metric.js'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
@@ -69,11 +69,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   }
 
   private async getLocalConfig(): Promise<TConfig> {
+    let config = {}
     if (await pathExists(this.configFilePath)) {
-      return JSON.parse(await readFile(this.configFilePath, 'utf-8'))
+      config = JSON.parse(await readFile(this.configFilePath, 'utf-8'))
     }
 
-    return {}
+    return ConfigSchema.parse(config)
   }
 
   private async getLogger(): Promise<Quill> {

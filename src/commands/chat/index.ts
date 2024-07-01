@@ -4,6 +4,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
+import { ModelProvider } from '../../config/schema.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.service.js'
 import { DownloadService } from '../../services/download/download.service.js'
@@ -53,7 +54,13 @@ export default class Chat extends BaseCommand<typeof Chat> {
   async init() {
     await super.init()
 
-    if (!this.localConfig.openai?.apiKey || !this.localConfig.openai?.model) {
+    const { summary, openai } = this.localConfig
+    const { model, modelProvider, endpoint } = summary
+
+    const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
+    const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined
+
+    if (!openai?.apiKey || !openai?.model) {
       this.logger.error(
         'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
       )
@@ -83,13 +90,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       downloadService,
       this.logger,
     )
-    const localLlm = new ChatOpenAI({
-      model: 'llama3:instruct',
-      apiKey: 'ollama',
-      configuration: {
-        baseURL: 'http://localhost:11434/v1',
-      },
-    })
+    const localLlm = new ChatOpenAI({ model, apiKey, configuration: { baseURL } })
     const llmService = new LLMService(localLlm, this.logger)
 
     const searchService = new PaperSearchService(
@@ -104,8 +105,8 @@ export default class Chat extends BaseCommand<typeof Chat> {
     )
 
     const llm = new ChatOpenAI({
-      apiKey: this.localConfig.openai.apiKey,
-      model: this.localConfig.openai.model,
+      apiKey: openai.apiKey,
+      model: openai.model,
     })
 
     const agent = new AutonomousAgent(llm, searchService)
