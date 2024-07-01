@@ -1,3 +1,9 @@
+## [1.24.0](https://github.com/rpidanny/darwin/compare/v1.23.0...v1.24.0) (2024-07-01)
+
+### Features
+
+* add summary config ([#63](https://github.com/rpidanny/darwin/issues/63)) ([5543f18](https://github.com/rpidanny/darwin/commit/5543f184e2fa7625eb6bc969e295ffa6106b65ee))
+
 ## [1.23.0](https://github.com/rpidanny/darwin/compare/v1.22.1...v1.23.0) (2024-07-01)
 
 ### Features

@@ -54,7 +54,7 @@ FLAG DESCRIPTIONS
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.23.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.24.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -69,20 +69,14 @@ ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -S, --include-summary      [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency
-                             is set to 1.
-  -c, --count=<value>        [default: 10] The minimum number of papers to search for. (When running concurrently, the
-                             actual number of papers may be a bit higher)
-  -f, --filter=<value>       Case-insensitive regex to filter papers by content. Example: "Holdemania|Colidextribacter"
-                             will only include papers containing either term.
-  -h, --headless             Run the browser in headless mode (no UI).
-  -o, --output=<value>       [default: .] Specify the output destination for the CSV file. If a folder path is given,
-                             the filename is auto-generated; if a file path is given, it is used directly.
-  -p, --concurrency=<value>  [default: 10] The number papers to process in parallel.
-  -s, --skip-captcha         Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
-      --legacy-processing    Enable legacy processing of papers that only extracts text from the main URL. The new
-                             method attempts to extract text from the source URLs (pdf or html) and falls back to the
-                             main URL.
+  -S, --include-summary      [LLM Required] Include the paper summary in the output CSV file.
+  -c, --count=<value>        [default: 10] The minimum number of papers to search for.
+  -f, --filter=<value>       Case-insensitive regex to filter papers by content.
+  -h, --headless             Run the browser in headless mode.
+  -o, --output=<value>       [default: .] Specify the output destination for the CSV file.
+  -p, --concurrency=<value>  [default: 10] The number of papers to process in parallel.
+  -s, --skip-captcha         Skip captcha on paper URLs.
+      --legacy-processing    Enable legacy processing of papers.
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -96,12 +90,9 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG
 
 FLAG DESCRIPTIONS
-  -S, --include-summary
+  -S, --include-summary  [LLM Required] Include the paper summary in the output CSV file.
 
-    [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
-
-    Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See
-    https://ollama.com/
+    Summaries are generated using llama3:instruct running locally.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.23.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.24.0/src/commands/search/papers.ts)_
