@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 
 import { CONFIG_FILE_NAME } from '../../config/constants.js'
-import { TConfig } from '../../config/schema.js'
+import { ConfigSchema, TConfig } from '../../config/schema.js'
 import uiInput from '../../utils/ui/input.js'
 
 export default class SetConfig extends Command {
@@ -21,9 +21,11 @@ export default class SetConfig extends Command {
     const existingConfig = await this.getExistingConfig(configFilePath)
 
     const openai = await uiInput.promptOpenAIConfig(existingConfig?.openai)
+    const summarization = await uiInput.promptSummarizationConfig(existingConfig?.summarization)
 
     const config = {
       openai,
+      summarization,
     }
 
     await this.saveConfig(configFilePath, config)
@@ -32,7 +34,7 @@ export default class SetConfig extends Command {
   async getExistingConfig(configFilePath: string): Promise<TConfig | null> {
     try {
       const config = await fs.readJSON(configFilePath)
-      return config as TConfig
+      return ConfigSchema.parse(config)
     } catch (err) {
       return null
     }

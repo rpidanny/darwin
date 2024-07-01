@@ -4,6 +4,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
+import { LLMType } from '../../config/schema.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
 import { LLMService } from '../../services/llm/llm.service.js'
@@ -35,61 +36,60 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   static flags = {
     count: oclif.Flags.integer({
       char: 'c',
-      summary:
-        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
-      required: false,
+      summary: 'The minimum number of papers to search for.',
       default: 10,
     }),
     concurrency: oclif.Flags.integer({
       char: 'p',
-      summary: 'The number papers to process in parallel.',
-      required: false,
+      summary: 'The number of papers to process in parallel.',
       default: 10,
     }),
     output: oclif.Flags.string({
       char: 'o',
-      summary:
-        'Specify the output destination for the CSV file. If a folder path is given, the filename is auto-generated; if a file path is given, it is used directly.',
-      required: false,
+      summary: 'Specify the output destination for the CSV file.',
       default: '.',
     }),
     filter: oclif.Flags.string({
       char: 'f',
-      summary:
-        'Case-insensitive regex to filter papers by content. Example: "Holdemania|Colidextribacter" will only include papers containing either term.',
-      required: false,
+      summary: 'Case-insensitive regex to filter papers by content.',
     }),
     'skip-captcha': oclif.Flags.boolean({
       char: 's',
-      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
-      required: false,
+      summary: 'Skip captcha on paper URLs.',
       default: false,
     }),
     'legacy-processing': oclif.Flags.boolean({
-      summary:
-        'Enable legacy processing of papers that only extracts text from the main URL. The new method attempts to extract text from the source URLs (pdf or html) and falls back to the main URL.',
-      required: false,
+      summary: 'Enable legacy processing of papers.',
       default: false,
     }),
     headless: oclif.Flags.boolean({
       char: 'h',
-      summary: 'Run the browser in headless mode (no UI).',
-      required: false,
+      summary: 'Run the browser in headless mode.',
       default: false,
     }),
     'include-summary': oclif.Flags.boolean({
       char: 'S',
-      summary:
-        '[LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
-      description:
-        'Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See https://ollama.com/',
-      required: false,
+      summary: '[LLM Required] Include the paper summary in the output CSV file.',
+      description: 'Summaries are generated using llama3:instruct running locally.',
       default: false,
     }),
   }
 
   async init(): Promise<void> {
     await super.init()
+
+    const { summarization, openai } = this.localConfig
+    const { model, llmType, endpoint } = summarization
+
+    const apiKey = llmType === LLMType.OpenAI ? openai?.apiKey : 'ollama'
+    const baseURL = llmType === LLMType.Local ? endpoint : undefined
+
+    if (llmType === LLMType.OpenAI && (!openai?.apiKey || !openai?.model)) {
+      this.logger.error(
+        'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
+      )
+      process.exit(1)
+    }
 
     const { headless, concurrency, 'include-summary': summarize } = this.flags
 
@@ -98,17 +98,12 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       this.logger,
     )
     await this.odysseus.init()
+
     const scholar = new GoogleScholar(this.odysseus, this.logger)
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
     const pdfService = new PdfService(downloadService, this.logger)
-    const llm = new ChatOpenAI({
-      model: 'llama3:instruct',
-      apiKey: 'ollama',
-      configuration: {
-        baseURL: 'http://localhost:11434/v1',
-      },
-    })
+    const llm = new ChatOpenAI({ model, apiKey, configuration: { baseURL } })
     const llmService = new LLMService(llm, this.logger)
     const paperService = new PaperService(
       {
@@ -122,9 +117,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     )
 
     this.searchService = new PaperSearchService(
-      {
-        concurrency: summarize ? 1 : concurrency,
-      },
+      { concurrency: summarize ? 1 : concurrency },
       scholar,
       paperService,
       ioService,

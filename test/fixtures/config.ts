@@ -1,7 +1,7 @@
 import { Config } from '@oclif/core'
 import path from 'path'
 
-import { TConfig } from '../../src/config/schema.js'
+import { LLMType, TConfig } from '../../src/config/schema.js'
 
 export function getMockConfig(): Config {
   const mockConfig = new Config({
@@ -23,6 +23,11 @@ export function getMockLocalConfig(overrides?: Partial<TConfig>): TConfig {
     openai: {
       apiKey: 'mock-api-key',
       model: 'gpt-4-turbo',
+    },
+    summarization: {
+      llmType: LLMType.Local,
+      model: 'llama3:instruct',
+      endpoint: 'http://localhost:11434/v1',
     },
     ...overrides,
   }
