@@ -4,7 +4,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { LLMType } from '../../config/schema.js'
+import { ModelProvider } from '../../config/schema.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.service.js'
 import { DownloadService } from '../../services/download/download.service.js'
@@ -54,11 +54,11 @@ export default class Chat extends BaseCommand<typeof Chat> {
   async init() {
     await super.init()
 
-    const { summarization, openai } = this.localConfig
-    const { model, llmType, endpoint } = summarization
+    const { summary, openai } = this.localConfig
+    const { model, modelProvider, endpoint } = summary
 
-    const apiKey = llmType === LLMType.OpenAI ? openai?.apiKey : 'ollama'
-    const baseURL = llmType === LLMType.Local ? endpoint : undefined
+    const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
+    const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined
 
     if (!openai?.apiKey || !openai?.model) {
       this.logger.error(

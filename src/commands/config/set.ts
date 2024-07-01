@@ -21,11 +21,11 @@ export default class SetConfig extends Command {
     const existingConfig = await this.getExistingConfig(configFilePath)
 
     const openai = await uiInput.promptOpenAIConfig(existingConfig?.openai)
-    const summarization = await uiInput.promptSummarizationConfig(existingConfig?.summarization)
+    const summary = await uiInput.promptSummaryConfig(existingConfig?.summary)
 
     const config = {
       openai,
-      summarization,
+      summary,
     }
 
     await this.saveConfig(configFilePath, config)

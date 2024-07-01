@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 
-import { LLMType, TConfig } from '../../config/schema.js'
+import { ModelProvider, TConfig } from '../../config/schema.js'
 
 async function promptOpenAIConfig(defaultConfig?: TConfig['openai']): Promise<TConfig['openai']> {
   const apiKey = {
@@ -23,37 +23,37 @@ async function promptOpenAIConfig(defaultConfig?: TConfig['openai']): Promise<TC
   return await inquirer.prompt([apiKey, model])
 }
 
-async function promptSummarizationConfig(
-  defaultConfig?: TConfig['summarization'],
-): Promise<TConfig['summarization']> {
-  const llmType = {
+async function promptSummaryConfig(
+  defaultConfig?: TConfig['summary'],
+): Promise<TConfig['summary']> {
+  const modelProvider = {
     type: 'list',
-    name: 'llmType',
-    message: `Select the LLM Type:`,
-    choices: Object.values(LLMType),
-    default: defaultConfig?.llmType,
+    name: 'modelProvider',
+    message: `Select the model provider:`,
+    choices: Object.values(ModelProvider),
+    default: defaultConfig?.modelProvider,
   }
 
   const model = {
     type: 'input',
     name: 'model',
-    message: `Enter the model to use:`,
+    message: `Enter the model to use: Example: llama3:instruct, gpt-4-turbo, etc.`,
     default: defaultConfig?.model,
   }
 
   const endpoint = {
     type: 'input',
     name: 'endpoint',
-    message: `Enter the endpoint:`,
+    message: `Enter the endpoint: (optional) Leave empty for OpenAI.`,
     default: defaultConfig?.endpoint,
   }
 
-  console.log(chalk.gray(`Please enter the Summarization Configurations:`))
+  console.log(chalk.gray(`Please enter the configuration used for summarization:`))
 
-  return await inquirer.prompt([llmType, model, endpoint])
+  return await inquirer.prompt([modelProvider, model, endpoint])
 }
 
 export default {
   promptOpenAIConfig,
-  promptSummarizationConfig,
+  promptSummaryConfig,
 }

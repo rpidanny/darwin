@@ -4,7 +4,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { LLMType } from '../../config/schema.js'
+import { ModelProvider } from '../../config/schema.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
 import { LLMService } from '../../services/llm/llm.service.js'
@@ -78,13 +78,13 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   async init(): Promise<void> {
     await super.init()
 
-    const { summarization, openai } = this.localConfig
-    const { model, llmType, endpoint } = summarization
+    const { summary, openai } = this.localConfig
+    const { model, modelProvider, endpoint } = summary
 
-    const apiKey = llmType === LLMType.OpenAI ? openai?.apiKey : 'ollama'
-    const baseURL = llmType === LLMType.Local ? endpoint : undefined
+    const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
+    const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined
 
-    if (llmType === LLMType.OpenAI && (!openai?.apiKey || !openai?.model)) {
+    if (modelProvider === ModelProvider.OpenAI && (!openai?.apiKey || !openai?.model)) {
       this.logger.error(
         'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
       )
