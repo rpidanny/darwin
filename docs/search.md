@@ -52,7 +52,7 @@ FLAG DESCRIPTIONS
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.22.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.22.1/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -99,4 +99,4 @@ FLAG DESCRIPTIONS
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.22.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.22.1/src/commands/search/papers.ts)_

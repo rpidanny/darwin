@@ -1,3 +1,9 @@
+## [1.22.1](https://github.com/rpidanny/darwin/compare/v1.22.0...v1.22.1) (2024-07-01)
+
+### Bug Fixes
+
+* supress pdf.js logs ([#61](https://github.com/rpidanny/darwin/issues/61)) ([8399c5d](https://github.com/rpidanny/darwin/commit/8399c5d5d3803179720d892e668f64caec133cbb))
+
 ## [1.22.0](https://github.com/rpidanny/darwin/compare/v1.21.0...v1.22.0) (2024-07-01)
 
 ### Features
