@@ -1,6 +1,7 @@
 import { Document } from '@langchain/core/documents'
 import { ChatOpenAI } from '@langchain/openai'
 import { Quill } from '@rpidanny/quill'
+import chalk from 'chalk'
 import { Presets, SingleBar } from 'cli-progress'
 import {
   loadSummarizationChain,
@@ -38,7 +39,7 @@ export class SummaryService {
       {
         clearOnComplete: false,
         hideCursor: true,
-        format: `Summarizing [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+        format: `${chalk.magenta('Summarizing')} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
       },
       Presets.shades_classic,
     )
