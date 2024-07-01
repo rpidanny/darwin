@@ -1,6 +1,7 @@
 import { Document } from '@langchain/core/documents'
 import { ChatOpenAI } from '@langchain/openai'
 import { Quill } from '@rpidanny/quill'
+import { Presets, SingleBar } from 'cli-progress'
 import {
   loadSummarizationChain,
   MapReduceDocumentsChain,
@@ -33,14 +34,43 @@ export class SummaryService {
   }
 
   public async summarize(text: string) {
-    this.logger?.debug(`Summarizing ${text.length} char long text...`)
+    this.logger?.info(`Summarizing ${text.length} char document...`)
+
+    const bar = new SingleBar(
+      {
+        clearOnComplete: false,
+        hideCursor: true,
+        format: `Summarizing [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+      },
+      Presets.shades_classic,
+    )
 
     const document = new Document({
       pageContent: text,
     })
-
     const docChunks = await this.textSplitter.splitDocuments([document])
-    const summary = await this.summarizeChain.run(docChunks)
+
+    bar.start(docChunks.length, 0)
+
+    let docCount = 0
+
+    const summary = await this.summarizeChain.invoke(
+      {
+        // eslint-disable-next-line camelcase
+        input_documents: docChunks,
+      },
+      {
+        callbacks: [
+          {
+            handleLLMEnd: async () => {
+              bar.update(++docCount)
+            },
+          },
+        ],
+      },
+    )
+
+    bar.stop()
 
     return summary
   }
