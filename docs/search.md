@@ -54,7 +54,7 @@ FLAG DESCRIPTIONS
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.24.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.24.1/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -95,4 +95,4 @@ FLAG DESCRIPTIONS
     Summaries are generated using llama3:instruct running locally.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.24.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.24.1/src/commands/search/papers.ts)_

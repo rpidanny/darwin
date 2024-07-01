@@ -8,12 +8,12 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@rpidanny/darwin.svg)](https://npmjs.org/package/@rpidanny/darwin)
 
 <!-- toc -->
-
-- [Darwin](#darwin)
-- [Usage](#usage)
-- [Command Topics](#command-topics)
-- [Contribution](#contribution)
-- [License](#license)
+* [Darwin](#darwin)
+* [Usage](#usage)
+* [Command Topics](#command-topics)
+* [FAQ](#faq)
+* [Contribution](#contribution)
+* [License](#license)
 <!-- tocstop -->
 
 # Usage
@@ -25,31 +25,28 @@
 - [OpenAI API Keys](https://platform.openai.com/settings/profile?tab=api-keys) _(optional for chat interface)_
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.24.0 linux-x64 node-v20.15.0
+@rpidanny/darwin/1.24.1 linux-x64 node-v20.15.0
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 > After installing, configure Darwin with `darwin config set`.
 
 <!-- commands -->
-
 # Command Topics
 
-- [`darwin chat`](docs/chat.md) - Chat with Darwin. Can be used to instruct Darwin to do things in natural language.
-- [`darwin config`](docs/config.md) - Manage application configurations.
-- [`darwin download`](docs/download.md) - Download papers, datasets, or other content.
-- [`darwin search`](docs/search.md) - Search for papers, accession numbers, or other content.
+* [`darwin chat`](docs/chat.md) - Chat with Darwin. Can be used to instruct Darwin to do things in natural language.
+* [`darwin config`](docs/config.md) - Manage application configurations.
+* [`darwin download`](docs/download.md) - Download papers, datasets, or other content.
+* [`darwin search`](docs/search.md) - Search for papers, accession numbers, or other content.
 
 <!-- commandsstop -->
 
