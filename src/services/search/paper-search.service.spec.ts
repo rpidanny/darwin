@@ -6,8 +6,8 @@ import { mock } from 'jest-mock-extended'
 import { getMockPageContent } from '../../../test/fixtures/google-scholar'
 import { CsvStreamWriter } from '../io/csv-stream-writer'
 import { IoService } from '../io/io.service'
+import { LLMService } from '../llm/llm.service.js'
 import { PaperService } from '../paper/paper.service'
-import { SummaryService } from '../summary/summary.service.js'
 import { AccessionPattern } from './constants.js'
 import { IPaperSearchConfig } from './paper-search.config'
 import { PaperSearchService } from './paper-search.service'
@@ -18,7 +18,7 @@ describe('PaperSearchService', () => {
   const googleScholarMock = mock<GoogleScholar>()
   const paperService = mock<PaperService>()
   const logger = mock<Quill>()
-  const summaryService = mock<SummaryService>()
+  const llmService = mock<LLMService>()
 
   const mockConfig: IPaperSearchConfig = {
     concurrency: 1,
@@ -45,7 +45,7 @@ describe('PaperSearchService', () => {
       googleScholarMock,
       paperService,
       ioService,
-      summaryService,
+      llmService,
       logger,
     )
   })
@@ -126,7 +126,7 @@ describe('PaperSearchService', () => {
     })
 
     it('should summarize papers if summarize is true', async () => {
-      summaryService.summarize.mockResolvedValue('This is a summary.')
+      llmService.summarize.mockResolvedValue('This is a summary.')
 
       const entities = await service.search({
         keywords: 'some keywords',

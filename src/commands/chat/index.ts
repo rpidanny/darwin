@@ -8,10 +8,10 @@ import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.service.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
+import { LLMService } from '../../services/llm/llm.service.js'
 import { PaperService } from '../../services/paper/paper.service.js'
 import { PdfService } from '../../services/pdf/pdf.service.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
-import { SummaryService } from '../../services/summary/summary.service.js'
 import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
@@ -90,7 +90,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
         baseURL: 'http://localhost:11434/v1',
       },
     })
-    const summaryService = new SummaryService(localLlm, this.logger)
+    const llmService = new LLMService(localLlm, this.logger)
 
     const searchService = new PaperSearchService(
       {
@@ -99,7 +99,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       scholar,
       paperService,
       ioService,
-      summaryService,
+      llmService,
       this.logger,
     )
 

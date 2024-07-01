@@ -4,8 +4,8 @@ import { join } from 'path'
 
 import { ITextMatch } from '../../utils/text/interfaces'
 import { IoService } from '../io/io.service'
+import { LLMService } from '../llm/llm.service'
 import { PaperService } from '../paper/paper.service'
-import { SummaryService } from '../summary/summary.service'
 import { IPaperEntity, ISearchOptions } from './interfaces'
 import { IPaperSearchConfig } from './paper-search.config'
 
@@ -15,7 +15,7 @@ export class PaperSearchService {
     private readonly googleScholar: GoogleScholar,
     private readonly paperService: PaperService,
     private readonly ioService: IoService,
-    private readonly summaryService: SummaryService,
+    private readonly llmService: LLMService,
     private readonly logger?: Quill,
   ) {}
 
@@ -93,7 +93,7 @@ export class PaperSearchService {
     }
 
     if (summarize) {
-      const summary = await this.summaryService.summarize(textContent)
+      const summary = await this.llmService.summarize(textContent)
       entity.summary = summary
     }
 
