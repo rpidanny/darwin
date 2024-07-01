@@ -33,9 +33,7 @@ export class SummaryService {
     })
   }
 
-  public async summarize(text: string) {
-    this.logger?.info(`Summarizing ${text.length} char document...`)
-
+  public async summarize(inputText: string) {
     const bar = new SingleBar(
       {
         clearOnComplete: false,
@@ -46,15 +44,19 @@ export class SummaryService {
     )
 
     const document = new Document({
-      pageContent: text,
+      pageContent: inputText,
     })
     const docChunks = await this.textSplitter.splitDocuments([document])
+
+    this.logger?.info(
+      `Summarizing ${inputText.length} char (${docChunks.length} chunks) document...`,
+    )
 
     bar.start(docChunks.length, 0)
 
     let docCount = 0
 
-    const summary = await this.summarizeChain.invoke(
+    const resp = await this.summarizeChain.invoke(
       {
         // eslint-disable-next-line camelcase
         input_documents: docChunks,
@@ -72,6 +74,6 @@ export class SummaryService {
 
     bar.stop()
 
-    return summary
+    return resp.output_text
   }
 }
