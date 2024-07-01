@@ -1,3 +1,9 @@
+## [1.22.0](https://github.com/rpidanny/darwin/compare/v1.21.0...v1.22.0) (2024-07-01)
+
+### Features
+
+* add summarize papers option ([#60](https://github.com/rpidanny/darwin/issues/60)) ([6ae9b17](https://github.com/rpidanny/darwin/commit/6ae9b17971252249baf06db07e62e1cafaf60836))
+
 ## [1.21.0](https://github.com/rpidanny/darwin/compare/v1.20.2...v1.21.0) (2024-06-30)
 
 ### Features
