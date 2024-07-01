@@ -1,3 +1,9 @@
+## [1.23.0](https://github.com/rpidanny/darwin/compare/v1.22.1...v1.23.0) (2024-07-01)
+
+### Features
+
+* update summary prompts ([#62](https://github.com/rpidanny/darwin/issues/62)) ([d59d8db](https://github.com/rpidanny/darwin/commit/d59d8dbcac81ab642d97967994cf2be89b8f5f0c))
+
 ## [1.22.1](https://github.com/rpidanny/darwin/compare/v1.22.0...v1.22.1) (2024-07-01)
 
 ### Bug Fixes

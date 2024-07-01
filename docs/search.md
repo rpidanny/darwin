@@ -19,8 +19,8 @@ ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -S, --include-summary                 Include the paper summary in the output CSV file. When enabled, concurrency is
-                                        set to 1.
+  -S, --include-summary                 [LLM Required] Include the paper summary in the output CSV file. When enabled,
+                                        concurrency is set to 1.
   -a, --accession-number-regex=<value>  [default: PRJNA\d+] Regex to match accession numbers. Defaults to matching
                                         BioProject accession numbers.
   -c, --count=<value>                   [default: 10] The minimum number of papers to search for. (When running
@@ -46,13 +46,15 @@ EXAMPLES
   $ darwin search accession "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG
 
 FLAG DESCRIPTIONS
-  -S, --include-summary  Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
+  -S, --include-summary
+
+    [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
 
     Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.22.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.23.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -67,7 +69,8 @@ ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -S, --include-summary      Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
+  -S, --include-summary      [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency
+                             is set to 1.
   -c, --count=<value>        [default: 10] The minimum number of papers to search for. (When running concurrently, the
                              actual number of papers may be a bit higher)
   -f, --filter=<value>       Case-insensitive regex to filter papers by content. Example: "Holdemania|Colidextribacter"
@@ -93,10 +96,12 @@ EXAMPLES
   $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG
 
 FLAG DESCRIPTIONS
-  -S, --include-summary  Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
+  -S, --include-summary
+
+    [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
 
     Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See
     https://ollama.com/
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.22.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.23.0/src/commands/search/papers.ts)_
