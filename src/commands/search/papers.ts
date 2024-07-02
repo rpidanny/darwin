@@ -70,7 +70,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     'include-summary': oclif.Flags.boolean({
       char: 'S',
       summary: '[LLM Required] Include the paper summary in the output CSV file.',
-      description: 'Summaries are generated using llama3:instruct running locally.',
+      description: 'Summaries are generated using LLM (either OpenAI or Local).',
       default: false,
     }),
   }
@@ -78,8 +78,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   async init(): Promise<void> {
     await super.init()
 
-    const { summary, openai } = this.localConfig
-    const { model, modelProvider, endpoint } = summary
+    const { paperProcessor, openai } = this.localConfig
+    const { model, modelProvider, endpoint } = paperProcessor
 
     const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
     const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined

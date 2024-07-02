@@ -24,7 +24,7 @@ export function getMockLocalConfig(overrides?: Partial<TConfig>): TConfig {
       apiKey: 'mock-api-key',
       model: 'gpt-4-turbo',
     },
-    summary: {
+    paperProcessor: {
       modelProvider: ModelProvider.Local,
       model: 'llama3:instruct',
       endpoint: 'http://localhost:11434/v1',
