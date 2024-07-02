@@ -54,8 +54,8 @@ export default class Chat extends BaseCommand<typeof Chat> {
   async init() {
     await super.init()
 
-    const { summary, openai } = this.localConfig
-    const { model, modelProvider, endpoint } = summary
+    const { paperProcessor, openai } = this.localConfig
+    const { model, modelProvider, endpoint } = paperProcessor
 
     const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
     const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined

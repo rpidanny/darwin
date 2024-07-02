@@ -23,9 +23,9 @@ async function promptOpenAIConfig(defaultConfig?: TConfig['openai']): Promise<TC
   return await inquirer.prompt([apiKey, model])
 }
 
-async function promptSummaryConfig(
-  defaultConfig?: TConfig['summary'],
-): Promise<TConfig['summary']> {
+async function promptPaperProcessingConfig(
+  defaultConfig?: TConfig['paperProcessor'],
+): Promise<TConfig['paperProcessor']> {
   const modelProvider = {
     type: 'list',
     name: 'modelProvider',
@@ -48,12 +48,12 @@ async function promptSummaryConfig(
     default: defaultConfig?.endpoint,
   }
 
-  console.log(chalk.gray(`Please enter the configuration used for summarization:`))
+  console.log(chalk.gray(`Please enter the configuration used for processing papers:`))
 
   return await inquirer.prompt([modelProvider, model, endpoint])
 }
 
 export default {
   promptOpenAIConfig,
-  promptSummaryConfig,
+  promptPaperProcessingConfig,
 }

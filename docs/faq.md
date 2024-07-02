@@ -27,7 +27,7 @@ For a more economical approach, you can set up a local LLM like [Ollama](https:/
 - Visit [Ollama's website](https://ollama.com/) to download and install the software.
 - Once installed, choose a model from their library.
 - Configure Darwin with the local LLM:
-  - Run `darwin config set` and choose `Local` as the model provider.
+  - Run `darwin config set` and choose `Local` as the model provider while configuring the paper processor.
   - Enter the model name (chosen from Ollama's library) and the server's endpoint URL (typically `http://localhost:11434/v1`).
 
 This setup allows you to effectively summarize papers using Darwin with either OpenAI's cloud-based service or a local LLM, depending on your preference and budget.
