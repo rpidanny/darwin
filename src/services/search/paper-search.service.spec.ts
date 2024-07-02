@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals'
 import { GoogleScholar } from '@rpidanny/google-scholar'
+import { CaptchaError } from '@rpidanny/odysseus/dist/index.js'
 import { Quill } from '@rpidanny/quill'
 import { mock } from 'jest-mock-extended'
 
@@ -123,6 +124,18 @@ describe('PaperSearchService', () => {
           ],
         })),
       )
+    })
+
+    it('should skip paper when CaptchaError is thrown', async () => {
+      paperService.getTextContent.mockRejectedValue(new CaptchaError())
+
+      const entities = await service.search({
+        keywords: 'some keywords',
+        minItemCount: 10,
+        filterPattern: 'cas9',
+      })
+
+      expect(entities).toHaveLength(0)
     })
 
     it('should summarize papers if summarize is true', async () => {

@@ -1,4 +1,5 @@
 import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
+import { CaptchaError } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 import { join } from 'path'
 
@@ -83,21 +84,29 @@ export class PaperSearchService {
 
     if (!filterPattern && !summarize) return entity
 
-    const textContent = await this.paperService.getTextContent(paper)
+    try {
+      const textContent = await this.paperService.getTextContent(paper)
 
-    if (filterPattern) {
-      const matches = await this.paperService.findInPaper(textContent, filterPattern)
-      if (matches.length === 0) return undefined
-      this.logMatches(matches)
-      entity.matches = matches
+      if (filterPattern) {
+        const matches = await this.paperService.findInPaper(textContent, filterPattern)
+        if (matches.length === 0) return undefined
+        this.logMatches(matches)
+        entity.matches = matches
+      }
+
+      if (summarize) {
+        const summary = await this.llmService.summarize(textContent)
+        entity.summary = summary
+      }
+
+      return entity
+    } catch (error) {
+      if (error instanceof CaptchaError) {
+        this.logger?.debug(`Failed processing paper due to Captcha: ${paper.url}`)
+        return
+      }
+      throw error
     }
-
-    if (summarize) {
-      const summary = await this.llmService.summarize(textContent)
-      entity.summary = summary
-    }
-
-    return entity
   }
 
   private logMatches(foundItems: ITextMatch[]): void {
