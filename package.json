@@ -26,7 +26,8 @@
     "prepare": "husky install",
     "start": "node ./bin/run.js",
     "prerelease": "npm run version",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "generate:faq-toc": "doctoc docs/faq.md --github "
   },
   "bugs": "https://github.com/rpidanny/darwin/issues",
   "dependencies": {
@@ -84,6 +85,7 @@
     "@types/tmp": "^0.2.6",
     "commitlint": "^19.3.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
+    "doctoc": "^2.2.1",
     "eslint": "^8",
     "eslint-config-oclif": "^5",
     "eslint-config-oclif-typescript": "^3",

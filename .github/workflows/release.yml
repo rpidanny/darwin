@@ -55,6 +55,9 @@ jobs:
       - name: NPM Build
         run: npm run build --if-present
 
+      - name: Generate FAQ ToC
+        run: npm run generate:faq-toc
+
       - name: Release
         run: npm run release
         env:
