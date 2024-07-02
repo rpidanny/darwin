@@ -1,5 +1,8 @@
 # Frequently Asked Questions
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## How do I update Darwin?
 
 Updating Darwin is straightforward. Execute the following command:
