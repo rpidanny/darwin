@@ -1,5 +1,5 @@
 import { Document } from '@langchain/core/documents'
-import { ChatOpenAI } from '@langchain/openai'
+import { BaseLanguageModel } from '@langchain/core/language_models/base'
 import { Quill } from '@rpidanny/quill'
 import chalk from 'chalk'
 import { Presets, SingleBar } from 'cli-progress'
@@ -18,7 +18,7 @@ export class LLMService {
   textSplitter!: TokenTextSplitter
 
   constructor(
-    readonly llm: ChatOpenAI,
+    readonly llm: BaseLanguageModel,
     private readonly logger?: Quill,
   ) {
     this.textSplitter = new TokenTextSplitter({

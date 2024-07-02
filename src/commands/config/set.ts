@@ -21,11 +21,11 @@ export default class SetConfig extends Command {
     const existingConfig = await this.getExistingConfig(configFilePath)
 
     const openai = await uiInput.promptOpenAIConfig(existingConfig?.openai)
-    const paperProcessor = await uiInput.promptPaperProcessingConfig(existingConfig?.paperProcessor)
+    const ollama = await uiInput.promptOllamaConfig(existingConfig?.ollama)
 
     const config = {
       openai,
-      paperProcessor,
+      ollama,
     }
 
     await this.saveConfig(configFilePath, config)

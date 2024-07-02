@@ -6,19 +6,18 @@ const OpenAIConfigSchema = z.object({
 })
 
 export enum ModelProvider {
-  OpenAI = 'OpenAI',
-  Local = 'Local',
+  OpenAI = 'openai',
+  Ollama = 'ollama',
 }
 
-const paperProcessorConfigSchema = z.object({
-  modelProvider: z.nativeEnum(ModelProvider).default(ModelProvider.Local),
+const ollamaConfigSchema = z.object({
   model: z.string().default('llama3:instruct'),
-  endpoint: z.string().optional().default('http://localhost:11434/v1'),
+  endpoint: z.string().optional().default('http://localhost:11434'),
 })
 
 export const ConfigSchema = z.object({
   openai: OpenAIConfigSchema.optional(),
-  paperProcessor: paperProcessorConfigSchema.default({}),
+  ollama: ollamaConfigSchema.default({}),
 })
 
 export type TConfig = z.infer<typeof ConfigSchema>

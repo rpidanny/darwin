@@ -1,10 +1,10 @@
-import { ChatOpenAI } from '@langchain/openai'
 import * as oclif from '@oclif/core'
 import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
 import { ModelProvider } from '../../config/schema.js'
+import { LLMFactory } from '../../factories/llm.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
 import { LLMService } from '../../services/llm/llm.service.js'
@@ -73,25 +73,31 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       description: 'Summaries are generated using LLM (either OpenAI or Local).',
       default: false,
     }),
+    'llm-provider': oclif.Flags.custom<ModelProvider>({
+      summary: 'The LLM provider to use for generating summaries.',
+      options: Object.values(ModelProvider) as string[], // Convert to string[] for the options
+      default: ModelProvider.Ollama,
+      parse: async (input: string): Promise<ModelProvider> => {
+        if (Object.values(ModelProvider).includes(input as ModelProvider)) {
+          return input as ModelProvider
+        } else {
+          throw new Error(
+            `Invalid LLM provider: ${input}. Must be one of ${Object.values(ModelProvider).join(', ')}`,
+          )
+        }
+      },
+    })(),
   }
 
   async init(): Promise<void> {
     await super.init()
 
-    const { paperProcessor, openai } = this.localConfig
-    const { model, modelProvider, endpoint } = paperProcessor
-
-    const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
-    const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined
-
-    if (modelProvider === ModelProvider.OpenAI && (!openai?.apiKey || !openai?.model)) {
-      this.logger.error(
-        'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
-      )
-      process.exit(1)
-    }
-
-    const { headless, concurrency, 'include-summary': summarize } = this.flags
+    const {
+      headless,
+      concurrency,
+      'include-summary': summarize,
+      'llm-provider': llmProvider,
+    } = this.flags
 
     this.odysseus = new Odysseus(
       { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
@@ -103,7 +109,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     const ioService = new IoService()
     const downloadService = new DownloadService(ioService, this.logger)
     const pdfService = new PdfService(downloadService, this.logger)
-    const llm = new ChatOpenAI({ model, apiKey, configuration: { baseURL } })
+    const llmFactory = new LLMFactory(this.logger)
+    const llm = llmFactory.getLLM(llmProvider, this.localConfig)
     const llmService = new LLMService(llm, this.logger)
     const paperService = new PaperService(
       {
