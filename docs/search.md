@@ -53,7 +53,7 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM (either OpenAI or Local).
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.25.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.26.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -94,4 +94,4 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM (either OpenAI or Local).
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.25.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.26.0/src/commands/search/papers.ts)_

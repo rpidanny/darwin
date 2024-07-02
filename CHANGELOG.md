@@ -1,3 +1,9 @@
+## [1.26.0](https://github.com/rpidanny/darwin/compare/v1.25.0...v1.26.0) (2024-07-02)
+
+### Features
+
+* **faq:** add table of contents ([#67](https://github.com/rpidanny/darwin/issues/67)) ([45dcd9a](https://github.com/rpidanny/darwin/commit/45dcd9a99ebcc6a25b9ef3acf8ceac649b51c20c))
+
 ## [1.25.0](https://github.com/rpidanny/darwin/compare/v1.24.1...v1.25.0) (2024-07-02)
 
 ### Features

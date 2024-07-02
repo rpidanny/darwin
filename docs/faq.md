@@ -1,6 +1,13 @@
 # Frequently Asked Questions
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [How do I update Darwin?](#how-do-i-update-darwin)
+- [How do I configure Darwin for paper summarization?](#how-do-i-configure-darwin-for-paper-summarization)
+  - [Using OpenAI's API](#using-openais-api)
+  - [Using a Local LLM](#using-a-local-llm)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## How do I update Darwin?
