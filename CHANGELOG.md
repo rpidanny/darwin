@@ -1,3 +1,9 @@
+## [1.26.1](https://github.com/rpidanny/darwin/compare/v1.26.0...v1.26.1) (2024-07-02)
+
+### Bug Fixes
+
+* handle captcha errors ([#68](https://github.com/rpidanny/darwin/issues/68)) ([19daa95](https://github.com/rpidanny/darwin/commit/19daa9542c86f34345ad2649d473f712787d1780))
+
 ## [1.26.0](https://github.com/rpidanny/darwin/compare/v1.25.0...v1.26.0) (2024-07-02)
 
 ### Features
