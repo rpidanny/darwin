@@ -50,11 +50,10 @@ FLAG DESCRIPTIONS
 
     [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
 
-    Summaries are generated using llama3:instruct running locally so make sure OLLAMA server is running. See
-    https://ollama.com/
+    Summaries are generated using LLM (either OpenAI or Local).
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.24.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.25.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -92,7 +91,7 @@ EXAMPLES
 FLAG DESCRIPTIONS
   -S, --include-summary  [LLM Required] Include the paper summary in the output CSV file.
 
-    Summaries are generated using llama3:instruct running locally.
+    Summaries are generated using LLM (either OpenAI or Local).
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.24.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.25.0/src/commands/search/papers.ts)_

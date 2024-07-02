@@ -1,3 +1,9 @@
+## [1.25.0](https://github.com/rpidanny/darwin/compare/v1.24.1...v1.25.0) (2024-07-02)
+
+### Features
+
+* update flag description ([6a68807](https://github.com/rpidanny/darwin/commit/6a6880778d1ea4b7ecdd3ac896a74b5b64459d8d))
+
 ## [1.24.1](https://github.com/rpidanny/darwin/compare/v1.24.0...v1.24.1) (2024-07-01)
 
 ## [1.24.0](https://github.com/rpidanny/darwin/compare/v1.23.0...v1.24.0) (2024-07-01)
