@@ -5,7 +5,7 @@ import semver from 'semver'
 import ui from '../../utils/ui/output.js'
 
 const hook: Hook<'init'> = async function (opts) {
-  if (opts.id && ['autocomplete:script', 'readme'].includes(opts.id)) return
+  if (opts.id && ['autocomplete:script', 'readme', 'update'].includes(opts.id)) return
 
   try {
     const { version: latestVersion } = await got(

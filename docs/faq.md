@@ -17,10 +17,10 @@
 Updating Darwin is straightforward. Execute the following command:
 
 ```bash
-npm i -g @rpidanny/darwin@latest
+darwin update
 ```
 
-This command will globally install the latest version of Darwin from the npm registry, ensuring you have the most up-to-date features and improvements available.
+This command will install the latest version of Darwin, ensuring you have the most up-to-date features and improvements available.
 
 ## How do I configure Darwin to work with a local LLM?
 
