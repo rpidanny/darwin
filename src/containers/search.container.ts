@@ -14,25 +14,25 @@ export function initSearchContainer(
   opts: {
     headless: boolean
     concurrency: number
-    summarize: boolean
+    summary: boolean
     llmProvider: LLMProvider
     skipCaptcha: boolean
-    legacyProcessing: boolean
+    legacy: boolean
   },
   config: TConfig,
   logger: Quill,
 ) {
-  const { headless, concurrency, summarize, llmProvider, skipCaptcha, legacyProcessing } = opts
+  const { headless, concurrency, summary, llmProvider, skipCaptcha, legacy } = opts
 
   Container.set(
     Odysseus,
     new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }),
   )
   Container.set(Quill, logger)
-  Container.set(PaperSearchConfig, { concurrency: summarize ? 1 : concurrency })
+  Container.set(PaperSearchConfig, { concurrency: summary ? 1 : concurrency })
   Container.set(PaperServiceConfig, {
     skipCaptcha,
-    legacyProcessing,
+    legacyProcessing: legacy,
   })
   Container.set(BaseLanguageModel, Container.get(LLMFactory).getLLM(llmProvider, config))
 

@@ -11,6 +11,7 @@ import prettyMilliseconds from 'pretty-ms'
 
 import { CONFIG_FILE_NAME } from './config/constants.js'
 import { ConfigSchema, TConfig } from './config/schema.js'
+import { FlagChar } from './inputs/flags/char.js'
 import { Metric } from './utils/analytics/metric.js'
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
@@ -25,10 +26,12 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   // define flags that can be inherited by any command that extends BaseCommand
   static baseFlags = {
     'log-level': Flags.option({
+      char: FlagChar.LogLevel,
       default: LogLevel.INFO,
       helpGroup: 'GLOBAL',
+      helpValue: Object.values(LogLevel).join('|'),
       options: Object.values(LogLevel),
-      summary: 'Specify level for logging.',
+      summary: 'Specify logging level.',
     })(),
   }
 
