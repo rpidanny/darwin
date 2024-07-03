@@ -1,3 +1,9 @@
+## [1.29.1](https://github.com/rpidanny/darwin/compare/v1.29.0...v1.29.1) (2024-07-03)
+
+### Bug Fixes
+
+* **deps:** bump langchain from 0.2.6 to 0.2.8 ([#50](https://github.com/rpidanny/darwin/issues/50)) ([0aada9a](https://github.com/rpidanny/darwin/commit/0aada9a49bdf62f8b3684aeeca86e82b925a174d))
+
 ## [1.29.0](https://github.com/rpidanny/darwin/compare/v1.28.2...v1.29.0) (2024-07-03)
 
 ### Features
