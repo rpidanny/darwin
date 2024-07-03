@@ -4,7 +4,8 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { ModelProvider } from '../../config/schema.js'
+import { LLMProvider } from '../../config/schema.js'
+import { LLMFactory } from '../../factories/llm.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.service.js'
 import { DownloadService } from '../../services/download/download.service.js'
@@ -49,25 +50,26 @@ export default class Chat extends BaseCommand<typeof Chat> {
       required: false,
       default: false,
     }),
+    'llm-provider': oclif.Flags.custom<LLMProvider>({
+      summary: 'The LLM provider to use for generating summaries.',
+      options: Object.values(LLMProvider) as string[],
+      default: LLMProvider.Ollama,
+      parse: async (input: string): Promise<LLMProvider> => {
+        if (Object.values(LLMProvider).includes(input as LLMProvider)) {
+          return input as LLMProvider
+        } else {
+          throw new Error(
+            `Invalid LLM provider: ${input}. Must be one of ${Object.values(LLMProvider).join(', ')}`,
+          )
+        }
+      },
+    })(),
   }
 
   async init() {
     await super.init()
 
-    const { paperProcessor, openai } = this.localConfig
-    const { model, modelProvider, endpoint } = paperProcessor
-
-    const apiKey = modelProvider === ModelProvider.OpenAI ? openai?.apiKey : 'ollama'
-    const baseURL = modelProvider === ModelProvider.Local ? endpoint : undefined
-
-    if (!openai?.apiKey || !openai?.model) {
-      this.logger.error(
-        'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
-      )
-      process.exit(1)
-    }
-
-    const { logs, concurrency } = this.flags
+    const { logs, concurrency, 'llm-provider': llmProvider } = this.flags
 
     const logger = logs ? this.logger : undefined
 
@@ -78,6 +80,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
     await this.odysseus.init()
     const scholar = new GoogleScholar(this.odysseus, logger)
     const ioService = new IoService()
+    const llmFactory = new LLMFactory(this.logger)
     const downloadService = new DownloadService(ioService, this.logger)
     const pdfService = new PdfService(downloadService, this.logger)
     const paperService = new PaperService(
@@ -90,8 +93,10 @@ export default class Chat extends BaseCommand<typeof Chat> {
       downloadService,
       this.logger,
     )
-    const localLlm = new ChatOpenAI({ model, apiKey, configuration: { baseURL } })
-    const llmService = new LLMService(localLlm, this.logger)
+    const openai = llmFactory.getLLM(LLMProvider.OpenAI, this.localConfig)
+    const secondaryLlm = llmFactory.getLLM(llmProvider, this.localConfig)
+
+    const llmService = new LLMService(secondaryLlm, this.logger)
 
     const searchService = new PaperSearchService(
       {
@@ -104,12 +109,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       this.logger,
     )
 
-    const llm = new ChatOpenAI({
-      apiKey: openai.apiKey,
-      model: openai.model,
-    })
-
-    const agent = new AutonomousAgent(llm, searchService)
+    const agent = new AutonomousAgent(openai as ChatOpenAI, searchService)
 
     this.service = new ChatService(agent)
   }

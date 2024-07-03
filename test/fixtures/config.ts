@@ -1,7 +1,7 @@
 import { Config } from '@oclif/core'
 import path from 'path'
 
-import { ModelProvider, TConfig } from '../../src/config/schema.js'
+import { TConfig } from '../../src/config/schema.js'
 
 export function getMockConfig(): Config {
   const mockConfig = new Config({
@@ -24,10 +24,9 @@ export function getMockLocalConfig(overrides?: Partial<TConfig>): TConfig {
       apiKey: 'mock-api-key',
       model: 'gpt-4-turbo',
     },
-    paperProcessor: {
-      modelProvider: ModelProvider.Local,
+    ollama: {
       model: 'llama3:instruct',
-      endpoint: 'http://localhost:11434/v1',
+      baseUrl: 'http://localhost:11434/v1',
     },
     ...overrides,
   }

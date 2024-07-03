@@ -1,5 +1,4 @@
 import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
-import { CaptchaError } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
 import { join } from 'path'
 
@@ -101,11 +100,7 @@ export class PaperSearchService {
 
       return entity
     } catch (error) {
-      if (error instanceof CaptchaError) {
-        this.logger?.debug(`Failed processing paper due to Captcha: ${paper.url}`)
-        return
-      }
-      throw error
+      this.logger?.debug(`Failed processing paper ${paper.url}: ${(error as Error).message}`)
     }
   }
 

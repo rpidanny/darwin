@@ -20,48 +20,77 @@ npm i -g @rpidanny/darwin@latest
 
 This command will globally install the latest version of Darwin from the npm registry, ensuring you have the most up-to-date features and improvements available.
 
+## How do I configure Darwin to work with a local LLM?
+
+Darwin currently supports [Ollama](https://ollama.com/) as a local LLM provider. To configure Darwin to use Ollama:
+
+1. Download and install [Ollama](https://ollama.com/).
+2. Download a model you want to use. For example, to use the model `llama3:instruct`, run:
+
+   ```sh
+   ollama pull llama3:instruct
+   ```
+
+   A list of available models can be found [here](https://ollama.com/library).
+
+3. Configure Darwin with the Ollama server's endpoint URL (typically `http://localhost:11434` unless Ollama is deployed to a remote server) and the model name _(the model from Step 2)_:
+
+   ```bash
+   darwin config set
+   ```
+
+4. Validate the configuration by running:
+
+   ```bash
+   darwin config get
+   ```
+
+## How do I configure Darwin to work with OpenAI?
+
+To configure Darwin to use OpenAI's API, you first need to get an API key from OpenAI.
+
+1. Sign up for an account on [OpenAI](https://platform.openai.com/signup) or [Sign in](https://platform.openai.com/login).
+2. Navigate to the [API key page](https://platform.openai.com/account/api-keys) and "Create new secret key", optionally naming the key.
+3. Copy the API key and configure Darwin with it:
+
+   ```bash
+   darwin config set
+   ```
+
+   Models available on OpenAI can be found [here](https://platform.openai.com/docs/models). Usually you can start with `gpt-3.5-turbo` which is a good compromise between cost and performance. If you want better result, you can try `gpt-4-turbo`.
+
+4. Validate the configuration by running:
+
+   ```bash
+   darwin config get
+   ```
+
 ## How do I configure Darwin for paper summarization?
 
 Darwin uses a large language model (LLM) to summarize papers. You have two options: using OpenAI's API or setting up a local LLM.
 
 ### Using OpenAI's API
 
-To configure Darwin with OpenAI:
+Configure OpenAI following the steps in the [previous section](#how-do-i-configure-darwin-to-work-with-openai).
 
-1. Run the command:
+Once you have configured Darwin to use OpenAI, you can summarize papers using OpenAI's cloud-based service by providing the flag `--llm-provider openai`.
 
-   ```bash
-   darwin config set
-   ```
+Example:
 
-2. Select `OpenAI` as the model provider.
+```bash
+darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --include-summary --llm-provider openai
+```
 
-Note: This method is the simplest but can be costly.
+> Note: This method is the most performant but can be costly.
 
 ### Using a Local LLM
 
-For a more economical approach, you can set up a local LLM like [Ollama](https://ollama.com/). Follow these steps:
+For a more economical approach, you can set up a local LLM like [Ollama](https://ollama.com/) by following the steps in the [previous section](#how-do-i-configure-darwin-to-work-with-a-local-llm).
 
-1. Download and install [Ollama](https://ollama.com/).
-2. Download a model you want to use.
+Once you have configured Darwin to use Ollama, you can summarize papers using the local LLM by simply running the command or by explicitly providing the flag `--llm-provider ollama`. _(This is the default provider if no provider is specified.)_
 
-   - For example, to use the model `llama3:instruct`, run:
+Example:
 
-     ```sh
-     ollama pull llama3:instruct
-     ```
-
-     List of available models can be found [here](https://ollama.com/library).
-
-3. Configure Darwin to use local LLM for paper processing:
-
-   - Run the command:
-
-     ```bash
-     darwin config set
-     ```
-
-   - Choose `Local` as the model provider while configuring the paper processor.
-   - Enter the model name _(the model from Step 2)_ and the Ollama server's endpoint URL (typically `http://localhost:11434/v1`).
-
-This setup allows you to summarize papers using either OpenAI's cloud-based service or a local LLM, depending on your preference and budget.
+```bash
+darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --include-summary --llm-provider ollama
+```

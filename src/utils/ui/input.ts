@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 
-import { ModelProvider, TConfig } from '../../config/schema.js'
+import { TConfig } from '../../config/schema.js'
 
 async function promptOpenAIConfig(defaultConfig?: TConfig['openai']): Promise<TConfig['openai']> {
   const apiKey = {
@@ -23,37 +23,27 @@ async function promptOpenAIConfig(defaultConfig?: TConfig['openai']): Promise<TC
   return await inquirer.prompt([apiKey, model])
 }
 
-async function promptPaperProcessingConfig(
-  defaultConfig?: TConfig['paperProcessor'],
-): Promise<TConfig['paperProcessor']> {
-  const modelProvider = {
-    type: 'list',
-    name: 'modelProvider',
-    message: `Select the model provider:`,
-    choices: Object.values(ModelProvider),
-    default: defaultConfig?.modelProvider,
-  }
-
+async function promptOllamaConfig(defaultConfig?: TConfig['ollama']): Promise<TConfig['ollama']> {
   const model = {
     type: 'input',
     name: 'model',
-    message: `Enter the model to use: Example: llama3:instruct, gpt-4-turbo, etc.`,
+    message: `Enter the model to use (https://ollama.com/library): Example: llama3:instruct, gemma2:9b, etc.`,
     default: defaultConfig?.model,
   }
 
-  const endpoint = {
+  const baseUrl = {
     type: 'input',
-    name: 'endpoint',
-    message: `Enter the endpoint: (optional) Leave empty for OpenAI.`,
-    default: defaultConfig?.endpoint,
+    name: 'baseUrl',
+    message: `Enter the Ollama Server base url:`,
+    default: defaultConfig?.baseUrl,
   }
 
-  console.log(chalk.gray(`Please enter the configuration used for processing papers:`))
+  console.log(chalk.gray(`Please enter the Ollama configurations:`))
 
-  return await inquirer.prompt([modelProvider, model, endpoint])
+  return await inquirer.prompt([model, baseUrl])
 }
 
 export default {
   promptOpenAIConfig,
-  promptPaperProcessingConfig,
+  promptOllamaConfig,
 }
