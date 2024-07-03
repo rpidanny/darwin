@@ -12,50 +12,43 @@ Search and export papers containing accession numbers to a CSV file.
 
 ```
 USAGE
-  $ darwin search accession KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
-    <value>] [-a <value>] [-s] [--legacy-processing] [-h] [-S] [--llm-provider openai|ollama]
+  $ darwin search accession KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-a
+    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama]
 
 ARGUMENTS
-  KEYWORDS  The keywords to search for
+  KEYWORDS  The keywords to search for. (Example: "crispr cas9")
 
 FLAGS
-  -S, --include-summary                 [LLM Required] Include the paper summary in the output CSV file. When enabled,
-                                        concurrency is set to 1.
-  -a, --accession-number-regex=<value>  [default: PRJNA\d+] Regex to match accession numbers. Defaults to matching
-                                        BioProject accession numbers.
-  -c, --count=<value>                   [default: 10] The minimum number of papers to search for. (When running
-                                        concurrently, the actual number of papers may be a bit higher)
-  -h, --headless                        Run the browser in headless mode (no UI).
-  -o, --output=<value>                  [default: .] Specify the output destination for the CSV file. If a folder path
-                                        is given, the filename is auto-generated; if a file path is given, it is used
-                                        directly.
-  -p, --concurrency=<value>             [default: 10] The number papers to process in parallel.
-  -s, --skip-captcha                    Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be
-                                        solved.
-      --legacy-processing               Enable legacy processing of papers that only extracts text from the main URL.
-                                        The new method attempts to extract text from the source URLs (pdf or html) and
-                                        falls back to the main URL.
-      --llm-provider=<option>           [default: ollama] The LLM provider to use for generating summaries.
-                                        <options: openai|ollama>
+  -S, --summary                       Include summaries in the output CSV (requires LLM, sets concurrency to 1)
+  -a, --accession-number-regex=REGEX  [default: PRJNA\d+] Regex to match accession numbers. Defaults to matching
+                                      BioProject accession numbers.
+  -c, --count=NUMBER                  [default: 10] Minimum number of papers to search for. Actual number may be
+                                      slightly higher with concurrency.
+  -h, --headless                      Run the browser in headless mode (no UI).
+  -o, --output=PATH                   [default: .] Destination for the CSV file. Specify folder path for auto-generated
+                                      filename or file path for direct use.
+  -p, --concurrency=NUMBER            [default: 10] The number papers to process in parallel.
+  -s, --skip-captcha                  Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
+      --legacy                        Enable legacy processing which extracts text only from the main URL. The new
+                                      method attempts to extract text from the source URLs (pdf or html) and falls back
+                                      to the main URL.
+      --llm=openai|ollama             [default: ollama] The LLM provider to use for generating summaries.
 
 GLOBAL FLAGS
-  --log-level=<option>  [default: INFO] Specify level for logging.
-                        <options: TRACE|DEBUG|INFO|WARN|ERROR|FATAL>
+  -l, --log-level=TRACE|DEBUG|INFO|WARN|ERROR|FATAL  [default: INFO] Specify logging level.
 
 EXAMPLES
   $ darwin search accession --help
 
-  $ darwin search accession "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG
+  $ darwin search accession "mocrobiome, nRNA" --output ./ --count 10 --log-level DEBUG
 
 FLAG DESCRIPTIONS
-  -S, --include-summary
+  -S, --summary  Include summaries in the output CSV (requires LLM, sets concurrency to 1)
 
-    [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
-
-    Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`
+    Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.28.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.28.2/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -63,41 +56,41 @@ Searches and exports research papers based on keywords to a CSV file.
 
 ```
 USAGE
-  $ darwin search papers KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
-    <value>] [-f <value>] [-s] [--legacy-processing] [-h] [-S] [--llm-provider openai|ollama]
+  $ darwin search papers KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-f
+    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama]
 
 ARGUMENTS
-  KEYWORDS  The keywords to search for
+  KEYWORDS  The keywords to search for. (Example: "crispr cas9")
 
 FLAGS
-  -S, --include-summary        [LLM Required] Include the paper summary in the output CSV file.
-  -c, --count=<value>          [default: 10] The minimum number of papers to search for.
-  -f, --filter=<value>         Case-insensitive regex to filter papers by content.
-  -h, --headless               Run the browser in headless mode.
-  -o, --output=<value>         [default: .] Specify the output destination for the CSV file.
-  -p, --concurrency=<value>    [default: 10] The number of papers to process in parallel.
-  -s, --skip-captcha           Skip captcha on paper URLs.
-      --legacy-processing      Enable legacy processing of papers that only extracts text from the main URL. The new
-                               method attempts to extract text from the source URLs (pdf or html) and falls back to the
-                               main URL.
-      --llm-provider=<option>  [default: ollama] The LLM provider to use for generating summaries.
-                               <options: openai|ollama>
+  -S, --summary             Include summaries in the output CSV (requires LLM, sets concurrency to 1)
+  -c, --count=NUMBER        [default: 10] Minimum number of papers to search for. Actual number may be slightly higher
+                            with concurrency.
+  -f, --filter=REGEX        Case-insensitive regex to filter papers by content. (Example:
+                            "Colidextribacter|Caproiciproducens")
+  -h, --headless            Run the browser in headless mode (no UI).
+  -o, --output=PATH         [default: .] Destination for the CSV file. Specify folder path for auto-generated filename
+                            or file path for direct use.
+  -p, --concurrency=NUMBER  [default: 10] The number papers to process in parallel.
+  -s, --skip-captcha        Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
+      --legacy              Enable legacy processing which extracts text only from the main URL. The new method attempts
+                            to extract text from the source URLs (pdf or html) and falls back to the main URL.
+      --llm=openai|ollama   [default: ollama] The LLM provider to use for generating summaries.
 
 GLOBAL FLAGS
-  --log-level=<option>  [default: INFO] Specify level for logging.
-                        <options: TRACE|DEBUG|INFO|WARN|ERROR|FATAL>
+  -l, --log-level=TRACE|DEBUG|INFO|WARN|ERROR|FATAL  [default: INFO] Specify logging level.
 
 EXAMPLES
   $ darwin search papers --help
 
-  $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 20 --log-level DEBUG
+  $ darwin search papers "crispr cas9" --output crispr_cas9.csv --count 20
 
-  $ darwin search papers "crispr cas9" -o crispr_cas9.csv -c 5 -p 1 -f "tcell" --log-level DEBUG
+  $ darwin search papers "crispr cas9" --output crispr_cas9.csv --filter "tcell" --log-level DEBUG
 
 FLAG DESCRIPTIONS
-  -S, --include-summary  [LLM Required] Include the paper summary in the output CSV file.
+  -S, --summary  Include summaries in the output CSV (requires LLM, sets concurrency to 1)
 
-    Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`
+    Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.28.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.28.2/src/commands/search/papers.ts)_
