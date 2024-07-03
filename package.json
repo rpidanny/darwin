@@ -1,7 +1,7 @@
 {
   "name": "@rpidanny/darwin",
   "description": "An elegant CLI wizard enhancing biotech research efficiency, with adaptable features for other domains, albeit with minor constraints.",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "author": "Abhishek <abhishek.rpidanny@gmail.com>",
   "bin": {
     "darwin": "./bin/run.js"
@@ -61,6 +61,7 @@
     "playwright": "^1.44.1",
     "pretty-ms": "^9.0.0",
     "reflect-metadata": "^0.2.2",
+    "semver": "^7.6.2",
     "tough-cookie": "^4.1.4",
     "typedi": "^0.10.0"
   },
@@ -150,7 +151,8 @@
     "hooks": {
       "init": [
         "./dist/hooks/init/analytics",
-        "./dist/hooks/init/banner"
+        "./dist/hooks/init/banner",
+        "./dist/hooks/init/check-update"
       ],
       "postrun": "./dist/hooks/postrun/analytics"
     },

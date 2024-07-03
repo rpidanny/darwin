@@ -1,3 +1,9 @@
+## [1.28.0](https://github.com/rpidanny/darwin/compare/v1.27.0...v1.28.0) (2024-07-03)
+
+### Features
+
+* add check-update hook ([#71](https://github.com/rpidanny/darwin/issues/71)) ([8ad8e33](https://github.com/rpidanny/darwin/commit/8ad8e3356b2d615612d9407bc56f9aba47c1ff77))
+
 ## [1.27.0](https://github.com/rpidanny/darwin/compare/v1.26.1...v1.27.0) (2024-07-03)
 
 ### Features
