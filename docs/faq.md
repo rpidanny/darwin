@@ -77,12 +77,12 @@ Darwin uses a large language model (LLM) to summarize papers. You have two optio
 
 Configure OpenAI following the steps in the [previous section](#how-do-i-configure-darwin-to-work-with-openai).
 
-Once you have configured Darwin to use OpenAI, you can summarize papers using OpenAI's cloud-based service by providing the flag `--llm-provider openai`.
+Once you have configured Darwin to use OpenAI, you can summarize papers using OpenAI's cloud-based service by providing the flag `--llm openai`.
 
 Example:
 
 ```bash
-darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --include-summary --llm-provider openai
+darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --summary --llm openai
 ```
 
 > Note: This method is the most performant but can be costly.
@@ -91,10 +91,10 @@ darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data 
 
 For a more economical approach, you can set up a local LLM like [Ollama](https://ollama.com/) by following the steps in the [previous section](#how-do-i-configure-darwin-to-work-with-a-local-llm).
 
-Once you have configured Darwin to use Ollama, you can summarize papers using the local LLM by simply running the command or by explicitly providing the flag `--llm-provider ollama`. _(This is the default provider if no provider is specified.)_
+Once you have configured Darwin to use Ollama, you can summarize papers using the local LLM by simply running the command or by explicitly providing the flag `--llm ollama`. _(This is the default provider if no provider is specified.)_
 
 Example:
 
 ```bash
-darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --include-summary --llm-provider ollama
+darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --summary --llm ollama
 ```
