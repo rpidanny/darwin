@@ -82,7 +82,8 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       char: 'S',
       summary:
         '[LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
-      description: 'Summaries are generated using LLM (either OpenAI or Local).',
+      description:
+        'Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`',
       default: false,
     }),
     'llm-provider': oclif.Flags.custom<LLMProvider>({

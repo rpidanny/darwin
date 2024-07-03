@@ -59,7 +59,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       default: false,
     }),
     'legacy-processing': oclif.Flags.boolean({
-      summary: 'Enable legacy processing of papers.',
+      summary:
+        'Enable legacy processing of papers that only extracts text from the main URL. The new method attempts to extract text from the source URLs (pdf or html) and falls back to the main URL.',
       default: false,
     }),
     headless: oclif.Flags.boolean({
@@ -70,7 +71,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     'include-summary': oclif.Flags.boolean({
       char: 'S',
       summary: '[LLM Required] Include the paper summary in the output CSV file.',
-      description: 'Summaries are generated using LLM (either OpenAI or Local).',
+      description:
+        'Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`',
       default: false,
     }),
     'llm-provider': oclif.Flags.custom<LLMProvider>({
