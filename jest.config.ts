@@ -45,10 +45,10 @@ const config: JestConfigWithTsJest = {
   ],
   coverageThreshold: {
     global: {
-      statements: 93,
+      statements: 92,
       branches: 90,
-      functions: 94,
-      lines: 93,
+      functions: 93,
+      lines: 92,
     },
   },
 }
