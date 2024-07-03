@@ -1,3 +1,9 @@
+## [1.27.0](https://github.com/rpidanny/darwin/compare/v1.26.1...v1.27.0) (2024-07-03)
+
+### Features
+
+* add ollama config ([#69](https://github.com/rpidanny/darwin/issues/69)) ([69591bc](https://github.com/rpidanny/darwin/commit/69591bcc89b382141a2da571eaa5600f7fe288da))
+
 ## [1.26.1](https://github.com/rpidanny/darwin/compare/v1.26.0...v1.26.1) (2024-07-02)
 
 ### Bug Fixes

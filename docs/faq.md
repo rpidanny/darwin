@@ -4,6 +4,8 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [How do I update Darwin?](#how-do-i-update-darwin)
+- [How do I configure Darwin to work with a local LLM?](#how-do-i-configure-darwin-to-work-with-a-local-llm)
+- [How do I configure Darwin to work with OpenAI?](#how-do-i-configure-darwin-to-work-with-openai)
 - [How do I configure Darwin for paper summarization?](#how-do-i-configure-darwin-for-paper-summarization)
   - [Using OpenAI's API](#using-openais-api)
   - [Using a Local LLM](#using-a-local-llm)

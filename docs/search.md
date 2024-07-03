@@ -13,7 +13,7 @@ Search and export papers containing accession numbers to a CSV file.
 ```
 USAGE
   $ darwin search accession KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
-    <value>] [-a <value>] [-s] [--legacy-processing] [-h] [-S]
+    <value>] [-a <value>] [-s] [--legacy-processing] [-h] [-S] [--llm-provider openai|ollama]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for
@@ -35,6 +35,8 @@ FLAGS
       --legacy-processing               Enable legacy processing of papers that only extracts text from the main URL.
                                         The new method attempts to extract text from the source URLs (pdf or html) and
                                         falls back to the main URL.
+      --llm-provider=<option>           [default: ollama] The LLM provider to use for generating summaries.
+                                        <options: openai|ollama>
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -50,10 +52,10 @@ FLAG DESCRIPTIONS
 
     [LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.
 
-    Summaries are generated using LLM (either OpenAI or Local).
+    Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.26.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.27.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -62,20 +64,24 @@ Searches and exports research papers based on keywords to a CSV file.
 ```
 USAGE
   $ darwin search papers KEYWORDS [--log-level TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c <value>] [-p <value>] [-o
-    <value>] [-f <value>] [-s] [--legacy-processing] [-h] [-S]
+    <value>] [-f <value>] [-s] [--legacy-processing] [-h] [-S] [--llm-provider openai|ollama]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for
 
 FLAGS
-  -S, --include-summary      [LLM Required] Include the paper summary in the output CSV file.
-  -c, --count=<value>        [default: 10] The minimum number of papers to search for.
-  -f, --filter=<value>       Case-insensitive regex to filter papers by content.
-  -h, --headless             Run the browser in headless mode.
-  -o, --output=<value>       [default: .] Specify the output destination for the CSV file.
-  -p, --concurrency=<value>  [default: 10] The number of papers to process in parallel.
-  -s, --skip-captcha         Skip captcha on paper URLs.
-      --legacy-processing    Enable legacy processing of papers.
+  -S, --include-summary        [LLM Required] Include the paper summary in the output CSV file.
+  -c, --count=<value>          [default: 10] The minimum number of papers to search for.
+  -f, --filter=<value>         Case-insensitive regex to filter papers by content.
+  -h, --headless               Run the browser in headless mode.
+  -o, --output=<value>         [default: .] Specify the output destination for the CSV file.
+  -p, --concurrency=<value>    [default: 10] The number of papers to process in parallel.
+  -s, --skip-captcha           Skip captcha on paper URLs.
+      --legacy-processing      Enable legacy processing of papers that only extracts text from the main URL. The new
+                               method attempts to extract text from the source URLs (pdf or html) and falls back to the
+                               main URL.
+      --llm-provider=<option>  [default: ollama] The LLM provider to use for generating summaries.
+                               <options: openai|ollama>
 
 GLOBAL FLAGS
   --log-level=<option>  [default: INFO] Specify level for logging.
@@ -91,7 +97,7 @@ EXAMPLES
 FLAG DESCRIPTIONS
   -S, --include-summary  [LLM Required] Include the paper summary in the output CSV file.
 
-    Summaries are generated using LLM (either OpenAI or Local).
+    Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.26.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.27.0/src/commands/search/papers.ts)_
