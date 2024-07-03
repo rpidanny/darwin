@@ -15,7 +15,7 @@ function printUpdateBanner(version: string, log: (msg: string) => void): void {
   log(
     `${chalk.hex('#cf402f')(
       `A new version (v${version}) of darwin is available. Please run ${chalk.bold(
-        'npm install -g @rpidanny/darwin@latest',
+        'darwin update',
       )} to update and enjoy the latest features!`,
     )}`,
   )
