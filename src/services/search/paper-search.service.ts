@@ -1,17 +1,19 @@
-import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar/dist'
+import { GoogleScholar, IPaperMetadata } from '@rpidanny/google-scholar'
 import { Quill } from '@rpidanny/quill'
 import { join } from 'path'
+import { Service } from 'typedi'
 
-import { ITextMatch } from '../../utils/text/interfaces'
-import { IoService } from '../io/io.service'
-import { LLMService } from '../llm/llm.service'
-import { PaperService } from '../paper/paper.service'
-import { IPaperEntity, ISearchOptions } from './interfaces'
-import { IPaperSearchConfig } from './paper-search.config'
+import { ITextMatch } from '../../utils/text/interfaces.js'
+import { IoService } from '../io/io.service.js'
+import { LLMService } from '../llm/llm.service.js'
+import { PaperService } from '../paper/paper.service.js'
+import { IPaperEntity, ISearchOptions } from './interfaces.js'
+import { PaperSearchConfig } from './paper-search.config.js'
 
+@Service()
 export class PaperSearchService {
   constructor(
-    private readonly config: IPaperSearchConfig,
+    private readonly config: PaperSearchConfig,
     private readonly googleScholar: GoogleScholar,
     private readonly paperService: PaperService,
     private readonly ioService: IoService,

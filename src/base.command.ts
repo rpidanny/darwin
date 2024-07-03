@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { Command, Flags, Interfaces } from '@oclif/core'
 import { LogLevel, LogOutputFormat, Quill } from '@rpidanny/quill'
 import { log2fs } from '@rpidanny/quill-hooks'

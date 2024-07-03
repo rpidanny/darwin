@@ -1,9 +1,11 @@
 import { Ollama } from '@langchain/community/llms/ollama'
 import { ChatOpenAI } from '@langchain/openai'
 import { Quill } from '@rpidanny/quill'
+import { Service } from 'typedi'
 
 import { LLMProvider, TConfig } from '../config/schema.js'
 
+@Service()
 export class LLMFactory {
   private logger: Quill
 

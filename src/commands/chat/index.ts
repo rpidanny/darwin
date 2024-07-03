@@ -1,20 +1,11 @@
-import { ChatOpenAI } from '@langchain/openai'
 import * as oclif from '@oclif/core'
-import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
+import { Container } from 'typedi'
 
 import { BaseCommand } from '../../base.command.js'
 import { LLMProvider } from '../../config/schema.js'
-import { LLMFactory } from '../../factories/llm.js'
-import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
+import { initChatContainer } from '../../containers/chat.container.js'
 import { ChatService } from '../../services/chat/chat.service.js'
-import { DownloadService } from '../../services/download/download.service.js'
-import { IoService } from '../../services/io/io.service.js'
-import { LLMService } from '../../services/llm/llm.service.js'
-import { PaperService } from '../../services/paper/paper.service.js'
-import { PdfService } from '../../services/pdf/pdf.service.js'
-import { PaperSearchService } from '../../services/search/paper-search.service.js'
-import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class Chat extends BaseCommand<typeof Chat> {
   service!: ChatService
@@ -69,49 +60,30 @@ export default class Chat extends BaseCommand<typeof Chat> {
   async init() {
     await super.init()
 
-    const { logs, concurrency, 'llm-provider': llmProvider } = this.flags
+    const {
+      concurrency,
+      'llm-provider': llmProvider,
+      'skip-captcha': skipCaptcha,
+      'legacy-processing': legacyProcessing,
+    } = this.flags
 
-    const logger = logs ? this.logger : undefined
-
-    this.odysseus = new Odysseus(
-      { headless: false, waitOnCaptcha: true, initHtml: getInitPageContent() },
-      logger,
-    )
-    await this.odysseus.init()
-    const scholar = new GoogleScholar(this.odysseus, logger)
-    const ioService = new IoService()
-    const llmFactory = new LLMFactory(this.logger)
-    const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(downloadService, this.logger)
-    const paperService = new PaperService(
+    initChatContainer(
       {
-        skipCaptcha: this.flags['skip-captcha'],
-        legacyProcessing: this.flags['legacy-processing'],
-      },
-      this.odysseus,
-      pdfService,
-      downloadService,
-      this.logger,
-    )
-    const openai = llmFactory.getLLM(LLMProvider.OpenAI, this.localConfig)
-    const secondaryLlm = llmFactory.getLLM(llmProvider, this.localConfig)
-
-    const llmService = new LLMService(secondaryLlm, this.logger)
-
-    const searchService = new PaperSearchService(
-      {
+        headless: false,
         concurrency,
+        summarize: false,
+        llmProvider,
+        skipCaptcha,
+        legacyProcessing,
       },
-      scholar,
-      paperService,
-      ioService,
-      llmService,
+      this.localConfig,
       this.logger,
     )
 
-    const agent = new AutonomousAgent(openai as ChatOpenAI, searchService)
+    this.odysseus = Container.get(Odysseus)
+    await this.odysseus.init()
 
-    this.service = new ChatService(agent)
+    this.service = Container.get(ChatService)
   }
 
   protected async finally(error: Error | undefined): Promise<void> {

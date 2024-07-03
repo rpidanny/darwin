@@ -7,11 +7,13 @@ import {
 import { StructuredToolInterface } from '@langchain/core/tools'
 import { ChatOpenAI } from '@langchain/openai'
 import { AgentExecutor, createOpenAIFunctionsAgent } from 'langchain/agents'
+import { Service } from 'typedi'
 
 import { PapersWithAccessionNumbersSearchTool } from '../../utils/tools/accession-search.js'
 import { PapersSearchTool } from '../../utils/tools/paper-search.js'
 import { PaperSearchService } from '../search/paper-search.service.js'
 
+@Service()
 export class AutonomousAgent {
   private agent!: AgentExecutor
 

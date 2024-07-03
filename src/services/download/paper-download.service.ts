@@ -1,8 +1,10 @@
 import { GoogleScholar } from '@rpidanny/google-scholar/dist/google-scholar.js'
 import { Quill } from '@rpidanny/quill'
+import { Service } from 'typedi'
 
 import { PaperService } from '../paper/paper.service.js'
 
+@Service()
 export class PaperDownloadService {
   constructor(
     private readonly googleScholar: GoogleScholar,

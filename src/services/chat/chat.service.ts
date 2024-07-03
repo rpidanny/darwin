@@ -3,11 +3,13 @@ import inquirer from 'inquirer'
 import { marked, MarkedExtension } from 'marked'
 import { markedTerminal } from 'marked-terminal'
 import ora from 'ora'
+import { Service } from 'typedi'
 
-import { AutonomousAgent } from './autonomous-agent'
+import { AutonomousAgent } from './autonomous-agent.js'
 
 marked.use(markedTerminal() as MarkedExtension)
 
+@Service()
 export class ChatService {
   constructor(private readonly agent: AutonomousAgent) {}
 

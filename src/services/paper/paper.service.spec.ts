@@ -7,7 +7,7 @@ import { getMockPaperMetadata } from '../../../test/fixtures/google-scholar'
 import { DownloadService } from '../download/download.service'
 import { PdfService } from '../pdf/pdf.service'
 import { PaperService } from './paper.service'
-import { IPaperServiceConfig } from './paper.service.config'
+import { PaperServiceConfig } from './paper.service.config'
 
 describe('PaperService', () => {
   const htmlPaperMetadata = getMockPaperMetadata()
@@ -21,7 +21,7 @@ describe('PaperService', () => {
   const pdfServiceMock = mock<PdfService>()
   const odysseusMock = mock<Odysseus>()
   const downloadService = mock<DownloadService>()
-  const config: IPaperServiceConfig = {
+  const config: PaperServiceConfig = {
     legacyProcessing: false,
     skipCaptcha: true,
   }

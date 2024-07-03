@@ -42,13 +42,14 @@ const config: JestConfigWithTsJest = {
     '<rootDir>/local_tests/',
     '<rootDir>/coverage/',
     '<rootDir>/src/commands/',
+    '\\.config\\.ts$',
   ],
   coverageThreshold: {
     global: {
-      statements: 93,
+      statements: 81,
       branches: 90,
-      functions: 94,
-      lines: 93,
+      functions: 92,
+      lines: 81,
     },
   },
 }

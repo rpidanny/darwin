@@ -1,4 +1,4 @@
-export interface IPaperServiceConfig {
-  skipCaptcha: boolean
-  legacyProcessing: boolean
+export class PaperServiceConfig {
+  skipCaptcha!: boolean
+  legacyProcessing!: boolean
 }

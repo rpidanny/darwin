@@ -10,7 +10,7 @@ import { IoService } from '../io/io.service'
 import { LLMService } from '../llm/llm.service.js'
 import { PaperService } from '../paper/paper.service'
 import { AccessionPattern } from './constants.js'
-import { IPaperSearchConfig } from './paper-search.config'
+import { PaperSearchConfig } from './paper-search.config'
 import { PaperSearchService } from './paper-search.service'
 
 describe('PaperSearchService', () => {
@@ -21,7 +21,7 @@ describe('PaperSearchService', () => {
   const logger = mock<Quill>()
   const llmService = mock<LLMService>()
 
-  const mockConfig: IPaperSearchConfig = {
+  const mockConfig: PaperSearchConfig = {
     concurrency: 1,
   }
 

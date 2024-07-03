@@ -1,3 +1,3 @@
-export interface IPaperSearchConfig {
-  concurrency: number
+export class PaperSearchConfig {
+  public concurrency!: number
 }
