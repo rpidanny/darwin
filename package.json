@@ -60,6 +60,7 @@
     "pdf-text-reader": "^5.1.0",
     "playwright": "^1.44.1",
     "pretty-ms": "^9.0.0",
+    "semver": "^7.6.2",
     "tough-cookie": "^4.1.4"
   },
   "devDependencies": {
@@ -148,7 +149,8 @@
     "hooks": {
       "init": [
         "./dist/hooks/init/analytics",
-        "./dist/hooks/init/banner"
+        "./dist/hooks/init/banner",
+        "./dist/hooks/init/check-update"
       ],
       "postrun": "./dist/hooks/postrun/analytics"
     },
