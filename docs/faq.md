@@ -35,6 +35,8 @@ Darwin currently supports [Ollama](https://ollama.com/) as a local LLM provider.
 
    A list of available models can be found [here](https://ollama.com/library).
 
+   > Note: You should have at least 8 GB of RAM available to run the 7B models, 16 GB to run the 13B models, and 32 GB to run the 33B models.
+
 3. Configure Darwin with the Ollama server's endpoint URL (typically `http://localhost:11434` unless Ollama is deployed to a remote server) and the model name _(the model from Step 2)_:
 
    ```bash
