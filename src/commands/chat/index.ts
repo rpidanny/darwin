@@ -1,4 +1,3 @@
-import * as oclif from '@oclif/core'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 import { Container } from 'typedi'
 
@@ -20,12 +19,6 @@ export default class Chat extends BaseCommand<typeof Chat> {
 
   static flags = {
     concurrency: concurrencyFlag,
-    logs: oclif.Flags.boolean({
-      char: 'l',
-      summary: 'Include application logs along with the chat conversations.',
-      required: false,
-      default: false,
-    }),
     'skip-captcha': skipCaptchaFlag,
     legacy: legacyFlag,
     llm: llmProviderFlag,
