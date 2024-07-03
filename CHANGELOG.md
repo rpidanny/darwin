@@ -1,3 +1,9 @@
+## [1.29.0](https://github.com/rpidanny/darwin/compare/v1.28.2...v1.29.0) (2024-07-03)
+
+### Features
+
+* add update command ([#75](https://github.com/rpidanny/darwin/issues/75)) ([29784d0](https://github.com/rpidanny/darwin/commit/29784d03b95b50df1b9721fb9522565836d3d94f))
+
 ## [1.28.2](https://github.com/rpidanny/darwin/compare/v1.28.1...v1.28.2) (2024-07-03)
 
 ## [1.28.1](https://github.com/rpidanny/darwin/compare/v1.28.0...v1.28.1) (2024-07-03)

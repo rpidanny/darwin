@@ -31,7 +31,7 @@ $ npm install -g @rpidanny/darwin
 $ darwin COMMAND
 running command...
 $ darwin (--version)
-@rpidanny/darwin/1.28.2 linux-x64 node-v20.15.0
+@rpidanny/darwin/1.29.0 linux-x64 node-v20.15.0
 $ darwin --help [COMMAND]
 USAGE
   $ darwin COMMAND
@@ -48,6 +48,7 @@ USAGE
 * [`darwin config`](docs/config.md) - Manage application configurations.
 * [`darwin download`](docs/download.md) - Download papers, datasets, or other content.
 * [`darwin search`](docs/search.md) - Search for papers, accession numbers, or other content.
+* [`darwin update`](docs/update.md) - Update Darwin to the latest version.
 
 <!-- commandsstop -->
 
