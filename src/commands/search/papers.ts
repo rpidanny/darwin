@@ -3,7 +3,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { ModelProvider } from '../../config/schema.js'
+import { LLMProvider } from '../../config/schema.js'
 import { LLMFactory } from '../../factories/llm.js'
 import { DownloadService } from '../../services/download/download.service.js'
 import { IoService } from '../../services/io/io.service.js'
@@ -73,16 +73,16 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       description: 'Summaries are generated using LLM (either OpenAI or Local).',
       default: false,
     }),
-    'llm-provider': oclif.Flags.custom<ModelProvider>({
+    'llm-provider': oclif.Flags.custom<LLMProvider>({
       summary: 'The LLM provider to use for generating summaries.',
-      options: Object.values(ModelProvider) as string[], // Convert to string[] for the options
-      default: ModelProvider.Ollama,
-      parse: async (input: string): Promise<ModelProvider> => {
-        if (Object.values(ModelProvider).includes(input as ModelProvider)) {
-          return input as ModelProvider
+      options: Object.values(LLMProvider) as string[],
+      default: LLMProvider.Ollama,
+      parse: async (input: string): Promise<LLMProvider> => {
+        if (Object.values(LLMProvider).includes(input as LLMProvider)) {
+          return input as LLMProvider
         } else {
           throw new Error(
-            `Invalid LLM provider: ${input}. Must be one of ${Object.values(ModelProvider).join(', ')}`,
+            `Invalid LLM provider: ${input}. Must be one of ${Object.values(LLMProvider).join(', ')}`,
           )
         }
       },

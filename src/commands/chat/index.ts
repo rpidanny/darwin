@@ -4,7 +4,7 @@ import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
 
 import { BaseCommand } from '../../base.command.js'
-import { ModelProvider } from '../../config/schema.js'
+import { LLMProvider } from '../../config/schema.js'
 import { LLMFactory } from '../../factories/llm.js'
 import { AutonomousAgent } from '../../services/chat/autonomous-agent.js'
 import { ChatService } from '../../services/chat/chat.service.js'
@@ -50,11 +50,20 @@ export default class Chat extends BaseCommand<typeof Chat> {
       required: false,
       default: false,
     }),
-    'llm-provider': oclif.Flags.string({
+    'llm-provider': oclif.Flags.custom<LLMProvider>({
       summary: 'The LLM provider to use for generating summaries.',
-      options: Object.values(ModelProvider),
-      default: ModelProvider.Ollama,
-    }),
+      options: Object.values(LLMProvider) as string[],
+      default: LLMProvider.Ollama,
+      parse: async (input: string): Promise<LLMProvider> => {
+        if (Object.values(LLMProvider).includes(input as LLMProvider)) {
+          return input as LLMProvider
+        } else {
+          throw new Error(
+            `Invalid LLM provider: ${input}. Must be one of ${Object.values(LLMProvider).join(', ')}`,
+          )
+        }
+      },
+    })(),
   }
 
   async init() {
@@ -84,7 +93,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
       downloadService,
       this.logger,
     )
-    const openai = llmFactory.getLLM(ModelProvider.OpenAI, this.localConfig)
+    const openai = llmFactory.getLLM(LLMProvider.OpenAI, this.localConfig)
     const secondaryLlm = llmFactory.getLLM(llmProvider, this.localConfig)
 
     const llmService = new LLMService(secondaryLlm, this.logger)

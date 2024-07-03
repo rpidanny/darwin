@@ -5,14 +5,14 @@ const OpenAIConfigSchema = z.object({
   model: z.string(),
 })
 
-export enum ModelProvider {
+export enum LLMProvider {
   OpenAI = 'openai',
   Ollama = 'ollama',
 }
 
 const ollamaConfigSchema = z.object({
   model: z.string().default('llama3:instruct'),
-  endpoint: z.string().optional().default('http://localhost:11434'),
+  baseUrl: z.string().optional().default('http://localhost:11434'),
 })
 
 export const ConfigSchema = z.object({

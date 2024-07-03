@@ -31,16 +31,16 @@ async function promptOllamaConfig(defaultConfig?: TConfig['ollama']): Promise<TC
     default: defaultConfig?.model,
   }
 
-  const endpoint = {
+  const baseUrl = {
     type: 'input',
-    name: 'endpoint',
-    message: `Enter the endpoint: (optional) Leave empty for OpenAI.`,
-    default: defaultConfig?.endpoint,
+    name: 'baseUrl',
+    message: `Enter the Ollama Server baseUrl:`,
+    default: defaultConfig?.baseUrl,
   }
 
-  console.log(chalk.gray(`Please enter the configuration used for processing papers:`))
+  console.log(chalk.gray(`Please enter the Ollama configurations:`))
 
-  return await inquirer.prompt([model, endpoint])
+  return await inquirer.prompt([model, baseUrl])
 }
 
 export default {
