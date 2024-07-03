@@ -11,7 +11,7 @@ export function initChatContainer(
     concurrency: number
     llmProvider: LLMProvider
     skipCaptcha: boolean
-    legacyProcessing: boolean
+    legacy: boolean
   },
   config: TConfig,
   logger: Quill,
@@ -20,7 +20,7 @@ export function initChatContainer(
     {
       ...opts,
       headless: false,
-      summarize: false,
+      summary: false,
     },
     config,
     logger,

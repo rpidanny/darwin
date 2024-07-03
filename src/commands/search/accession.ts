@@ -3,9 +3,17 @@ import { Odysseus } from '@rpidanny/odysseus'
 import { Container } from 'typedi'
 
 import { BaseCommand } from '../../base.command.js'
-import { LLMProvider } from '../../config/schema.js'
 import { initSearchContainer } from '../../containers/search.container.js'
-import { AccessionPattern } from '../../services/search/constants.js'
+import keywordsArg from '../../inputs/args/keywords.arg.js'
+import accessionNumberRegexFlag from '../../inputs/flags/accession-number-regex.flag.js'
+import concurrencyFlag from '../../inputs/flags/concurrency.flag.js'
+import countFlag from '../../inputs/flags/count.flag.js'
+import headlessFlag from '../../inputs/flags/headless.flag.js'
+import legacyFlag from '../../inputs/flags/legacy.flag.js'
+import llmProviderFlag from '../../inputs/flags/llm-provider.flag.js'
+import outputFlag from '../../inputs/flags/output.flag.js'
+import skipCaptchaFlag from '../../inputs/flags/skip-captcha.flag.js'
+import summaryFlag from '../../inputs/flags/summary.flag.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
@@ -22,78 +30,23 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" -o output.csv  -n 5 -c 1 --log-level DEBUG',
+    '<%= config.bin %> <%= command.id %> "mocrobiome, nRNA" --output ./ --count 10 --log-level DEBUG',
   ]
 
   static args = {
-    keywords: oclif.Args.string({
-      name: 'keywords',
-      required: true,
-      description: 'The keywords to search for',
-    }),
+    keywords: keywordsArg,
   }
 
   static flags = {
-    count: oclif.Flags.integer({
-      char: 'c',
-      summary:
-        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
-      default: 10,
-    }),
-    concurrency: oclif.Flags.integer({
-      char: 'p',
-      summary: 'The number papers to process in parallel.',
-      default: 10,
-    }),
-    output: oclif.Flags.string({
-      char: 'o',
-      summary:
-        'Specify the output destination for the CSV file. If a folder path is given, the filename is auto-generated; if a file path is given, it is used directly.',
-      default: '.',
-    }),
-    'accession-number-regex': oclif.Flags.string({
-      char: 'a',
-      summary:
-        'Regex to match accession numbers. Defaults to matching BioProject accession numbers.',
-      default: AccessionPattern.BioProject,
-    }),
-    'skip-captcha': oclif.Flags.boolean({
-      char: 's',
-      summary: 'Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.',
-      default: false,
-    }),
-    'legacy-processing': oclif.Flags.boolean({
-      summary:
-        'Enable legacy processing of papers that only extracts text from the main URL. The new method attempts to extract text from the source URLs (pdf or html) and falls back to the main URL.',
-      default: false,
-    }),
-    headless: oclif.Flags.boolean({
-      char: 'h',
-      summary: 'Run the browser in headless mode (no UI).',
-      default: false,
-    }),
-    'include-summary': oclif.Flags.boolean({
-      char: 'S',
-      summary:
-        '[LLM Required] Include the paper summary in the output CSV file. When enabled, concurrency is set to 1.',
-      description:
-        'Summaries are generated using LLM so make sure LLMs are configured by running `darwin config set`',
-      default: false,
-    }),
-    'llm-provider': oclif.Flags.custom<LLMProvider>({
-      summary: 'The LLM provider to use for generating summaries.',
-      options: Object.values(LLMProvider) as string[],
-      default: LLMProvider.Ollama,
-      parse: async (input: string): Promise<LLMProvider> => {
-        if (Object.values(LLMProvider).includes(input as LLMProvider)) {
-          return input as LLMProvider
-        } else {
-          throw new Error(
-            `Invalid LLM provider: ${input}. Must be one of ${Object.values(LLMProvider).join(', ')}`,
-          )
-        }
-      },
-    })(),
+    count: countFlag,
+    concurrency: concurrencyFlag,
+    output: outputFlag,
+    'accession-number-regex': accessionNumberRegexFlag,
+    'skip-captcha': skipCaptchaFlag,
+    legacy: legacyFlag,
+    headless: headlessFlag,
+    summary: summaryFlag,
+    llm: llmProviderFlag,
   }
 
   async init(): Promise<void> {
@@ -102,20 +55,20 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     const {
       headless,
       concurrency,
-      'include-summary': summarize,
-      'llm-provider': llmProvider,
+      summary,
+      llm: llmProvider,
       'skip-captcha': skipCaptcha,
-      'legacy-processing': legacyProcessing,
+      legacy,
     } = this.flags
 
     initSearchContainer(
       {
         headless,
         concurrency,
-        summarize,
+        summary,
         llmProvider,
         skipCaptcha,
-        legacyProcessing,
+        legacy,
       },
       this.localConfig,
       this.logger,
@@ -133,12 +86,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<void> {
-    const {
-      count,
-      output,
-      'accession-number-regex': filterPattern,
-      'include-summary': summarize,
-    } = this.flags
+    const { count, output, 'accession-number-regex': filterPattern, summary } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers with Accession Numbers (${filterPattern}) for: ${keywords}`)
@@ -147,7 +95,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       keywords,
       minItemCount: count,
       filterPattern,
-      summarize,
+      summarize: summary,
     })
 
     this.logger.info(`Exported papers list to: ${outputPath}`)

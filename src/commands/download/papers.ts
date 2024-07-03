@@ -4,6 +4,10 @@ import { Container } from 'typedi'
 
 import { BaseCommand } from '../../base.command.js'
 import { initDownloadContainer } from '../../containers/download.container.js'
+import keywordsArg from '../../inputs/args/keywords.arg.js'
+import { FlagChar } from '../../inputs/flags/char.js'
+import countFlag from '../../inputs/flags/count.flag.js'
+import headlessFlag from '../../inputs/flags/headless.flag.js'
 import { PaperDownloadService } from '../../services/download/paper-download.service.js'
 
 export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
@@ -14,36 +18,21 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --help',
-    '<%= config.bin %> <%= command.id %> "crispr cas9" -o papers/ -c 100 --log-level debug',
+    '<%= config.bin %> <%= command.id %> "crispr cas9" --output papers/ --count 100 --log-level debug',
   ]
 
   static args = {
-    keywords: oclif.Args.string({
-      name: 'keywords',
-      required: true,
-      description: 'The keywords to search for',
-    }),
+    keywords: keywordsArg,
   }
 
   static flags = {
-    count: oclif.Flags.integer({
-      char: 'c',
-      summary:
-        'The minimum number of papers to search for. (When running concurrently, the actual number of papers may be a bit higher)',
-      required: false,
-      default: 10,
-    }),
+    count: countFlag,
     output: oclif.Flags.string({
-      char: 'o',
+      char: FlagChar.Output,
       summary: 'The path to save the downloaded papers.',
       required: true,
     }),
-    headless: oclif.Flags.boolean({
-      char: 'h',
-      summary: 'Run the browser in headless mode (no UI).',
-      required: false,
-      default: false,
-    }),
+    headless: headlessFlag,
   }
 
   async init(): Promise<void> {
