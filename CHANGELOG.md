@@ -1,3 +1,9 @@
+## [1.29.2](https://github.com/rpidanny/darwin/compare/v1.29.1...v1.29.2) (2024-07-03)
+
+### Bug Fixes
+
+* **deps:** bump @langchain/openai from 0.1.3 to 0.2.1 ([#54](https://github.com/rpidanny/darwin/issues/54)) ([eb8d28e](https://github.com/rpidanny/darwin/commit/eb8d28e74683db14e4c1bb59c05acf57c4456e13))
+
 ## [1.29.1](https://github.com/rpidanny/darwin/compare/v1.29.0...v1.29.1) (2024-07-03)
 
 ### Bug Fixes
