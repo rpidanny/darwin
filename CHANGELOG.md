@@ -1,3 +1,9 @@
+## [1.29.4](https://github.com/rpidanny/darwin/compare/v1.29.3...v1.29.4) (2024-07-03)
+
+### Bug Fixes
+
+* **deps:** bump marked-terminal from 7.0.0 to 7.1.0 ([#53](https://github.com/rpidanny/darwin/issues/53)) ([0d6227c](https://github.com/rpidanny/darwin/commit/0d6227c461896a2478c37512673e26c7b74543ef))
+
 ## [1.29.3](https://github.com/rpidanny/darwin/compare/v1.29.2...v1.29.3) (2024-07-03)
 
 ### Bug Fixes
