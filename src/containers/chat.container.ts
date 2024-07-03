@@ -8,9 +8,7 @@ import { initSearchContainer } from './search.container.js'
 
 export function initChatContainer(
   opts: {
-    headless: boolean
     concurrency: number
-    summarize: boolean
     llmProvider: LLMProvider
     skipCaptcha: boolean
     legacyProcessing: boolean
@@ -18,7 +16,15 @@ export function initChatContainer(
   config: TConfig,
   logger: Quill,
 ) {
-  initSearchContainer(opts, config, logger)
+  initSearchContainer(
+    {
+      ...opts,
+      headless: false,
+      summarize: false,
+    },
+    config,
+    logger,
+  )
 
   Container.set(ChatOpenAI, Container.get(LLMFactory).getLLM(LLMProvider.OpenAI, config))
 }

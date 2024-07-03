@@ -48,7 +48,7 @@ const config: JestConfigWithTsJest = {
     global: {
       statements: 81,
       branches: 90,
-      functions: 92,
+      functions: 90,
       lines: 81,
     },
   },

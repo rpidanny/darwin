@@ -23,7 +23,7 @@ export default class SetConfig extends Command {
     const openai = await uiInput.promptOpenAIConfig(existingConfig?.openai)
     const ollama = await uiInput.promptOllamaConfig(existingConfig?.ollama)
 
-    const config = {
+    const config: TConfig = {
       openai,
       ollama,
     }

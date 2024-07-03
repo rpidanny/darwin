@@ -52,6 +52,7 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
     const { headless } = this.flags
 
     initDownloadContainer({ headless }, this.logger)
+
     this.odysseus = Container.get(Odysseus)
     await this.odysseus.init()
 

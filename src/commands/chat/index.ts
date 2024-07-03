@@ -69,9 +69,7 @@ export default class Chat extends BaseCommand<typeof Chat> {
 
     initChatContainer(
       {
-        headless: false,
         concurrency,
-        summarize: false,
         llmProvider,
         skipCaptcha,
         legacyProcessing,
