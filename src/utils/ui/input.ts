@@ -27,14 +27,14 @@ async function promptOllamaConfig(defaultConfig?: TConfig['ollama']): Promise<TC
   const model = {
     type: 'input',
     name: 'model',
-    message: `Enter the model to use (ref: https://ollama.com/library): Example: llama3:instruct, gemma2:9b, etc.`,
+    message: `Enter the model to use (https://ollama.com/library): Example: llama3:instruct, gemma2:9b, etc.`,
     default: defaultConfig?.model,
   }
 
   const baseUrl = {
     type: 'input',
     name: 'baseUrl',
-    message: `Enter the Ollama Server baseUrl:`,
+    message: `Enter the Ollama Server base url:`,
     default: defaultConfig?.baseUrl,
   }
 
