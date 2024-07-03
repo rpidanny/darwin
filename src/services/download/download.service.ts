@@ -1,9 +1,11 @@
 import { Quill } from '@rpidanny/quill'
 import got from 'got'
 import { CookieJar } from 'tough-cookie'
+import { Service } from 'typedi'
 
-import { IoService } from '../io/io.service'
+import { IoService } from '../io/io.service.js'
 
+@Service()
 export class DownloadService {
   cookieJar = new CookieJar()
   constructor(

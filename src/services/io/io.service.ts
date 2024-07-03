@@ -3,9 +3,11 @@ import fs from 'fs/promises'
 import fsExtra from 'fs-extra'
 import { json2csv } from 'json-2-csv'
 import path, { extname } from 'path'
+import { Service } from 'typedi'
 
 import { CsvStreamWriter } from './csv-stream-writer.js'
 
+@Service()
 export class IoService {
   async writeFile(filePath: string, content: string | Buffer): Promise<void> {
     const dir = path.dirname(filePath)

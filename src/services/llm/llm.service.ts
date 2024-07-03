@@ -10,9 +10,11 @@ import {
   StuffDocumentsChain,
 } from 'langchain/chains'
 import { TokenTextSplitter } from 'langchain/text_splitter'
+import { Service } from 'typedi'
 
 import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from './prompt-templates/summary.template.js'
 
+@Service()
 export class LLMService {
   summarizeChain!: RefineDocumentsChain | MapReduceDocumentsChain | StuffDocumentsChain
   textSplitter!: TokenTextSplitter

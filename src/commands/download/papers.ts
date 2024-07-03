@@ -1,14 +1,10 @@
 import * as oclif from '@oclif/core'
-import { GoogleScholar } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus/dist/odysseus.js'
+import { Container } from 'typedi'
 
 import { BaseCommand } from '../../base.command.js'
-import { DownloadService } from '../../services/download/download.service.js'
+import { initDownloadContainer } from '../../containers/download.container.js'
 import { PaperDownloadService } from '../../services/download/paper-download.service.js'
-import { IoService } from '../../services/io/io.service.js'
-import { PaperService } from '../../services/paper/paper.service.js'
-import { PdfService } from '../../services/pdf/pdf.service.js'
-import { getInitPageContent } from '../../utils/ui/odysseus.js'
 
 export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
   private service!: PaperDownloadService
@@ -55,27 +51,12 @@ export default class DownloadPapers extends BaseCommand<typeof DownloadPapers> {
 
     const { headless } = this.flags
 
-    this.odysseus = new Odysseus(
-      { headless, waitOnCaptcha: true, initHtml: getInitPageContent() },
-      this.logger,
-    )
-    await this.odysseus.init()
-    const scholar = new GoogleScholar(this.odysseus, this.logger)
-    const ioService = new IoService()
-    const downloadService = new DownloadService(ioService, this.logger)
-    const pdfService = new PdfService(downloadService, this.logger)
-    const paperService = new PaperService(
-      {
-        skipCaptcha: true,
-        legacyProcessing: false,
-      },
-      this.odysseus,
-      pdfService,
-      downloadService,
-      this.logger,
-    )
+    initDownloadContainer({ headless }, this.logger)
 
-    this.service = new PaperDownloadService(scholar, paperService, this.logger)
+    this.odysseus = Container.get(Odysseus)
+    await this.odysseus.init()
+
+    this.service = Container.get(PaperDownloadService)
   }
 
   protected async finally(error: Error | undefined): Promise<void> {

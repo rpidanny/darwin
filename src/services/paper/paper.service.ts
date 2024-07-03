@@ -1,16 +1,18 @@
 import { IPaperMetadata } from '@rpidanny/google-scholar'
 import { Odysseus } from '@rpidanny/odysseus'
 import { Quill } from '@rpidanny/quill'
+import { Service } from 'typedi'
 
 import { ITextMatch } from '../../utils/text/interfaces.js'
 import { findInText } from '../../utils/text/text-search.js'
-import { DownloadService } from '../download/download.service'
-import { PdfService } from '../pdf/pdf.service'
-import { IPaperServiceConfig } from './paper.service.config'
+import { DownloadService } from '../download/download.service.js'
+import { PdfService } from '../pdf/pdf.service.js'
+import { PaperServiceConfig } from './paper.service.config.js'
 
+@Service()
 export class PaperService {
   constructor(
-    private readonly config: IPaperServiceConfig,
+    private readonly config: PaperServiceConfig,
     private readonly odysseus: Odysseus,
     private readonly pdfService: PdfService,
     private readonly downloadService: DownloadService,

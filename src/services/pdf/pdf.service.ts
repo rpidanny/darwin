@@ -2,9 +2,11 @@ import { Quill } from '@rpidanny/quill'
 import { combinePagesIntoSingleString, parsePageItems } from 'pdf-text-reader'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs'
 import type { TextItem } from 'pdfjs-dist/types/src/display/api'
+import { Service } from 'typedi'
 
-import { DownloadService } from '../download/download.service'
+import { DownloadService } from '../download/download.service.js'
 
+@Service()
 export class PdfService {
   constructor(
     private readonly downloadService: DownloadService,
