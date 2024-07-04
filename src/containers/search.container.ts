@@ -27,7 +27,7 @@ export function initSearchContainer(
 
   Container.set(
     Odysseus,
-    new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }),
+    new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }, logger),
   )
   Container.set(Quill, logger)
   Container.set(PaperSearchConfig, { concurrency: summary || question != null ? 1 : concurrency })

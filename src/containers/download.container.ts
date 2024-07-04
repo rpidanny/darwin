@@ -16,7 +16,7 @@ export function initDownloadContainer(
 
   Container.set(
     Odysseus,
-    new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }),
+    new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }, logger),
   )
   Container.set(Quill, logger)
   Container.set(PaperServiceConfig, {
