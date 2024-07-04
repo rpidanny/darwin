@@ -292,4 +292,42 @@ describe('PaperSearchService', () => {
       expect(mockCsvWriter.end).toHaveBeenCalled()
     })
   })
+
+  describe('getFilePath', () => {
+    it('should return the given path if it is not a directory', () => {
+      const path = service.getFilePath('file.csv', { keywords: 'some keywords' })
+
+      expect(path).toBe('file.csv')
+    })
+
+    it('should return a generated path if the given path is a directory', () => {
+      jest.spyOn(ioService, 'isDirectory').mockReturnValue(true)
+
+      const path = service.getFilePath('data/exports/', { keywords: 'some keywords' })
+
+      expect(path).toBe('data/exports/some-keywords_1719677868856.csv')
+    })
+
+    it('should return a generated path with filter pattern if the given path is a directory and filterPattern is provided', () => {
+      jest.spyOn(ioService, 'isDirectory').mockReturnValue(true)
+
+      const path = service.getFilePath('data/exports/', {
+        keywords: 'some keywords',
+        filterPattern: 'cas9',
+      })
+
+      expect(path).toBe('data/exports/some-keywords_cas9_1719677868856.csv')
+    })
+
+    it('should return a generated path with question if the given path is a directory and question is provided', () => {
+      jest.spyOn(ioService, 'isDirectory').mockReturnValue(true)
+
+      const path = service.getFilePath('data/exports/', {
+        keywords: 'some keywords',
+        question: 'Is it better than RNN?',
+      })
+
+      expect(path).toBe('data/exports/some-keywords_Is-it-better-than-RNN-_1719677868856.csv')
+    })
+  })
 })

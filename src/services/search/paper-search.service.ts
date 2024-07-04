@@ -48,15 +48,24 @@ export class PaperSearchService {
     return papers
   }
 
-  public getFilePath(path: string, keywords: string, filterPattern?: string): string {
-    if (!this.ioService.isDirectory(path)) {
-      return path
-    }
+  public getFilePath(
+    path: string,
+    {
+      filterPattern,
+      keywords,
+      question,
+    }: Pick<ISearchOptions, 'keywords' | 'filterPattern' | 'question'>,
+  ): string {
+    if (!this.ioService.isDirectory(path)) return path
 
-    const sanitizedFilter = filterPattern?.replace(/[^\w-]/g, '-')
-    const sanitizedKeywords = keywords.replace(/[^\w-]/g, '-')
+    const sanitize = (input?: string) => input?.replace(/[^\w-]/g, '-') ?? ''
+
+    const sanitizedFilter = sanitize(filterPattern)
+    const sanitizedKeywords = sanitize(keywords)
+    const sanitizedQuestion = sanitize(question)
+
     const fileName =
-      `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`.replace(
+      `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}${sanitizedQuestion ? `_${sanitizedQuestion}` : ''}_${Date.now()}.csv`.replace(
         /-+/g,
         '-',
       )
@@ -65,7 +74,7 @@ export class PaperSearchService {
   }
 
   public async exportToCSV(filePath: string, opts: ISearchOptions): Promise<string> {
-    const fullPath = this.getFilePath(filePath, opts.keywords, opts.filterPattern)
+    const fullPath = this.getFilePath(filePath, opts)
     const outputWriter = await this.ioService.getCsvStreamWriter(fullPath)
     await this.search({
       ...opts,
