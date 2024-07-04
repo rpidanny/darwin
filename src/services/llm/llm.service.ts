@@ -13,6 +13,7 @@ import {
 import { TokenTextSplitter } from 'langchain/text_splitter'
 import { Service } from 'typedi'
 
+import { MAP_PROMPT, REDUCE_PROMPT } from './prompt-templates/map-reduce.template.js'
 import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from './prompt-templates/summary.template.js'
 
 @Service()
@@ -40,6 +41,8 @@ export class LLMService {
 
     this.qaChain = loadQAMapReduceChain(llm, {
       verbose: false,
+      combineMapPrompt: MAP_PROMPT,
+      combinePrompt: REDUCE_PROMPT,
     })
   }
 
@@ -104,7 +107,8 @@ export class LLMService {
 
     this.logger?.info(`QA ${inputText.length} char (${docChunks.length} chunks) document...`)
 
-    bar.start(docChunks.length, 0)
+    // n map + 1 reduce
+    bar.start(docChunks.length + 1, 0)
 
     let docCount = 0
 
