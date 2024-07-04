@@ -45,6 +45,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 
   public async init(): Promise<void> {
     await super.init()
+    this.initSigIntHandler()
+
     const { args, flags } = await this.parse({
       flags: this.ctor.flags,
       baseFlags: (super.ctor as typeof BaseCommand).baseFlags,
@@ -110,5 +112,31 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
         stack: err.stack,
       })
     }
+  }
+
+  private initSigIntHandler(): void {
+    process.on('SIGINT', async () => {
+      const { customData } = this.config
+
+      if (customData) {
+        const { metadata, mixpanel, startTime } = customData
+        const now = new Date()
+
+        const endTime = performance.now()
+        const durationMs = endTime - (startTime || 0)
+
+        mixpanel.track(
+          Metric.CommandSigInt,
+          {
+            ...metadata,
+            duration: prettyMilliseconds(durationMs),
+            endTime: moment(now).format('YYYY-MM-DD HH:mm:ss'),
+          },
+          () => {
+            process.exit(0)
+          },
+        )
+      }
+    })
   }
 }
