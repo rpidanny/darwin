@@ -24,7 +24,7 @@ EXAMPLES
   $ darwin config get
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/rpidanny/darwin/blob/v1.29.4/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/rpidanny/darwin/blob/v1.29.5/src/commands/config/get.ts)_
 
 ## `darwin config set`
 
@@ -41,4 +41,4 @@ EXAMPLES
   $ darwin config set
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/rpidanny/darwin/blob/v1.29.4/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/rpidanny/darwin/blob/v1.29.5/src/commands/config/set.ts)_

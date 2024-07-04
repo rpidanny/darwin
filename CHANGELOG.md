@@ -1,3 +1,9 @@
+## [1.29.5](https://github.com/rpidanny/darwin/compare/v1.29.4...v1.29.5) (2024-07-04)
+
+### Bug Fixes
+
+* **deps:** bump playwright from 1.44.1 to 1.45.1 ([#72](https://github.com/rpidanny/darwin/issues/72)) ([489297b](https://github.com/rpidanny/darwin/commit/489297b1ec24af2363a568eeee5b805d69aba721))
+
 ## [1.29.4](https://github.com/rpidanny/darwin/compare/v1.29.3...v1.29.4) (2024-07-03)
 
 ### Bug Fixes

@@ -23,4 +23,4 @@ EXAMPLES
   $ darwin update
 ```
 
-_See code: [src/commands/update/index.ts](https://github.com/rpidanny/darwin/blob/v1.29.4/src/commands/update/index.ts)_
+_See code: [src/commands/update/index.ts](https://github.com/rpidanny/darwin/blob/v1.29.5/src/commands/update/index.ts)_
