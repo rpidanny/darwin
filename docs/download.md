@@ -31,4 +31,4 @@ EXAMPLES
   $ darwin download papers "crispr cas9" --output papers/ --count 100 --log-level debug
 ```
 
-_See code: [src/commands/download/papers.ts](https://github.com/rpidanny/darwin/blob/v1.30.0/src/commands/download/papers.ts)_
+_See code: [src/commands/download/papers.ts](https://github.com/rpidanny/darwin/blob/v1.31.0/src/commands/download/papers.ts)_

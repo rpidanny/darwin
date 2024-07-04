@@ -49,7 +49,7 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.30.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.31.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -95,4 +95,4 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.30.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.31.0/src/commands/search/papers.ts)_

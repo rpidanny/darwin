@@ -1,3 +1,9 @@
+## [1.31.0](https://github.com/rpidanny/darwin/compare/v1.30.0...v1.31.0) (2024-07-04)
+
+### Features
+
+* add sigint handler ([#77](https://github.com/rpidanny/darwin/issues/77)) ([2f45278](https://github.com/rpidanny/darwin/commit/2f45278c98e845da4c36c0309816f8a6a382e712))
+
 ## [1.30.0](https://github.com/rpidanny/darwin/compare/v1.29.5...v1.30.0) (2024-07-04)
 
 ### Features
