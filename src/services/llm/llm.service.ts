@@ -49,7 +49,7 @@ export class LLMService {
   public async summarize(inputText: string) {
     const bar = new SingleBar(
       {
-        clearOnComplete: false,
+        clearOnComplete: true,
         hideCursor: true,
         format: `${chalk.magenta('Summarizing')} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
       },
@@ -62,7 +62,7 @@ export class LLMService {
     const docChunks = await this.textSplitter.splitDocuments([document])
 
     this.logger?.info(
-      `Summarizing ${inputText.length} char (${docChunks.length} chunks) document...`,
+      `Summarizing document with ${inputText.length} chars (${docChunks.length} chunks)`,
     )
 
     bar.start(docChunks.length, 0)
@@ -93,9 +93,9 @@ export class LLMService {
   public async ask(inputText: string, question: string): Promise<string> {
     const bar = new SingleBar(
       {
-        clearOnComplete: false,
+        clearOnComplete: true,
         hideCursor: true,
-        format: `${chalk.magenta('Processing')} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+        format: `${chalk.magenta('Querying')} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
       },
       Presets.shades_classic,
     )
@@ -105,7 +105,9 @@ export class LLMService {
     })
     const docChunks = await this.textSplitter.splitDocuments([document])
 
-    this.logger?.info(`QA ${inputText.length} char (${docChunks.length} chunks) document...`)
+    this.logger?.info(
+      `Querying "${question}" on document with ${inputText.length} chars (${docChunks.length} chunks)`,
+    )
 
     // n map + 1 reduce
     bar.start(docChunks.length + 1, 0)

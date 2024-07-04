@@ -1,11 +1,11 @@
 import { PromptTemplate } from '@langchain/core/prompts'
 
 export const MAP_TEMPLATE = `
-Use the following portion of a long document to see if any of the text is relevant to answer the question. 
+Examine the following document excerpt to identify any text that directly answers the question.
 
-Return any relevant text verbatim. If no relevant text found, return nothing.
+Return the relevant text verbatim. If no relevant text is found, return nothing.
 
-Document Content:
+Document:
 \`\`\`txt
 {context}
 \`\`\`
@@ -15,20 +15,18 @@ QUESTION: {question}
 RELEVANT TEXT:`
 
 export const REDUCE_TEMPLATE = `
-Given the following extracted parts of a long document and a question, create a final answer. 
-
-If you don't know the answer, just say that you don't know. Don't try to make up an answer.
+Given the extracted text from a document and a question, provide a final answer. If you don't know the answer, state that you don't know. Do not fabricate information.
 
 EXAMPLES:
 
 \`\`\`txt
 QUESTION: Which state/country's law governs the interpretation of the contract?
 =========
-Content: This Agreement is governed by English law and the parties submit to the exclusive jurisdiction of the English courts in  relation to any dispute (contractual or non-contractual) concerning this Agreement save that either party may apply to any court for an  injunction or other relief to protect its Intellectual Property Rights.
+Content: This Agreement is governed by English law and the parties submit to the exclusive jurisdiction of the English courts in relation to any dispute (contractual or non-contractual) concerning this Agreement save that either party may apply to any court for an injunction or other relief to protect its Intellectual Property Rights.
 
-Content: No Waiver. Failure or delay in exercising any right or remedy under this Agreement shall not constitute a waiver of such (or any other)  right or remedy.\n\n11.7 Severability. The invalidity, illegality or unenforceability of any term (or part of a term) of this Agreement shall not affect the continuation  in force of the remainder of the term (if any) and this Agreement.\n\n11.8 No Agency. Except as expressly stated otherwise, nothing in this Agreement shall create an agency, partnership or joint venture of any  kind between the parties.\n\n11.9 No Third-Party Beneficiaries.
+Content: No Waiver. Failure or delay in exercising any right or remedy under this Agreement shall not constitute a waiver of such (or any other) right or remedy.\n\n11.7 Severability. The invalidity, illegality or unenforceability of any term (or part of a term) of this Agreement shall not affect the continuation in force of the remainder of the term (if any) and this Agreement.\n\n11.8 No Agency. Except as expressly stated otherwise, nothing in this Agreement shall create an agency, partnership or joint venture of any kind between the parties.\n\n11.9 No Third-Party Beneficiaries.
 
-Content: (b) if Google believes, in good faith, that the Distributor has violated or caused Google to violate any Anti-Bribery Laws (as  defined in Clause 8.5) or that such a violation is reasonably likely to occur,
+Content: (b) if Google believes, in good faith, that the Distributor has violated or caused Google to violate any Anti-Bribery Laws (as defined in Clause 8.5) or that such a violation is reasonably likely to occur,
 =========
 FINAL ANSWER: This Agreement is governed by English law.
 
@@ -44,6 +42,8 @@ Content: More support for patients and families. \n\nTo get there, I call on Con
 =========
 FINAL ANSWER: The president did not mention Michael Jackson.
 \`\`\`
+
+Use the extracted content below to formulate your answer.
 
 QUESTION: {question}
 
