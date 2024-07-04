@@ -1,3 +1,9 @@
+## [1.30.0](https://github.com/rpidanny/darwin/compare/v1.29.5...v1.30.0) (2024-07-04)
+
+### Features
+
+* add question flag to ask questions about papers ([#76](https://github.com/rpidanny/darwin/issues/76)) ([73afa49](https://github.com/rpidanny/darwin/commit/73afa49d7178802d198956f1fe2e8964c0722741))
+
 ## [1.29.5](https://github.com/rpidanny/darwin/compare/v1.29.4...v1.29.5) (2024-07-04)
 
 ### Bug Fixes

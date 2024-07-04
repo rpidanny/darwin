@@ -13,7 +13,7 @@ Search and export papers containing accession numbers to a CSV file.
 ```
 USAGE
   $ darwin search accession KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-a
-    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama]
+    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama] [-q STRING]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for. (Example: "crispr cas9")
@@ -28,6 +28,7 @@ FLAGS
   -o, --output=PATH                   [default: .] Destination for the CSV file. Specify folder path for auto-generated
                                       filename or file path for direct use.
   -p, --concurrency=NUMBER            [default: 10] The number papers to process in parallel.
+  -q, --question=STRING               The question to ask the language model about the text content.
   -s, --skip-captcha                  Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
       --legacy                        Enable legacy processing which extracts text only from the main URL. The new
                                       method attempts to extract text from the source URLs (pdf or html) and falls back
@@ -48,7 +49,7 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.29.5/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.30.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -57,7 +58,7 @@ Searches and exports research papers based on keywords to a CSV file.
 ```
 USAGE
   $ darwin search papers KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-f
-    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama]
+    REGEX] [-s] [--legacy] [-h] [-S] [--llm openai|ollama] [-q STRING]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for. (Example: "crispr cas9")
@@ -72,6 +73,7 @@ FLAGS
   -o, --output=PATH         [default: .] Destination for the CSV file. Specify folder path for auto-generated filename
                             or file path for direct use.
   -p, --concurrency=NUMBER  [default: 10] The number papers to process in parallel.
+  -q, --question=STRING     The question to ask the language model about the text content.
   -s, --skip-captcha        Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
       --legacy              Enable legacy processing which extracts text only from the main URL. The new method attempts
                             to extract text from the source URLs (pdf or html) and falls back to the main URL.
@@ -93,4 +95,4 @@ FLAG DESCRIPTIONS
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.29.5/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.30.0/src/commands/search/papers.ts)_
