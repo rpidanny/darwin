@@ -43,13 +43,15 @@ const config: JestConfigWithTsJest = {
     '<rootDir>/coverage/',
     '<rootDir>/src/commands/',
     '\\.config\\.ts$',
+    '<rootDir>/src/services/chat/autonomous-agent.ts',
+    '<rootDir>/src/utils/ui/output.ts',
   ],
   coverageThreshold: {
     global: {
-      statements: 81,
+      statements: 95,
       branches: 90,
-      functions: 90,
-      lines: 81,
+      functions: 94,
+      lines: 95,
     },
   },
 }

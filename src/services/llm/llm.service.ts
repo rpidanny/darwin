@@ -38,7 +38,9 @@ export class LLMService {
       refinePrompt: SUMMARY_REFINE_PROMPT,
     })
 
-    this.qaChain = loadQAMapReduceChain(llm)
+    this.qaChain = loadQAMapReduceChain(llm, {
+      verbose: false,
+    })
   }
 
   public async summarize(inputText: string) {
