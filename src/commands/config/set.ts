@@ -1,12 +1,12 @@
-import { Command } from '@oclif/core'
 import fs from 'fs-extra'
 import path from 'path'
 
+import { BaseCommand } from '../../base.command.js'
 import { CONFIG_FILE_NAME } from '../../config/constants.js'
 import { ConfigSchema, TConfig } from '../../config/schema.js'
 import uiInput from '../../utils/ui/input.js'
 
-export default class SetConfig extends Command {
+export default class SetConfig extends BaseCommand<typeof SetConfig> {
   static description = 'Set config'
 
   static examples = ['<%= config.bin %> <%= command.id %>']
