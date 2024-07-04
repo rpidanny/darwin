@@ -12,6 +12,7 @@ import headlessFlag from '../../inputs/flags/headless.flag.js'
 import legacyFlag from '../../inputs/flags/legacy.flag.js'
 import llmProviderFlag from '../../inputs/flags/llm-provider.flag.js'
 import outputFlag from '../../inputs/flags/output.flag.js'
+import questionFlag from '../../inputs/flags/question.flag.js'
 import skipCaptchaFlag from '../../inputs/flags/skip-captcha.flag.js'
 import summaryFlag from '../../inputs/flags/summary.flag.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
@@ -47,6 +48,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     headless: headlessFlag,
     summary: summaryFlag,
     llm: llmProviderFlag,
+    question: questionFlag,
   }
 
   async init(): Promise<void> {
@@ -86,7 +88,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<void> {
-    const { count, output, 'accession-number-regex': filterPattern, summary } = this.flags
+    const { count, output, 'accession-number-regex': filterPattern, summary, question } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers with Accession Numbers (${filterPattern}) for: ${keywords}`)
@@ -96,6 +98,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       minItemCount: count,
       filterPattern,
       summarize: summary,
+      question,
     })
 
     this.logger.info(`Exported papers list to: ${outputPath}`)

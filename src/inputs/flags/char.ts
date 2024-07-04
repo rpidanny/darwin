@@ -8,4 +8,5 @@ export enum FlagChar {
   Headless = 'h',
   IncludeSummary = 'S',
   LogLevel = 'l',
+  Question = 'q',
 }

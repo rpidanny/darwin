@@ -26,6 +26,7 @@ export class PaperSearchService {
     minItemCount,
     filterPattern,
     summarize,
+    question,
     onData,
   }: ISearchOptions): Promise<IPaperEntity[]> {
     const papers: IPaperEntity[] = []
@@ -33,7 +34,7 @@ export class PaperSearchService {
     await this.googleScholar.iteratePapers(
       { keywords },
       async paper => {
-        const entity = await this.processPaper(paper, filterPattern, summarize)
+        const entity = await this.processPaper(paper, { filterPattern, summarize, question })
         if (!entity) return true
 
         papers.push(entity)
@@ -47,15 +48,24 @@ export class PaperSearchService {
     return papers
   }
 
-  public getFilePath(path: string, keywords: string, filterPattern?: string): string {
-    if (!this.ioService.isDirectory(path)) {
-      return path
-    }
+  public getFilePath(
+    path: string,
+    {
+      filterPattern,
+      keywords,
+      question,
+    }: Pick<ISearchOptions, 'keywords' | 'filterPattern' | 'question'>,
+  ): string {
+    if (!this.ioService.isDirectory(path)) return path
 
-    const sanitizedFilter = filterPattern?.replace(/[^\w-]/g, '-')
-    const sanitizedKeywords = keywords.replace(/[^\w-]/g, '-')
+    const sanitize = (input?: string) => input?.replace(/[^\w-]/g, '-') ?? ''
+
+    const sanitizedFilter = sanitize(filterPattern)
+    const sanitizedKeywords = sanitize(keywords)
+    const sanitizedQuestion = sanitize(question)
+
     const fileName =
-      `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}_${Date.now()}.csv`.replace(
+      `${sanitizedKeywords}${sanitizedFilter ? `_${sanitizedFilter}` : ''}${sanitizedQuestion ? `_${sanitizedQuestion}` : ''}_${Date.now()}.csv`.replace(
         /-+/g,
         '-',
       )
@@ -64,7 +74,7 @@ export class PaperSearchService {
   }
 
   public async exportToCSV(filePath: string, opts: ISearchOptions): Promise<string> {
-    const fullPath = this.getFilePath(filePath, opts.keywords, opts.filterPattern)
+    const fullPath = this.getFilePath(filePath, opts)
     const outputWriter = await this.ioService.getCsvStreamWriter(fullPath)
     await this.search({
       ...opts,
@@ -78,12 +88,15 @@ export class PaperSearchService {
 
   private async processPaper(
     paper: IPaperMetadata,
-    filterPattern?: string,
-    summarize?: boolean,
+    {
+      filterPattern,
+      summarize,
+      question,
+    }: Pick<ISearchOptions, 'filterPattern' | 'summarize' | 'question'>,
   ): Promise<IPaperEntity | undefined> {
     const entity = this.toEntity(paper)
 
-    if (!filterPattern && !summarize) return entity
+    if (!filterPattern && !summarize && !question) return entity
 
     try {
       const textContent = await this.paperService.getTextContent(paper)
@@ -96,8 +109,11 @@ export class PaperSearchService {
       }
 
       if (summarize) {
-        const summary = await this.llmService.summarize(textContent)
-        entity.summary = summary
+        entity.summary = await this.llmService.summarize(textContent)
+      }
+
+      if (question) {
+        entity.answer = await this.llmService.ask(textContent, question)
       }
 
       return entity
