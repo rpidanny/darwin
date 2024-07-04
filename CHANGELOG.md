@@ -1,3 +1,9 @@
+## [1.31.2](https://github.com/rpidanny/darwin/compare/v1.31.1...v1.31.2) (2024-07-04)
+
+### Bug Fixes
+
+* missing logger ([1a9c4f1](https://github.com/rpidanny/darwin/commit/1a9c4f16f455ec0c76a8a565208b49508fa70f4a))
+
 ## [1.31.1](https://github.com/rpidanny/darwin/compare/v1.31.0...v1.31.1) (2024-07-04)
 
 ### Bug Fixes
