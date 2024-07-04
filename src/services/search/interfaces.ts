@@ -11,6 +11,7 @@ export interface IPaperEntity {
   authors: string[]
   matches?: ITextMatch[]
   summary?: string
+  answer?: string
 }
 
 export interface ISearchOptions {
@@ -18,5 +19,6 @@ export interface ISearchOptions {
   minItemCount: number
   filterPattern?: string
   summarize?: boolean
+  question?: string
   onData?: (data: IPaperEntity) => Promise<any>
 }

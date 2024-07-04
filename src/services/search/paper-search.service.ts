@@ -26,6 +26,7 @@ export class PaperSearchService {
     minItemCount,
     filterPattern,
     summarize,
+    question,
     onData,
   }: ISearchOptions): Promise<IPaperEntity[]> {
     const papers: IPaperEntity[] = []
@@ -33,7 +34,7 @@ export class PaperSearchService {
     await this.googleScholar.iteratePapers(
       { keywords },
       async paper => {
-        const entity = await this.processPaper(paper, filterPattern, summarize)
+        const entity = await this.processPaper(paper, { filterPattern, summarize, question })
         if (!entity) return true
 
         papers.push(entity)
@@ -78,12 +79,15 @@ export class PaperSearchService {
 
   private async processPaper(
     paper: IPaperMetadata,
-    filterPattern?: string,
-    summarize?: boolean,
+    {
+      filterPattern,
+      summarize,
+      question,
+    }: Pick<ISearchOptions, 'filterPattern' | 'summarize' | 'question'>,
   ): Promise<IPaperEntity | undefined> {
     const entity = this.toEntity(paper)
 
-    if (!filterPattern && !summarize) return entity
+    if (!filterPattern && !summarize && !question) return entity
 
     try {
       const textContent = await this.paperService.getTextContent(paper)
@@ -96,8 +100,11 @@ export class PaperSearchService {
       }
 
       if (summarize) {
-        const summary = await this.llmService.summarize(textContent)
-        entity.summary = summary
+        entity.summary = await this.llmService.summarize(textContent)
+      }
+
+      if (question) {
+        entity.answer = await this.llmService.ask(textContent, question)
       }
 
       return entity

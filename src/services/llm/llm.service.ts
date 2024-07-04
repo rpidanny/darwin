@@ -4,6 +4,7 @@ import { Quill } from '@rpidanny/quill'
 import chalk from 'chalk'
 import { Presets, SingleBar } from 'cli-progress'
 import {
+  loadQAMapReduceChain,
   loadSummarizationChain,
   MapReduceDocumentsChain,
   RefineDocumentsChain,
@@ -17,6 +18,8 @@ import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from './prompt-templates/summar
 @Service()
 export class LLMService {
   summarizeChain!: RefineDocumentsChain | MapReduceDocumentsChain | StuffDocumentsChain
+  qaChain!: RefineDocumentsChain | MapReduceDocumentsChain | StuffDocumentsChain
+
   textSplitter!: TokenTextSplitter
 
   constructor(
@@ -34,6 +37,8 @@ export class LLMService {
       questionPrompt: SUMMARY_PROMPT,
       refinePrompt: SUMMARY_REFINE_PROMPT,
     })
+
+    this.qaChain = loadQAMapReduceChain(llm)
   }
 
   public async summarize(inputText: string) {
@@ -78,5 +83,48 @@ export class LLMService {
     bar.stop()
 
     return resp.output_text
+  }
+
+  public async ask(inputText: string, question: string): Promise<string> {
+    const bar = new SingleBar(
+      {
+        clearOnComplete: false,
+        hideCursor: true,
+        format: `${chalk.magenta('Processing')} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}`,
+      },
+      Presets.shades_classic,
+    )
+
+    const document = new Document({
+      pageContent: inputText,
+    })
+    const docChunks = await this.textSplitter.splitDocuments([document])
+
+    this.logger?.info(`QA ${inputText.length} char (${docChunks.length} chunks) document...`)
+
+    bar.start(docChunks.length, 0)
+
+    let docCount = 0
+
+    const resp = await this.qaChain.invoke(
+      {
+        // eslint-disable-next-line camelcase
+        input_documents: docChunks,
+        question,
+      },
+      {
+        callbacks: [
+          {
+            handleLLMEnd: async () => {
+              bar.update(++docCount)
+            },
+          },
+        ],
+      },
+    )
+
+    bar.stop()
+
+    return resp.text
   }
 }

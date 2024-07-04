@@ -11,6 +11,7 @@ import headlessFlag from '../../inputs/flags/headless.flag.js'
 import legacyFlag from '../../inputs/flags/legacy.flag.js'
 import llmProviderFlag from '../../inputs/flags/llm-provider.flag.js'
 import outputFlag from '../../inputs/flags/output.flag.js'
+import questionFlag from '../../inputs/flags/question.flag.js'
 import skipCaptchaFlag from '../../inputs/flags/skip-captcha.flag.js'
 import summaryFlag from '../../inputs/flags/summary.flag.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
@@ -41,6 +42,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     headless: headlessFlag,
     summary: summaryFlag,
     llm: llmProviderFlag,
+    question: questionFlag,
   }
 
   async init(): Promise<void> {
@@ -50,6 +52,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       headless,
       concurrency,
       summary,
+      question,
       llm: llmProvider,
       'skip-captcha': skipCaptcha,
       legacy,
@@ -60,6 +63,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
         headless,
         concurrency,
         summary,
+        question,
         llmProvider,
         skipCaptcha,
         legacy,
@@ -80,7 +84,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<void> {
-    const { count, output, filter, summary } = this.flags
+    const { count, output, filter, summary, question } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers for: ${keywords}`)
@@ -90,6 +94,7 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
       minItemCount: count,
       filterPattern: filter,
       summarize: summary,
+      question,
     })
 
     this.logger.info(`Exported papers list to: ${outputFile}`)

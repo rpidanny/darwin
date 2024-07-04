@@ -15,6 +15,7 @@ export function initSearchContainer(
     headless: boolean
     concurrency: number
     summary: boolean
+    question?: string
     llmProvider: LLMProvider
     skipCaptcha: boolean
     legacy: boolean
@@ -22,14 +23,14 @@ export function initSearchContainer(
   config: TConfig,
   logger: Quill,
 ) {
-  const { headless, concurrency, summary, llmProvider, skipCaptcha, legacy } = opts
+  const { headless, concurrency, summary, llmProvider, skipCaptcha, legacy, question } = opts
 
   Container.set(
     Odysseus,
     new Odysseus({ headless, waitOnCaptcha: true, initHtml: getInitPageContent() }),
   )
   Container.set(Quill, logger)
-  Container.set(PaperSearchConfig, { concurrency: summary ? 1 : concurrency })
+  Container.set(PaperSearchConfig, { concurrency: summary || question != null ? 1 : concurrency })
   Container.set(PaperServiceConfig, {
     skipCaptcha,
     legacyProcessing: legacy,

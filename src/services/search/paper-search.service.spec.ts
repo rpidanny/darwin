@@ -160,6 +160,30 @@ describe('PaperSearchService', () => {
         })),
       )
     })
+
+    it('should ask question and store answer if question is provided', async () => {
+      const answer = 'transformer is better than RNN, duhhhh'
+      llmService.ask.mockResolvedValue(answer)
+
+      const entities = await service.search({
+        keywords: 'some keywords',
+        minItemCount: 10,
+        question: 'Is it better than RNN?',
+      })
+
+      expect(entities).toHaveLength(3)
+      expect(entities).toEqual(
+        page.papers.map(result => ({
+          title: result.title,
+          authors: result.authors.map(author => author.name),
+          description: result.description,
+          url: result.url,
+          citation: result.citation,
+          source: result.source,
+          answer,
+        })),
+      )
+    })
   })
 
   describe('exportToCSV', () => {
