@@ -28,7 +28,8 @@ FLAGS
   -o, --output=PATH                   [default: .] Destination for the CSV file. Specify folder path for auto-generated
                                       filename or file path for direct use.
   -p, --concurrency=NUMBER            [default: 10] The number papers to process in parallel.
-  -q, --question=STRING               The question to ask the language model about the text content.
+  -q, --question=STRING               The question to ask the language model about the text content. (requires LLM, sets
+                                      concurrency to 1)
   -s, --skip-captcha                  Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
       --legacy                        Enable legacy processing which extracts text only from the main URL. The new
                                       method attempts to extract text from the source URLs (pdf or html) and falls back
@@ -47,9 +48,15 @@ FLAG DESCRIPTIONS
   -S, --summary  Include summaries in the output CSV (requires LLM, sets concurrency to 1)
 
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
+
+  -q, --question=STRING
+
+    The question to ask the language model about the text content. (requires LLM, sets concurrency to 1)
+
+    Questions are answered using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.31.0/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.31.1/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -73,7 +80,8 @@ FLAGS
   -o, --output=PATH         [default: .] Destination for the CSV file. Specify folder path for auto-generated filename
                             or file path for direct use.
   -p, --concurrency=NUMBER  [default: 10] The number papers to process in parallel.
-  -q, --question=STRING     The question to ask the language model about the text content.
+  -q, --question=STRING     The question to ask the language model about the text content. (requires LLM, sets
+                            concurrency to 1)
   -s, --skip-captcha        Skip captcha on paper URLs. Note: Google Scholar captcha still needs to be solved.
       --legacy              Enable legacy processing which extracts text only from the main URL. The new method attempts
                             to extract text from the source URLs (pdf or html) and falls back to the main URL.
@@ -93,6 +101,12 @@ FLAG DESCRIPTIONS
   -S, --summary  Include summaries in the output CSV (requires LLM, sets concurrency to 1)
 
     Summaries are generated using LLM. Ensure LLMs are configured by running `darwin config set`.
+
+  -q, --question=STRING
+
+    The question to ask the language model about the text content. (requires LLM, sets concurrency to 1)
+
+    Questions are answered using LLM. Ensure LLMs are configured by running `darwin config set`.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.31.0/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.31.1/src/commands/search/papers.ts)_

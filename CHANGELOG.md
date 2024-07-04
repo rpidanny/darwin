@@ -1,3 +1,9 @@
+## [1.31.1](https://github.com/rpidanny/darwin/compare/v1.31.0...v1.31.1) (2024-07-04)
+
+### Bug Fixes
+
+* missing flag description ([97c3c16](https://github.com/rpidanny/darwin/commit/97c3c16ca8a47aee11c630fdc69473b22c34e04d))
+
 ## [1.31.0](https://github.com/rpidanny/darwin/compare/v1.30.0...v1.31.0) (2024-07-04)
 
 ### Features
