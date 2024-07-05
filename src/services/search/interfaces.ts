@@ -1,7 +1,7 @@
 import { ICitation, IPaperSource } from '@rpidanny/google-scholar'
 
-import { ITextMatch } from '../../utils/text/interfaces'
-import { SummaryMethod } from '../llm/llm.service'
+import { ITextMatch } from '../../utils/text/interfaces.js'
+import { SummaryMethod } from '../llm/llm.service.js'
 
 export interface IPaperEntity {
   title: string

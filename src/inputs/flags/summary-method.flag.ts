@@ -1,6 +1,6 @@
 import * as oclif from '@oclif/core'
 
-import { SummaryMethod } from '../../services/llm/llm.service'
+import { SummaryMethod } from '../../services/llm/llm.service.js'
 
 export default oclif.Flags.custom<SummaryMethod>({
   summary: 'The method to use for generating summaries.',
