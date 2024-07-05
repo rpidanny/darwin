@@ -1,3 +1,9 @@
+## [1.32.1](https://github.com/rpidanny/darwin/compare/v1.32.0...v1.32.1) (2024-07-05)
+
+### Bug Fixes
+
+* add pdfjs worker ([#79](https://github.com/rpidanny/darwin/issues/79)) ([90708dc](https://github.com/rpidanny/darwin/commit/90708dcc5aa5581a858acf38d69052dd304bdf0b))
+
 ## [1.32.0](https://github.com/rpidanny/darwin/compare/v1.31.2...v1.32.0) (2024-07-05)
 
 ### Features
