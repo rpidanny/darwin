@@ -1,3 +1,9 @@
+## [1.32.0](https://github.com/rpidanny/darwin/compare/v1.31.2...v1.32.0) (2024-07-05)
+
+### Features
+
+* use markdown for web content processing ([#78](https://github.com/rpidanny/darwin/issues/78)) ([522006a](https://github.com/rpidanny/darwin/commit/522006a7e3a45c35adfe0206df22d3b2a2352976))
+
 ## [1.31.2](https://github.com/rpidanny/darwin/compare/v1.31.1...v1.31.2) (2024-07-04)
 
 ### Bug Fixes
