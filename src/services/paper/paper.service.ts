@@ -20,7 +20,7 @@ export class PaperService {
   ) {}
 
   private async getWebContent(url: string): Promise<string> {
-    return this.odysseus.getTextContent(url, {
+    return this.odysseus.getMarkdownContent(url, {
       waitOnCaptcha: !this.config.skipCaptcha,
       throwOnCaptcha: true,
     })
