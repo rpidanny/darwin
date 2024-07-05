@@ -1,7 +1,7 @@
 {
   "name": "@rpidanny/darwin",
   "description": "An elegant CLI wizard enhancing biotech research efficiency, with adaptable features for other domains, albeit with minor constraints.",
-  "version": "1.32.1",
+  "version": "1.33.0",
   "author": "Abhishek <abhishek.rpidanny@gmail.com>",
   "bin": {
     "darwin": "./bin/run.js"

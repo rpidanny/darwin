@@ -9,6 +9,9 @@
 - [How do I configure Darwin for paper summarization?](#how-do-i-configure-darwin-for-paper-summarization)
   - [Using OpenAI's API](#using-openais-api)
   - [Using a Local LLM](#using-a-local-llm)
+- [What are the different methods of summarization?](#what-are-the-different-methods-of-summarization)
+  - [Map Reduce Method](#map-reduce-method)
+  - [Refine Method](#refine-method)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

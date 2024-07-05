@@ -1,3 +1,9 @@
+## [1.33.0](https://github.com/rpidanny/darwin/compare/v1.32.1...v1.33.0) (2024-07-05)
+
+### Features
+
+* add map-reduce summary ([#80](https://github.com/rpidanny/darwin/issues/80)) ([21e1209](https://github.com/rpidanny/darwin/commit/21e1209b71c295ad4b26c5622d3586f05430141c))
+
 ## [1.32.1](https://github.com/rpidanny/darwin/compare/v1.32.0...v1.32.1) (2024-07-05)
 
 ### Bug Fixes
