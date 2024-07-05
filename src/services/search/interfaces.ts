@@ -1,6 +1,7 @@
 import { ICitation, IPaperSource } from '@rpidanny/google-scholar'
 
-import { ITextMatch } from '../../utils/text/interfaces'
+import { ITextMatch } from '../../utils/text/interfaces.js'
+import { SummaryMethod } from '../llm/llm.service.js'
 
 export interface IPaperEntity {
   title: string
@@ -19,6 +20,7 @@ export interface ISearchOptions {
   minItemCount: number
   filterPattern?: string
   summarize?: boolean
+  summaryMethod?: SummaryMethod
   question?: string
   onData?: (data: IPaperEntity) => Promise<any>
 }
