@@ -15,6 +15,7 @@ import outputFlag from '../../inputs/flags/output.flag.js'
 import questionFlag from '../../inputs/flags/question.flag.js'
 import skipCaptchaFlag from '../../inputs/flags/skip-captcha.flag.js'
 import summaryFlag from '../../inputs/flags/summary.flag.js'
+import summaryMethodFlag from '../../inputs/flags/summary-method.flag.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
 
 export default class SearchAccession extends BaseCommand<typeof SearchAccession> {
@@ -47,6 +48,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
     legacy: legacyFlag,
     headless: headlessFlag,
     summary: summaryFlag,
+    'summary-method': summaryMethodFlag,
     llm: llmProviderFlag,
     question: questionFlag,
   }
@@ -88,7 +90,14 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
   }
 
   public async run(): Promise<void> {
-    const { count, output, 'accession-number-regex': filterPattern, summary, question } = this.flags
+    const {
+      count,
+      output,
+      'accession-number-regex': filterPattern,
+      summary,
+      question,
+      'summary-method': summaryMethod,
+    } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers with Accession Numbers (${filterPattern}) for: ${keywords}`)
@@ -98,6 +107,7 @@ export default class SearchAccession extends BaseCommand<typeof SearchAccession>
       minItemCount: count,
       filterPattern,
       summarize: summary,
+      summaryMethod,
       question,
     })
 
