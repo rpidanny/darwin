@@ -1,3 +1,9 @@
+## [1.33.1](https://github.com/rpidanny/darwin/compare/v1.33.0...v1.33.1) (2024-07-05)
+
+### Bug Fixes
+
+* npm tags ([f8dcdde](https://github.com/rpidanny/darwin/commit/f8dcddecbda0b869da8103987c7f256cf62b8f65))
+
 ## [1.33.0](https://github.com/rpidanny/darwin/compare/v1.32.1...v1.33.0) (2024-07-05)
 
 ### Features
