@@ -11,6 +11,8 @@ Below you find the text content of the paper:
 
 Total output will be a summary of the paper including the key ideas, findings of the paper as a paragraph.
 
+If the text is about cookies, cookie policy and preferences, please ignore it.
+
 [IMPORTANT] Only return the summary without saying anything else.
 
 SUMMARY:
@@ -33,6 +35,8 @@ Below you find the text content of the paper:
 Given the new context, refine the summary to be more accurate and informative.
 If the context isn't useful, return the original summary.
 Total output will be a summary of the paper including the key ideas, findings of the paper as a paragraph.
+
+If the text is about cookies, cookie policy and preferences, please ignore it and return the original summary.
 
 [IMPORTANT] Only return the summary without saying anything else.
 
