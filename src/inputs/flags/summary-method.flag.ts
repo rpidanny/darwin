@@ -3,8 +3,8 @@ import * as oclif from '@oclif/core'
 import { SummaryMethod } from '../../services/llm/llm.service.js'
 
 export default oclif.Flags.custom<SummaryMethod>({
-  summary: 'The method to use for generating summaries.',
-  description: 'See FAQ for differences between methods.',
+  summary: 'Selects the method used to generate summaries.',
+  description: 'Refer to the FAQ for details on each method.',
   options: Object.values(SummaryMethod) as string[],
   helpValue: Object.values(SummaryMethod).join('|'),
   default: SummaryMethod.MapReduce,

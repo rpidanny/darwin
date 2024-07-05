@@ -98,3 +98,50 @@ Example:
 ```bash
 darwin search papers "flash attention" --log-level DEBUG --output ./darwin-data --count 3 --summary --llm ollama
 ```
+
+## What are the different methods of summarization?
+
+When summarizing long documents with LLMs (Large Language Models), the document is divided into chunks due to token limits. Each chunk is processed individually, and then these methods combine these processed chunks into a final summary.
+
+Darwin supports two methods of summarization: `map_reduce` and `refine`.
+
+### Map Reduce Method
+
+The `map_reduce` method first summarizes each document independently in a **"map"** step. Afterward, it combines these individual summaries into a final summary in a **"reduce"** step.
+
+![alt text](./images/map-reduce-summary.png)
+
+**Pros:**
+
+- Each document is summarized independently, ensuring a focused summary per document.
+- Effective for documents with diverse content or where each section merits individual attention.
+
+**Cons:**
+
+- May not refine the summary iteratively, potentially missing nuances that could be captured through iterative refinement.
+- Can be less effective for documents with a single central theme.
+
+**When to Use:**
+
+- Ideal for documents with varied topics or sections that require individual summarization before integration.
+
+These methods enable Darwin to efficiently summarize large documents within the token constraints imposed by LLMs. However, the choice between `refine` and `map_reduce` depends on the nature of the document content and the desired focus of the summary.
+
+### Refine Method
+
+The `refine` method constructs the summary by iteratively updating its answer. It starts by creating a summary for the first chunk of the document. Then, it iteratively updates this summary by adding details from each subsequent chunk one by one, until the entire document is processed.
+
+**Pros:**
+
+- Iterative approach allows for continual improvement of the summary.
+- Well-suited for documents with coherent themes and related content.
+
+**Cons:**
+
+- May get distracted by unrelated content within documents, potentially affecting the accuracy of the final summary.
+
+  > For example, in a webpage document that discusses various topics including cookie preferences, the LLM may focus excessively on the cookie preferences rather than the main content of the document.
+
+**When to Use:**
+
+- Best suited for documents where the content is cohesive and focused, minimizing the risk of getting sidetracked.
