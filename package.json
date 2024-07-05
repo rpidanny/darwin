@@ -117,7 +117,20 @@
   ],
   "homepage": "https://github.com/rpidanny/darwin",
   "keywords": [
-    "oclif"
+    "darwin",
+    "bioinformatics",
+    "biotech",
+    "biotechnology",
+    "research",
+    "research papers",
+    "genomics",
+    "google scholar",
+    "research assistant",
+    "research tools",
+    "research utility",
+    "molecular biology",
+    "llm",
+    "cli"
   ],
   "license": "MIT",
   "main": "dist/index.js",
