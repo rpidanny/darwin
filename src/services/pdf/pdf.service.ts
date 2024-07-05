@@ -6,6 +6,8 @@ import { Service } from 'typedi'
 
 import { DownloadService } from '../download/download.service.js'
 
+pdfjs.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/legacy/build/pdf.worker.mjs'
+
 @Service()
 export class PdfService {
   constructor(
