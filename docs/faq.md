@@ -128,8 +128,6 @@ The `map_reduce` method first summarizes each document independently in a **"map
 
 - Ideal for documents with varied topics or sections that require individual summarization before integration.
 
-These methods enable Darwin to efficiently summarize large documents within the token constraints imposed by LLMs. However, the choice between `refine` and `map_reduce` depends on the nature of the document content and the desired focus of the summary.
-
 ### Refine Method
 
 The `refine` method constructs the summary by iteratively updating its answer. It starts by creating a summary for the first chunk of the document. Then, it iteratively updates this summary by adding details from each subsequent chunk one by one, until the entire document is processed.
@@ -148,3 +146,5 @@ The `refine` method constructs the summary by iteratively updating its answer. I
 **When to Use:**
 
 - Best suited for documents where the content is cohesive and focused, minimizing the risk of getting sidetracked.
+
+These methods enable Darwin to efficiently summarize large documents within the token constraints imposed by LLMs. However, the choice between `refine` and `map_reduce` depends on the nature of the document content and the desired focus of the summary.
