@@ -17,7 +17,7 @@ export class DownloadService {
     // TODO: update user agent
     return await got
       .get(url, {
-        timeout: 30_000,
+        timeout: 60_000,
         throwHttpErrors: true,
         cookieJar: this.cookieJar,
         followRedirect: true,

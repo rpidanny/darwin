@@ -1,17 +1,12 @@
 import { Ollama } from '@langchain/community/llms/ollama'
 import { ChatOpenAI } from '@langchain/openai'
-import { Quill } from '@rpidanny/quill'
 import { Service } from 'typedi'
 
 import { LLMProvider, TConfig } from '../config/schema.js'
 
 @Service()
 export class LLMFactory {
-  private logger: Quill
-
-  constructor(logger: Quill) {
-    this.logger = logger
-  }
+  constructor() {}
 
   public getLLM(llmProvider: LLMProvider.OpenAI, config: TConfig): ChatOpenAI
   public getLLM(llmProvider: LLMProvider.Ollama, config: TConfig): Ollama
@@ -24,17 +19,15 @@ export class LLMFactory {
       case LLMProvider.Ollama:
         return this.createOllamaInstance(config.ollama)
       default:
-        this.logger.error(`Unsupported LLM provider: ${llmProvider}`)
         throw new Error(`Unsupported LLM provider: ${llmProvider}`)
     }
   }
 
   private createOpenAIInstance(openaiConfig: TConfig['openai']): ChatOpenAI {
     if (!openaiConfig?.apiKey || !openaiConfig?.model) {
-      this.logger.error(
+      throw new Error(
         'OpenAI API key and/or model are not set. Please run `darwin config set` to set them up.',
       )
-      throw new Error('OpenAI API key and/or model are not set.')
     }
     return new ChatOpenAI({
       model: openaiConfig.model,
@@ -44,10 +37,9 @@ export class LLMFactory {
 
   private createOllamaInstance(ollamaConfig: TConfig['ollama']): Ollama {
     if (!ollamaConfig?.model || !ollamaConfig?.baseUrl) {
-      this.logger.error(
+      throw new Error(
         'Ollama model and/or endpoint are not set. Please run `darwin config set` to set them up.',
       )
-      throw new Error('Ollama model and/or endpoint are not set.')
     }
     return new Ollama({
       model: ollamaConfig.model,
