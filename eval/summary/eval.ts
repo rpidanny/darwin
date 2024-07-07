@@ -21,7 +21,7 @@ const llmFactory = new LLMFactory()
 const summaryEval = new SummaryEvaluator(
   {
     models: Object.values(Model),
-    datasets: getDatasets(1),
+    datasets: getDatasets(),
     methods: Object.values(SummaryMethod),
   },
   llmFactory,
