@@ -18,7 +18,7 @@ export interface EvaluationScore {
 }
 
 export class SummaryEvaluator {
-  private coreModelName = 'gemma2:27b'
+  private coreModelName = 'gemma2:9b-instruct-q4_0'
   private datasetMap: Map<string, IDataset>
   private evaluationChain: Runnable
 
@@ -37,6 +37,7 @@ export class SummaryEvaluator {
   }
 
   private async generateSummaries(): Promise<Map<string, string[]>> {
+    this.logger.info('Generating summaries...')
     const summaryMap = new Map<string, string[]>()
     const { models, datasets, methods } = this.options
 
@@ -64,12 +65,16 @@ export class SummaryEvaluator {
   }
 
   private async evaluateSummaries(summaryMap: Map<string, string[]>): Promise<EvaluationScore[]> {
+    this.logger.info('Evaluating summaries...')
     const evaluations: EvaluationScore[] = []
     for (const [datasetName, summaries] of summaryMap.entries()) {
-      const response = await this.evaluationChain.invoke({
+      let response = await this.evaluationChain.invoke({
         summaries: summaries.join('\n\n'),
         abstract: this.datasetMap.get(datasetName)?.abstract,
       })
+      response = response.replace(/```json/g, '').replace(/```/g, '')
+      this.logger.info(`Dataset: ${datasetName}`)
+      console.log(response)
       evaluations.push(JSON.parse(response))
     }
 
@@ -91,6 +96,7 @@ export class SummaryEvaluator {
     const allScores: EvaluationScore[] = []
 
     for (let i = 0; i < iterations; i++) {
+      this.logger.info(`Iteration ${i + 1}`)
       const summaryMap = await this.generateSummaries()
       const scores = await this.evaluateSummaries(summaryMap)
 

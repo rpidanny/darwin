@@ -22,7 +22,8 @@ Provide a score for each summary between 1 and 10.
 \`\`\`
 
 Return the scores as a JSON object with the model names as keys and scores as values.
-[IMPORTANT] Only return the JSON object.
+
+[IMPORTANT] Only return the JSON object containing the model scores and nothing else.
 `
 
 export const EVAL_PROMPT_TEMPLATE = PromptTemplate.fromTemplate(EVAL_SUMMARY_PROMPT)

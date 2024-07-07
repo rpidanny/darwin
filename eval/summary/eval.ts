@@ -12,6 +12,8 @@ enum Model {
   gemma2_9b_instruct_q4_0 = 'gemma2:9b-instruct-q4_0',
   phi3_14b = 'phi3:14b',
   llama3_8b = 'llama3:8b',
+  gemma2_27b = 'gemma2:27b',
+  gemma2_27b_instruct_q4_0 = 'gemma2:27b-instruct-q4_0',
 }
 
 const llmFactory = new LLMFactory()
@@ -19,7 +21,7 @@ const llmFactory = new LLMFactory()
 const summaryEval = new SummaryEvaluator(
   {
     models: Object.values(Model),
-    datasets: getDatasets(),
+    datasets: getDatasets(1),
     methods: Object.values(SummaryMethod),
   },
   llmFactory,
