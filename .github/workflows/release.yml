@@ -58,6 +58,9 @@ jobs:
       - name: Generate FAQ ToC
         run: npm run generate:faq-toc
 
+      - name: Generate Use Cases ToC
+        run: npm run generate:usecases-toc
+
       - name: Release
         run: npm run release
         env:

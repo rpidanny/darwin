@@ -27,7 +27,8 @@
     "start": "node ./bin/run.js",
     "prerelease": "npm run version",
     "release": "semantic-release",
-    "generate:faq-toc": "doctoc docs/faq.md --github "
+    "generate:faq-toc": "doctoc docs/faq.md --github ",
+    "generate:usecases-toc": "doctoc docs/use-cases.md --github "
   },
   "bugs": "https://github.com/rpidanny/darwin/issues",
   "dependencies": {
