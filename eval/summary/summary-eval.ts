@@ -71,9 +71,13 @@ export class SummaryEvaluator {
     const summaryMap = new Map<string, Summary[]>()
 
     for (const model of this.options.models) {
+      this.logger.debug(`Model: ${model}`)
       for (const dataset of this.options.datasets) {
+        this.logger.debug(`Dataset: ${dataset.name}`)
         for (const method of this.options.methods) {
+          this.logger.debug(`Method: ${method}`)
           const summary = await this.createSummary(model, dataset, method)
+          this.logger.debug(`Summary: ${summary}`)
           if (!summaryMap.has(dataset.name)) {
             summaryMap.set(dataset.name, [])
           }
