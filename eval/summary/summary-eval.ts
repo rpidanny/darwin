@@ -10,17 +10,17 @@ import { LLMService, SummaryMethod } from '../../src/services/llm/llm.service'
 import { IDataset } from './dataset'
 import { EVAL_PROMPT_TEMPLATE } from './prompt'
 
-export interface SummaryEvalOptions {
+export interface EvalOptions {
   models: string[]
   datasets: IDataset[]
   methods: SummaryMethod[]
 }
 
-export interface EvaluationScore {
+export interface Score {
   score: number
 }
 
-export interface SummaryEvaluationResult {
+export interface EvaluationResult {
   [model: string]: {
     mean: number
     std: number
@@ -28,7 +28,7 @@ export interface SummaryEvaluationResult {
   }
 }
 
-export interface IPaperSummary {
+export interface Summary {
   model: string
   method: string
   src: string
@@ -37,45 +37,42 @@ export interface IPaperSummary {
 }
 
 export class SummaryEvaluator {
-  private coreModelName = 'gemma2:9b-instruct-q4_0'
+  private coreModel = 'gemma2:9b-instruct-q4_0'
   private evalChain: Runnable
 
   private summariesPath = './eval/summary/output/summaries'
   private scoresPath = './eval/summary/output/scores'
   private summaryStream: WriteStream
-  private scoreStream: WriteStream
+  private scoresStream: WriteStream
   private runId = moment().format('YYYY-MM-DD-HH-mm-ss')
 
   constructor(
-    private readonly options: SummaryEvalOptions,
+    private readonly options: EvalOptions,
     private readonly llmFactory: LLMFactory,
     private readonly logger: Quill,
   ) {
-    const coreLlm = this.llmFactory.getLLM(LLMProvider.Ollama, this.getConfig(this.coreModelName))
+    const coreLlm = this.llmFactory.getLLM(LLMProvider.Ollama, this.getConfig(this.coreModel))
     this.evalChain = EVAL_PROMPT_TEMPLATE.pipe(coreLlm)
 
     this.summaryStream = createWriteStream(`${this.summariesPath}/${this.runId}.jsonl`, {
       flags: 'a',
     })
-    this.scoreStream = createWriteStream(`${this.scoresPath}/${this.runId}.jsonl`, { flags: 'a' })
+    this.scoresStream = createWriteStream(`${this.scoresPath}/${this.runId}.jsonl`, {
+      flags: 'a',
+    })
   }
 
   private getConfig(modelName: string): TConfig {
     return { ollama: { model: modelName, baseUrl: 'http://localhost:11434' } }
   }
 
-  private async generateSummaries(): Promise<Map<string, IPaperSummary[]>> {
+  private async generateSummaries(): Promise<Map<string, Summary[]>> {
     this.logger.info('Generating summaries...')
-    const summaryMap = new Map<string, IPaperSummary[]>()
+    const summaryMap = new Map<string, Summary[]>()
 
-    const { models, datasets, methods } = this.options
-
-    for (const model of models) {
-      this.logger.debug(`Model: ${model}`)
-      for (const dataset of datasets) {
-        this.logger.debug(`Dataset: ${dataset.name}`)
-        for (const method of methods) {
-          this.logger.debug(`Method: ${method}`)
+    for (const model of this.options.models) {
+      for (const dataset of this.options.datasets) {
+        for (const method of this.options.methods) {
           const summary = await this.createSummary(model, dataset, method)
           if (!summaryMap.has(dataset.name)) {
             summaryMap.set(dataset.name, [])
@@ -107,7 +104,7 @@ export class SummaryEvaluator {
     return summary
   }
 
-  private async evaluateSummary(summary: IPaperSummary): Promise<EvaluationScore> {
+  private async evaluateSummary(summary: Summary): Promise<Score> {
     const evaluation = await pRetry(
       async () =>
         JSON.parse(
@@ -115,34 +112,26 @@ export class SummaryEvaluator {
         ),
       { retries: 3 },
     )
-    this.scoreStream.write(
-      JSON.stringify({
-        src: summary.src,
-        model: summary.model,
-        method: summary.method,
-        abstract: summary.abstract,
-        summary: summary.summary,
-        score: evaluation.score,
-      }) + '\n',
-    )
+    this.scoresStream.write(JSON.stringify({ ...summary, score: evaluation.score }) + '\n')
     return evaluation
   }
 
-  private async aggregateScores(scoreMap: Map<string, number[]>): Promise<SummaryEvaluationResult> {
-    const result: SummaryEvaluationResult = {}
+  private calculateStatistics(scores: number[]): { mean: number; std: number; median: number } {
+    const mean = scores.reduce((acc, score) => acc + score, 0) / scores.length
+    const std = Math.sqrt(
+      scores.reduce((acc, score) => acc + Math.pow(score - mean, 2), 0) / scores.length,
+    )
+    const median = scores.sort((a, b) => a - b)[Math.floor(scores.length / 2)]
+    return { mean, std, median }
+  }
 
-    for (const [key, scores] of scoreMap) {
-      const mean = scores.reduce((acc, score) => acc + score, 0) / scores.length
-      const std = Math.sqrt(
-        scores.reduce((acc, score) => acc + Math.pow(score - mean, 2), 0) / scores.length,
-      )
-      const median = scores.sort((a, b) => a - b)[Math.floor(scores.length / 2)]
-
-      result[key] = { mean, std, median }
+  private async aggregateScores(scores: Map<string, number[]>): Promise<EvaluationResult> {
+    const result: EvaluationResult = {}
+    for (const [key, scoreList] of scores) {
+      result[key] = this.calculateStatistics(scoreList)
     }
     return result
   }
-
   public async run(iterations = 1): Promise<void> {
     for (let i = 0; i < iterations; i++) {
       this.logger.info(`Iteration ${i + 1}`)
@@ -151,7 +140,7 @@ export class SummaryEvaluator {
     }
   }
 
-  private async evaluateSummaries(summariesMap: Map<string, IPaperSummary[]>): Promise<void> {
+  private async evaluateSummaries(summariesMap: Map<string, Summary[]>): Promise<void> {
     this.logger.info('Evaluating summaries...')
     for (const [dataset, summaries] of summariesMap) {
       this.logger.info(`Dataset: ${dataset}`)
