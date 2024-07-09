@@ -12,6 +12,7 @@
     "commitlint",
     "crispr",
     "dialister",
+    "doctoc",
     "geolocate",
     "Interspaced",
     "langchain",
@@ -29,6 +30,7 @@
     "rpidanny",
     "tcell",
     "typedi",
+    "usecases",
     "vectorstore",
     "vectorstores"
   ],
