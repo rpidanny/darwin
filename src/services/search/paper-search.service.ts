@@ -23,6 +23,8 @@ export class PaperSearchService {
 
   public async search({
     keywords,
+    yearLow,
+    yearHigh,
     minItemCount,
     filterPattern,
     summarize,
@@ -33,7 +35,7 @@ export class PaperSearchService {
     const papers: IPaperEntity[] = []
 
     await this.googleScholar.iteratePapers(
-      { keywords },
+      { keywords, yearLow, yearHigh },
       async paper => {
         const entity = await this.processPaper(paper, {
           filterPattern,

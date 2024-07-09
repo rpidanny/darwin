@@ -15,6 +15,8 @@ import questionFlag from '../../inputs/flags/question.flag.js'
 import skipCaptchaFlag from '../../inputs/flags/skip-captcha.flag.js'
 import summaryFlag from '../../inputs/flags/summary.flag.js'
 import summaryMethodFlag from '../../inputs/flags/summary-method.flag.js'
+import yearHighFlag from '../../inputs/flags/year-high.flag.js'
+import yearLowFlag from '../../inputs/flags/year-low.flag.js'
 import { PaperSearchService } from '../../services/search/paper-search.service.js'
 
 export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
@@ -45,6 +47,8 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
     'summary-method': summaryMethodFlag,
     llm: llmProviderFlag,
     question: questionFlag,
+    'year-low': yearLowFlag,
+    'year-high': yearHighFlag,
   }
 
   async init(): Promise<void> {
@@ -86,13 +90,24 @@ export default class SearchPapers extends BaseCommand<typeof SearchPapers> {
   }
 
   public async run(): Promise<void> {
-    const { count, output, filter, summary, question, 'summary-method': summaryMethod } = this.flags
+    const {
+      count,
+      output,
+      filter,
+      summary,
+      question,
+      'summary-method': summaryMethod,
+      'year-low': yearLow,
+      'year-high': yearHigh,
+    } = this.flags
     const { keywords } = this.args
 
     this.logger.info(`Searching papers for: ${keywords}`)
 
     const outputFile = await this.searchService.exportToCSV(output, {
       keywords,
+      yearLow,
+      yearHigh,
       minItemCount: count,
       filterPattern: filter,
       summarize: summary,
