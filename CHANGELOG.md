@@ -1,3 +1,9 @@
+## [1.34.0](https://github.com/rpidanny/darwin/compare/v1.33.2...v1.34.0) (2024-07-09)
+
+### Features
+
+* add --year-high and --year-low flag ([#89](https://github.com/rpidanny/darwin/issues/89)) ([fddcd95](https://github.com/rpidanny/darwin/commit/fddcd952bf84284abb21c0fe7583b8168da946ed))
+
 ## [1.33.2](https://github.com/rpidanny/darwin/compare/v1.33.1...v1.33.2) (2024-07-08)
 
 ### Bug Fixes

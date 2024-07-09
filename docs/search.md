@@ -13,7 +13,8 @@ Search and export papers containing accession numbers to a CSV file.
 ```
 USAGE
   $ darwin search accession KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-a
-    REGEX] [-s] [--legacy] [-h] [-S] [--summary-method refine|map_reduce] [--llm openai|ollama] [-q STRING]
+    REGEX] [-s] [--legacy] [-h] [-S] [--summary-method refine|map_reduce] [--llm openai|ollama] [-q STRING] [--year-low
+    YEAR] [--year-high YEAR]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for. (Example: "crispr cas9")
@@ -37,6 +38,8 @@ FLAGS
                                           back to the main URL.
       --llm=openai|ollama                 [default: ollama] The LLM provider to use for generating summaries.
       --summary-method=refine|map_reduce  [default: map_reduce] Selects the method used to generate summaries.
+      --year-high=YEAR                    Highest year to include in the search.
+      --year-low=YEAR                     Lowest year to include in the search.
 
 GLOBAL FLAGS
   -l, --log-level=TRACE|DEBUG|INFO|WARN|ERROR|FATAL  [default: INFO] Specify logging level.
@@ -62,7 +65,7 @@ FLAG DESCRIPTIONS
     Refer to the FAQ for details on each method.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.33.2/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.34.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -71,7 +74,8 @@ Searches and exports research papers based on keywords to a CSV file.
 ```
 USAGE
   $ darwin search papers KEYWORDS [-l TRACE|DEBUG|INFO|WARN|ERROR|FATAL] [-c NUMBER] [-p NUMBER] [-o PATH] [-f
-    REGEX] [-s] [--legacy] [-h] [-S] [--summary-method refine|map_reduce] [--llm openai|ollama] [-q STRING]
+    REGEX] [-s] [--legacy] [-h] [-S] [--summary-method refine|map_reduce] [--llm openai|ollama] [-q STRING] [--year-low
+    YEAR] [--year-high YEAR]
 
 ARGUMENTS
   KEYWORDS  The keywords to search for. (Example: "crispr cas9")
@@ -95,6 +99,8 @@ FLAGS
                                           back to the main URL.
       --llm=openai|ollama                 [default: ollama] The LLM provider to use for generating summaries.
       --summary-method=refine|map_reduce  [default: map_reduce] Selects the method used to generate summaries.
+      --year-high=YEAR                    Highest year to include in the search.
+      --year-low=YEAR                     Lowest year to include in the search.
 
 GLOBAL FLAGS
   -l, --log-level=TRACE|DEBUG|INFO|WARN|ERROR|FATAL  [default: INFO] Specify logging level.
@@ -122,4 +128,4 @@ FLAG DESCRIPTIONS
     Refer to the FAQ for details on each method.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.33.2/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.34.0/src/commands/search/papers.ts)_
