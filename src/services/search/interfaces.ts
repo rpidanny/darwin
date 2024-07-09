@@ -23,4 +23,6 @@ export interface ISearchOptions {
   summaryMethod?: SummaryMethod
   question?: string
   onData?: (data: IPaperEntity) => Promise<any>
+  yearLow?: number
+  yearHigh?: number
 }

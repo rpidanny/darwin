@@ -184,6 +184,25 @@ describe('PaperSearchService', () => {
         })),
       )
     })
+
+    it('should pass yearLow and yearHigh to GoogleScholar', async () => {
+      await service.search({
+        keywords: 'some keywords',
+        minItemCount: 10,
+        yearLow: 2_010,
+        yearHigh: 2_020,
+      })
+
+      expect(googleScholarMock.iteratePapers).toHaveBeenCalledWith(
+        {
+          keywords: 'some keywords',
+          yearLow: 2_010,
+          yearHigh: 2_020,
+        },
+        expect.any(Function),
+        mockConfig.concurrency,
+      )
+    })
   })
 
   describe('exportToCSV', () => {
