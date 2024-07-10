@@ -1,3 +1,9 @@
+## [1.34.1](https://github.com/rpidanny/darwin/compare/v1.34.0...v1.34.1) (2024-07-10)
+
+### Bug Fixes
+
+* release config ([ecba90f](https://github.com/rpidanny/darwin/commit/ecba90f1b7b35316d0f98510ac41faa7e92cef5e))
+
 ## [1.34.0](https://github.com/rpidanny/darwin/compare/v1.33.2...v1.34.0) (2024-07-09)
 
 ### Features
