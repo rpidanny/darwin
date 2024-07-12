@@ -65,7 +65,7 @@ FLAG DESCRIPTIONS
     Refer to the FAQ for details on each method.
 ```
 
-_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.34.1/src/commands/search/accession.ts)_
+_See code: [src/commands/search/accession.ts](https://github.com/rpidanny/darwin/blob/v1.35.0/src/commands/search/accession.ts)_
 
 ## `darwin search papers KEYWORDS`
 
@@ -128,4 +128,4 @@ FLAG DESCRIPTIONS
     Refer to the FAQ for details on each method.
 ```
 
-_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.34.1/src/commands/search/papers.ts)_
+_See code: [src/commands/search/papers.ts](https://github.com/rpidanny/darwin/blob/v1.35.0/src/commands/search/papers.ts)_

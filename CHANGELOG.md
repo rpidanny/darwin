@@ -1,3 +1,9 @@
+## [1.35.0](https://github.com/rpidanny/darwin/compare/v1.34.1...v1.35.0) (2024-07-12)
+
+### Features
+
+* convert pdf to markdown ([#90](https://github.com/rpidanny/darwin/issues/90)) ([4fbede2](https://github.com/rpidanny/darwin/commit/4fbede2f91126e3372326255bf803aaddff6ee5d))
+
 ## [1.34.1](https://github.com/rpidanny/darwin/compare/v1.34.0...v1.34.1) (2024-07-10)
 
 ### Bug Fixes
