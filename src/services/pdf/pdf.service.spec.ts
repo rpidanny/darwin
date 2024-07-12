@@ -36,4 +36,11 @@ describe('PdfService', () => {
       expect(content).toContain('The new frontier of genome engineering with CRISPR-Cas9')
     })
   })
+
+  describe('getMarkdownContent', () => {
+    it('should get markdown content from PDF', async () => {
+      const content = await pdfService.getMarkdownContent('https://example.com')
+      expect(content).toContain('The new frontier of genome engineering with CRISPR-Cas9')
+    })
+  })
 })

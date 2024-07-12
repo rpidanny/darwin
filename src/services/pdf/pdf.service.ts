@@ -1,3 +1,4 @@
+import pdf2md from '@rpidanny/pdf2md'
 import { Quill } from '@rpidanny/quill'
 import { combinePagesIntoSingleString, parsePageItems } from 'pdf-text-reader'
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs'
@@ -15,17 +16,19 @@ export class PdfService {
     private readonly logger?: Quill,
   ) {}
 
-  async getTextContent(url: string): Promise<string> {
+  private async downloadPdf(url: string): Promise<Buffer> {
     this.logger?.debug(`Fetching PDF from ${url}`)
 
-    let fileContent: Buffer
-
     try {
-      fileContent = await this.downloadService.getContent(url)
+      return await this.downloadService.getContent(url)
     } catch (error) {
       this.logger?.debug(`Failed to get PDF from ${url} : ${(error as Error).message}`)
       throw error
     }
+  }
+
+  async getTextContent(url: string): Promise<string> {
+    const fileContent = await this.downloadPdf(url)
 
     const doc = await pdfjs.getDocument({
       data: new Uint8Array(fileContent),
@@ -41,5 +44,10 @@ export class PdfService {
     )
     const parsedPages = parsePageItems(items)
     return combinePagesIntoSingleString([parsedPages])
+  }
+
+  async getMarkdownContent(url: string): Promise<string> {
+    const fileContent = await this.downloadPdf(url)
+    return pdf2md(new Uint8Array(fileContent))
   }
 }
