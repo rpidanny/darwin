@@ -27,7 +27,7 @@ export class PaperService {
   }
 
   private async getPdfContent(url: string): Promise<string> {
-    return this.pdfService.getTextContent(url)
+    return this.pdfService.getMarkdownContent(url)
   }
 
   /*

@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals'
+import { readFileSync } from 'fs'
 import { readFile } from 'fs/promises'
 import { mock } from 'jest-mock-extended'
 import { dirname, join } from 'path'
@@ -34,6 +35,20 @@ describe('PdfService', () => {
     it('should get text content from PDF', async () => {
       const content = await pdfService.getTextContent('https://example.com')
       expect(content).toContain('The new frontier of genome engineering with CRISPR-Cas9')
+    })
+  })
+
+  describe('getMarkdownContent', () => {
+    it('should get markdown content from PDF', async () => {
+      const content = await pdfService.getMarkdownContent('https://example.com')
+      const markDown = readFileSync(
+        join(
+          __dirname,
+          '../../../test/data/papers/The-new-frontier-of-genome-engineering-with-CRISPR-Cas9.md',
+        ),
+        'utf-8',
+      )
+      expect(content).toContain(markDown)
     })
   })
 })

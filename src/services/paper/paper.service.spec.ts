@@ -55,17 +55,17 @@ describe('PaperService', () => {
         waitOnCaptcha: !config.skipCaptcha,
         throwOnCaptcha: true,
       })
-      expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+      expect(pdfServiceMock.getMarkdownContent).not.toHaveBeenCalled()
     })
 
     it('should get text content from pdf url when paper is a pdf', async () => {
-      pdfServiceMock.getTextContent.mockResolvedValueOnce('some-text')
+      pdfServiceMock.getMarkdownContent.mockResolvedValueOnce('some-text')
 
       const content = await service.getTextContent(pdfPaperMetadata)
 
       expect(content).toBe('some-text')
-      expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
-      expect(pdfServiceMock.getTextContent).toHaveBeenCalledWith(pdfPaperMetadata.source.url)
+      expect(pdfServiceMock.getMarkdownContent).toHaveBeenCalledTimes(1)
+      expect(pdfServiceMock.getMarkdownContent).toHaveBeenCalledWith(pdfPaperMetadata.source.url)
       expect(odysseusMock.getMarkdownContent).not.toHaveBeenCalled()
     })
 
@@ -80,17 +80,17 @@ describe('PaperService', () => {
         waitOnCaptcha: !config.skipCaptcha,
         throwOnCaptcha: true,
       })
-      expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+      expect(pdfServiceMock.getMarkdownContent).not.toHaveBeenCalled()
     })
 
     it('should fallback to main url when pdf processing fails', async () => {
-      pdfServiceMock.getTextContent.mockRejectedValueOnce(new Error('Failed to process PDF'))
+      pdfServiceMock.getMarkdownContent.mockRejectedValueOnce(new Error('Failed to process PDF'))
       odysseusMock.getMarkdownContent.mockResolvedValueOnce('some-text')
 
       const content = await service.getTextContent(pdfPaperMetadata)
 
       expect(content).toBe('some-text')
-      expect(pdfServiceMock.getTextContent).toHaveBeenCalledTimes(1)
+      expect(pdfServiceMock.getMarkdownContent).toHaveBeenCalledTimes(1)
       expect(odysseusMock.getMarkdownContent).toHaveBeenCalledTimes(1)
       expect(odysseusMock.getMarkdownContent).toHaveBeenCalledWith(pdfPaperMetadata.url, {
         waitOnCaptcha: !config.skipCaptcha,
@@ -126,7 +126,7 @@ describe('PaperService', () => {
 
       expect(content).toBe('')
       expect(odysseusMock.getMarkdownContent).not.toHaveBeenCalled()
-      expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+      expect(pdfServiceMock.getMarkdownContent).not.toHaveBeenCalled()
     })
 
     it('should return empty string when falling back to main url and url is empty', async () => {
@@ -137,7 +137,7 @@ describe('PaperService', () => {
 
       expect(content).toBe('')
       expect(odysseusMock.getMarkdownContent).toHaveBeenCalledTimes(1)
-      expect(pdfServiceMock.getTextContent).not.toHaveBeenCalled()
+      expect(pdfServiceMock.getMarkdownContent).not.toHaveBeenCalled()
     })
   })
 

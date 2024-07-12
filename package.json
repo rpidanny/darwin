@@ -41,6 +41,7 @@
     "@oclif/plugin-not-found": "^3.2.1",
     "@rpidanny/google-scholar": "^3.2.0",
     "@rpidanny/odysseus": "^2.6.0",
+    "@rpidanny/pdf2md": "^1.0.0",
     "@rpidanny/quill": "^1.6.0",
     "@rpidanny/quill-hooks": "^1.0.2",
     "bottleneck": "^2.19.5",
