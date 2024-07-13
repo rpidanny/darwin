@@ -38,7 +38,7 @@
     "@langchain/openai": "^0.2.1",
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-not-found": "^3.2.1",
+    "@oclif/plugin-not-found": "^3.2.10",
     "@rpidanny/google-scholar": "^3.2.0",
     "@rpidanny/odysseus": "^2.6.0",
     "@rpidanny/pdf2md": "^1.0.0",
