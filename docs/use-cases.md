@@ -14,6 +14,11 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+- [Literature Search](#literature-search)
+  - [Example: Finding References about Biomarkers in Your Research](#example-finding-references-about-biomarkers-in-your-research)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Literature Search
 
 This tool is designed to help you quickly and efficiently search for research papers based on the keywords you input. It's ideal for gaining an instant understanding of a topic through relevant literature.

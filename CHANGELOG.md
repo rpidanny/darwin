@@ -1,3 +1,9 @@
+## [1.35.1](https://github.com/rpidanny/darwin/compare/v1.35.0...v1.35.1) (2024-07-15)
+
+### Bug Fixes
+
+* **deps:** bump json-2-csv from 5.5.2 to 5.5.4 ([#94](https://github.com/rpidanny/darwin/issues/94)) ([4bf4716](https://github.com/rpidanny/darwin/commit/4bf4716e4141d2bb0ab111a336d4238aa8ea7e7a))
+
 ## [1.35.0](https://github.com/rpidanny/darwin/compare/v1.34.1...v1.35.0) (2024-07-12)
 
 ### Features
